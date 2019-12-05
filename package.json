@@ -1,8 +1,8 @@
 {
-  "name": "tronbox",
-  "namespace": "tronprotocol",
-  "version": "2.7.4",
-  "description": "TronBox - Simple development framework for tronweb",
+  "name": "earthbox",
+  "namespace": "earthengineering",
+  "version": "0.1.0",
+  "description": "EarthBox - Simple development framework for earthweb",
   "dependencies": {
     "@truffle/contract-sources": "^0.1.6",
     "@truffle/error": "0.0.7",
