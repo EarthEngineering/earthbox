@@ -72,14 +72,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/tron-us/tronbox.git"
+    "url": "git+https://github.com/tron-us/tronbox.git"
   },
   "homepage": "https://github.com/tron-us/tronbox/",
   "bugs": {
     "url": "https://github.com/tron-us/tronbox/issues"
   },
   "originalAuthor": "consensys.net",
-  "author": "tron.network",
+  "author": "earth.engineering",
   "authors": [
     {
       "name": "Tim Coulter",
@@ -94,9 +94,19 @@
       "name": "Francesco Sullo",
       "email": "francesco@sullo.co",
       "url": "https://github.com/sullof"
+    },
+    {
+      "name": "Gabriel Cardona",
+      "email": "gabriel.earth.engineering@gmail.com",
+      "url": "https://github.com/earthengineering"
     }
   ],
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "main": "nil.js",
+  "directories": {
+    "test": "test"
+  },
+  "license": "MIT"
 }
