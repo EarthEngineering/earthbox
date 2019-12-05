@@ -72,11 +72,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tron-us/tronbox.git"
+    "url": "git+https://github.com/earthengineering/earthbox.git"
   },
-  "homepage": "https://github.com/tron-us/tronbox/",
+  "homepage": "https://github.com/earthengineering/earthbox/",
   "bugs": {
-    "url": "https://github.com/tron-us/tronbox/issues"
+    "url": "https://github.com/earthengineering/earthbox/issues"
   },
   "originalAuthor": "consensys.net",
   "author": "earth.engineering",
