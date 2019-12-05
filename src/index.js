@@ -1,4 +1,4 @@
-require('source-map-support/register')
+require("source-map-support/register");
 
 var Config = require("./components/Config");
 var Command = require("./lib/command");
@@ -14,28 +14,30 @@ var options = {
   logger: console
 };
 
-var commands = process.argv.slice(2)
+var commands = process.argv.slice(2);
 
-if (commands[0] === '--download-compiler' && commands[1]) {
-
-  downloader(commands[1])
-
+if (commands[0] === "--download-compiler" && commands[1]) {
+  downloader(commands[1]);
 } else {
-
   var command = new Command(require("./lib/commands"));
 
   var options = {
     logger: console
   };
 
-  command.run(process.argv.slice(2), options, function (err) {
+  command.run(process.argv.slice(2), options, function(err) {
     if (err) {
       if (err instanceof TaskError) {
         command.args
-          .usage("Tronbox v" + (version.bundle || version.core) + " - a development framework for tronweb"
-            + OS.EOL + OS.EOL
-            + 'Usage: tronbox <command> [options]')
-          .epilog("See more at https://developers.tron.network/docs/tron-box-user-guide")
+          .usage(
+            "Earthbox v" +
+              (version.bundle || version.core) +
+              " - a development framework for earthweb" +
+              OS.EOL +
+              OS.EOL +
+              "Usage: earthweb <command> [options]"
+          )
+          .epilog("See more at https://www.earth.engineering")
           .showHelp();
       } else {
         if (err instanceof TruffleError) {
@@ -58,10 +60,9 @@ if (commands[0] === '--download-compiler' && commands[1]) {
     // and `web3 1.0 confirmations` both leave interval timers etc wide open.
     const handles = process._getActiveHandles();
     handles.forEach(handle => {
-      if (typeof handle.close === 'function') {
+      if (typeof handle.close === "function") {
         handle.close();
       }
-    })
+    });
   });
-
 }
