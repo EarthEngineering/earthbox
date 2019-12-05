@@ -3,11 +3,11 @@
 Simple development framework for earthweb  
 **EarthBox is a fork of [Truffle](https://www.trufflesuite.com/truffle) [code](https://github.com/trufflesuite/truffle)**
 
-[EarthBox Documentation](https://www.earth.engineering)
+[EarthBox Documentation](https://developer.earth.engineering/earthbox)
 
 ## Installation
 
-`npm install -g EarthBox`
+`npm install -g earthbox`
 
 ## OS requirement
 
@@ -17,15 +17,15 @@ Simple development framework for earthweb
 ## Features
 
 Initialize a Customer Earth-Box Project<br>
-`EarthBox init`
+`earthbox init`
 <br>
 
 Download a dApp, ex: metacoin-box<br>
-`EarthBox unbox metacoin`
+`earthbox unbox metacoin`
 <br>
 
 Contract Compiler<br>
-`EarthBox compile`
+`earthbox compile`
 
 <br>
 To compile for all contracts, select --compile-all.
@@ -99,17 +99,17 @@ Notice that the example above uses Earth Quickstart >= 1.1.16, which exposes a m
 
 ## Contract Migration<br>
 
-`EarthBox migrate`
+`earthbox migrate`
 <br>
 
-This command will invoke all migration scripts within the migrations directory. If your previous migration was successful, `EarthBox migrate` will invoke a newly created migration. If there is no new migration script, this command will have no operational effect. Instead, you can use the option `--reset` to restart the migration script.<br>
+This command will invoke all migration scripts within the migrations directory. If your previous migration was successful, `earthbox migrate` will invoke a newly created migration. If there is no new migration script, this command will have no operational effect. Instead, you can use the option `--reset` to restart the migration script.<br>
 
-`EarthBox migrate --reset`
+`earthbox migrate --reset`
 <br>
 
 ## Parameters by contract (introduced in v2.2.2)
 
-It is very important to set the deploying parameters for any contract. In EAEarthBoxRTHBox 2.2.2+ you can do it modifying the file
+It is very important to set the deploying parameters for any contract. In EarthBox 2.2.2+ you can do it modifying the file
 
 ```
 migrations/2_deploy_contracts.js
@@ -136,9 +136,9 @@ module.exports = function(deployer) {
 
 This will use the default network to start a console. It will automatically connect to a TVM client. You can use `--network` to change this. <br>
 
-`EarthBox console`<br>
+`earthbox console`<br>
 
-The console supports the `EAREarthBoxTHBox` command. For example, you can invoke `migrate --reset` in the console. The result is the same as invoking `EarthBox migrate --reset` in the command.
+The console supports the `earthbox` command. For example, you can invoke `migrate --reset` in the console. The result is the same as invoking `earthbox migrate --reset` in the command.
 <br>
 
 ## Extra Features in EarthBox console:<br>
@@ -153,14 +153,14 @@ The console supports the `EAREarthBoxTHBox` command. For example, you can invoke
 
 To carry out the test, run the following command:<br>
 
-`EarthBox test`<br>
+`earthbox test`<br>
 
 You can also run the test for a specific file：<br>
 
-`EarthBox test ./path/to/test/file.js`<br>
+`earthbox test ./path/to/test/file.js`<br>
 
 Testing in EarthBox is a bit different than in Truffle.
-Let's say we want to test the contract Metacoin (from the Metacoin Box that you can download with `EarthBox unbox metacoin`):
+Let's say we want to test the contract Metacoin (from the Metacoin Box that you can download with `earthbox unbox metacoin`):
 
 ```
 contract MetaCoin {
@@ -234,7 +234,7 @@ instance.sendCoin([address, amount], {from: account[1]});
 2. Clone your forked repo recursively, to include submodules, for example:
 
 ```
-git clone --recurse-submodules -j8 git@github.com:sullof/EarthBox.git
+git clone --recurse-submodules -j8 git@github.com:earthengineering/EarthBox.git
 ```
 
 3. If you use nvm for Node, please install Node 8, and install lerna globally:
