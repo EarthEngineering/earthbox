@@ -2,7 +2,7 @@ var ReplManager = require("./repl");
 var Command = require("./command");
 var provision = require("../components/Provisioner");
 var contract = require("../components/Contract");
-var TronWrap = require("../components/TronWrap");
+var TronWrap = require("../components/EarthWrap");
 var vm = require("vm");
 var expect = require("@truffle/expect");
 var _ = require("lodash");
@@ -12,7 +12,7 @@ var os = require("os");
 var path = require("path");
 var EventEmitter = require("events");
 var inherits = require("util").inherits;
-const logErrorAndExit = require("../components/TronWrap").logErrorAndExit;
+const logErrorAndExit = require("../components/EarthWrap").logErrorAndExit;
 
 inherits(Console, EventEmitter);
 
@@ -44,7 +44,7 @@ function Console(tasks, options) {
   }
 
   try {
-    this.tronWrap = TronWrap(options.networks[options.network], {
+    this.earthWrap = TronWrap(options.networks[options.network], {
       verify: true,
       log: options.log
     });
@@ -52,7 +52,7 @@ function Console(tasks, options) {
     logErrorAndExit(console, err.message);
   }
 
-  // this.tronWrap.setHttpProvider(options.provider);
+  // this.earthWrap.setHttpProvider(options.provider);
 
   // Bubble the ReplManager's exit event
   this.repl.on("exit", function() {
@@ -83,7 +83,7 @@ Console.prototype.start = function(callback) {
     self.repl.start({
       prompt: "earthbox(" + self.options.network + ")> ",
       context: {
-        tronWrap: self.tronWrap
+        earthWrap: self.earthWrap
       },
       interpreter: self.interpret.bind(self),
       done: callback

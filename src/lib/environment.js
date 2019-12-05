@@ -5,7 +5,7 @@ var Artifactor = require("../components/Artifactor");
 // var TestRPC = require("ganache-cli");
 var spawn = require("child_process").spawn;
 var path = require("path");
-var TronWrap = require("../components/TronWrap");
+var EarthWrap = require("../components/EarthWrap");
 
 var Environment = {
   // It's important config is a Config object and not a vanilla object
@@ -53,7 +53,7 @@ var Environment = {
       );
     }
 
-    let tronWrap = TronWrap();
+    let earthWrap = EarthWrap();
 
     function detectNetworkId(done) {
       if (network_id != "*") {
@@ -69,11 +69,11 @@ var Environment = {
         return done();
       }
 
-      tronWrap._getAccounts(function(err, accounts) {
+      earthWrap._getAccounts(function(err, accounts) {
         if (err) return done(err);
         config.networks[config.network].from = accounts[0];
         config.networks[config.network].privateKey =
-          tronWrap._privateKeyByAccount[accounts[0]];
+          earthWrap._privateKeyByAccount[accounts[0]];
         done();
       });
     }

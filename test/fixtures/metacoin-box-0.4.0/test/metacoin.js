@@ -27,7 +27,7 @@ contract("MetaCoin", function(accounts) {
   });
 
   it("should verify that the contract has been deployed by accounts[0]", async function() {
-    assert.equal(await meta.getOwner(), tronWeb.address.toHex(accounts[0]));
+    assert.equal(await meta.getOwner(), earthWeb.address.toHex(accounts[0]));
   });
 
   it("should put 10000 MetaCoin in the first account", async function() {
@@ -60,7 +60,7 @@ contract("MetaCoin", function(accounts) {
 
     this.timeout(20000);
     MetaCoin.deployed().then(meta => {
-      return tronWeb
+      return earthWeb
         .contract()
         .at(meta.address)
         .then(meta2 => {
@@ -68,9 +68,9 @@ contract("MetaCoin", function(accounts) {
             if (res) {
               assert.equal(
                 res.result._from,
-                tronWeb.address.toHex(accounts[0])
+                earthWeb.address.toHex(accounts[0])
               );
-              assert.equal(res.result._to, tronWeb.address.toHex(accounts[3]));
+              assert.equal(res.result._to, earthWeb.address.toHex(accounts[3]));
               assert.equal(res.result._value, 1);
               done();
             }

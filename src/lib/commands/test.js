@@ -12,8 +12,8 @@ var command = {
     var fs = require("fs");
     var copy = require("../copy");
     var Environment = require("../environment");
-    var TronWrap = require("../../components/TronWrap");
-    const logErrorAndExit = require("../../components/TronWrap")
+    var EarthWrap = require("../../components/EarthWrap");
+    const logErrorAndExit = require("../../components/EarthWrap")
       .logErrorAndExit;
 
     var config = Config.detect(options);
@@ -32,7 +32,7 @@ var command = {
     }
 
     try {
-      TronWrap(config.networks[config.network], {
+      EarthWrap(config.networks[config.network], {
         verify: true,
         log: options.log
       });

@@ -9,32 +9,29 @@ var _ = require("lodash");
 var Resolver = require("./Resolver");
 var Artifactor = require("./Artifactor");
 var OS = require("os");
-var TronWrap = require("./TronWrap");
+var EarthWrap = require("./EarthWrap");
 
 async function getCompilerVersion(options) {
-
   var config = Config.detect(options);
 
   // if "development" exists, default to using that
   if (!config.network && config.networks.development) {
     config.network = "development";
   }
-  let tronWrap
+  let earthWrap;
   try {
-    tronWrap = TronWrap(config.networks[config.network], {
+    earthWrap = EarthWrap(config.networks[config.network], {
       verify: true,
       log: options.log
-    })
-    const networkInfo = await tronWrap._getNetworkInfo()
-    return Promise.resolve(networkInfo || {})
-  } catch(err) {
-    return Promise.resolve({})
+    });
+    const networkInfo = await earthWrap._getNetworkInfo();
+    return Promise.resolve(networkInfo || {});
+  } catch (err) {
+    return Promise.resolve({});
   }
 }
 
-
 var Contracts = {
-
   // contracts_directory: String. Directory where .sol files can be found.
   // contracts_build_directory: String. Directory where .sol.js files can be found and written to.
   // all: Boolean. Compile all sources found. Defaults to true. If false, will compare sources against built files
@@ -45,14 +42,9 @@ var Contracts = {
   compile: function(options, callback) {
     var self = this;
 
-    expect.options(options, [
-      "contracts_build_directory"
-    ]);
+    expect.options(options, ["contracts_build_directory"]);
 
-    expect.one(options, [
-      "contracts_directory",
-      "files"
-    ]);
+    expect.one(options, ["contracts_directory", "files"]);
 
     // Use a config object to ensure we get the default sources.
     var config = Config.default().merge(options);
@@ -75,10 +67,10 @@ var Contracts = {
       } else {
         callback(null, [], paths);
       }
-    };
+    }
 
-    function start () {
-      if(config.all === true || config.compileAll === true) {
+    function start() {
+      if (config.all === true || config.compileAll === true) {
         compile.all(config, finished);
       } else {
         compile.necessary(config, finished);
@@ -87,10 +79,10 @@ var Contracts = {
 
     getCompilerVersion(options)
       .then(networkInfo => {
-        config.networkInfo = networkInfo
-        start()
+        config.networkInfo = networkInfo;
+        start();
       })
-      .catch(err => start())
+      .catch(err => start());
   },
 
   write_contracts: function(contracts, options, callback) {
@@ -103,16 +95,27 @@ var Contracts = {
       }
 
       if (options.quiet != true && options.quietWrite != true) {
-        logger.log("Writing artifacts to ." + path.sep + path.relative(options.working_directory, options.contracts_build_directory) + OS.EOL);
+        logger.log(
+          "Writing artifacts to ." +
+            path.sep +
+            path.relative(
+              options.working_directory,
+              options.contracts_build_directory
+            ) +
+            OS.EOL
+        );
       }
 
       var extra_opts = {
         network_id: options.network_id
       };
 
-      options.artifactor.saveAll(contracts, extra_opts).then(function() {
-        callback(null, contracts);
-      }).catch(callback);
+      options.artifactor
+        .saveAll(contracts, extra_opts)
+        .then(function() {
+          callback(null, contracts);
+        })
+        .catch(callback);
     });
   }
 };

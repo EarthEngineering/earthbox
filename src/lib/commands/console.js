@@ -1,40 +1,37 @@
 var command = {
-  command: 'console',
-  description: 'Run a console with contract abstractions and commands available',
+  command: "console",
+  description:
+    "Run a console with contract abstractions and commands available",
   builder: {},
-  run: function (options, done) {
-    process.env.CURRENT = 'console'
+  run: function(options, done) {
+    process.env.CURRENT = "console";
     var Config = require("../../components/Config");
     var Console = require("../console");
     var Environment = require("../environment");
     var TruffleError = require("@truffle/error");
 
-    var TronWrap = require("../../components/TronWrap");
-    const logErrorAndExit = require('../../components/TronWrap').logErrorAndExit
+    var EarthWrap = require("../../components/EarthWrap");
+    const logErrorAndExit = require("../../components/EarthWrap")
+      .logErrorAndExit;
 
     var config = Config.detect(options);
 
     if (!config.network && config.networks.development) {
       config.network = "development";
     }
-    // init TronWeb
+    // init EarthWeb
     try {
-      TronWrap(config.networks[config.network], {
+      EarthWrap(config.networks[config.network], {
         verify: true,
         log: options.log
-      })
-    } catch(err) {
-      logErrorAndExit(console, err.message)
+      });
+    } catch (err) {
+      logErrorAndExit(console, err.message);
     }
 
     // This require a smell?
-    var commands = require("./index")
-    var excluded = [
-      "console",
-      "init",
-      "watch",
-      "serve"
-    ];
+    var commands = require("./index");
+    var excluded = ["console", "init", "watch", "serve"];
 
     var available_commands = Object.keys(commands).filter(function(name) {
       return excluded.indexOf(name) == -1;
@@ -48,12 +45,15 @@ var command = {
     Environment.detect(config, function(err) {
       if (err) return done(err);
 
-      var c = new Console(console_commands, config.with({
-        noAliases: true
-      }));
+      var c = new Console(
+        console_commands,
+        config.with({
+          noAliases: true
+        })
+      );
       c.start(done);
     });
   }
-}
+};
 
 module.exports = command;

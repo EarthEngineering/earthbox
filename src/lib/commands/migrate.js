@@ -1,6 +1,6 @@
 var command = {
-  command: 'migrate',
-  description: 'Run migrations to deploy contracts',
+  command: "migrate",
+  description: "Run migrations to deploy contracts",
   builder: {
     reset: {
       type: "boolean",
@@ -21,8 +21,8 @@ var command = {
       type: "number"
     }
   },
-  run: function (options, done) {
-    process.env.CURRENT = 'migrate'
+  run: function(options, done) {
+    process.env.CURRENT = "migrate";
     var OS = require("os");
     var Config = require("../../components/Config");
     var Contracts = require("../../components/WorkflowCompile");
@@ -32,9 +32,10 @@ var command = {
     var Environment = require("../environment");
     var temp = require("temp");
     var copy = require("../copy");
-    var TronWrap = require("../../components/TronWrap");
-    var {dlog} = require("../../components/TronWrap");
-    const logErrorAndExit = require('../../components/TronWrap').logErrorAndExit
+    var TronWrap = require("../../components/EarthWrap");
+    var { dlog } = require("../../components/EarthWrap");
+    const logErrorAndExit = require("../../components/EarthWrap")
+      .logErrorAndExit;
 
     var config = Config.detect(options);
 
@@ -42,14 +43,14 @@ var command = {
     if (!config.network && config.networks.development) {
       config.network = "development";
     }
-    // init TronWeb
+    // init EarthWeb
     try {
       TronWrap(config.networks[config.network], {
         verify: true,
         log: options.log
-      })
-    } catch(err) {
-      logErrorAndExit(console, err.message)
+      });
+    } catch (err) {
+      logErrorAndExit(console, err.message);
     }
 
     //
@@ -95,15 +96,15 @@ var command = {
           if (err) return callback(err);
 
           if (needsMigrating) {
-            dlog('Starting migration')
+            dlog("Starting migration");
             Migrate.run(config, done);
           } else {
-            config.logger.log("Network up to date.")
+            config.logger.log("Network up to date.");
             callback();
           }
         });
       }
-    };
+    }
 
     Contracts.compile(config, function(err) {
       if (err) return done(err);
@@ -122,11 +123,11 @@ var command = {
         // if (dryRun) {
         //   setupDryRunEnvironmentThenRunMigrations(done);
         // } else {
-          runMigrations(done);
+        runMigrations(done);
         // }
       });
     });
   }
-}
+};
 
 module.exports = command;

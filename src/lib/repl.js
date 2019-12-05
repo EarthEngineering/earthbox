@@ -12,7 +12,7 @@ var path = require("path");
 var async = require("async");
 var EventEmitter = require("events");
 var inherits = require("util").inherits;
-var TronWrap = require('../components/TronWrap');
+var EarthWrap = require("../components/EarthWrap");
 
 inherits(ReplManager, EventEmitter);
 
@@ -35,12 +35,12 @@ function ReplManager(options) {
   this.repl = options.repl;
 
   this.contexts = [];
-};
+}
 
 ReplManager.prototype.start = function(options) {
   var self = this;
 
-  global.tronWeb = TronWrap();
+  global.earthWeb = EarthWrap();
 
   this.contexts.push({
     prompt: options.prompt,
@@ -53,7 +53,7 @@ ReplManager.prototype.start = function(options) {
   if (!this.repl) {
     this.repl = repl.start({
       prompt: currentContext.prompt,
-      eval: this.interpret.bind(this),
+      eval: this.interpret.bind(this)
     });
 
     this.repl.on("exit", function() {
@@ -61,9 +61,11 @@ ReplManager.prototype.start = function(options) {
       // then ensure the process is completely killed. Once the repl exits,
       // the process is in a bad state and can't be recovered (e.g., stdin is closed).
       var doneFunctions = self.contexts.map(function(context) {
-        return context.done ?
-          function() { context.done(); } :
-          function() {};
+        return context.done
+          ? function() {
+              context.done();
+            }
+          : function() {};
       });
       async.series(doneFunctions, function(err) {
         process.exit();
@@ -119,6 +121,6 @@ ReplManager.prototype.stop = function(callback) {
 ReplManager.prototype.interpret = function(cmd, context, filename, callback) {
   var currentContext = this.contexts[this.contexts.length - 1];
   currentContext.interpreter(cmd, context, filename, callback);
-}
+};
 
 module.exports = ReplManager;

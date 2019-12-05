@@ -1,15 +1,15 @@
 // Using web3 for its sha function...
-var TronWrap = require("../../components/TronWrap");
+var EarthWrap = require("../../components/EarthWrap");
 
 var Deployed = {
-
-  makeSolidityDeployedAddressesLibrary: function (mapping) {
+  makeSolidityDeployedAddressesLibrary: function(mapping) {
     var self = this;
 
     var source = "";
-    source += "pragma solidity ^0.4.17; \n\n library DeployedAddresses {" + "\n";
+    source +=
+      "pragma solidity ^0.4.17; \n\n library DeployedAddresses {" + "\n";
 
-    Object.keys(mapping).forEach(function (name) {
+    Object.keys(mapping).forEach(function(name) {
       var address = mapping[name];
 
       var body = "revert();";
@@ -19,7 +19,12 @@ var Deployed = {
         body = "return " + address + ";";
       }
 
-      source += "  function " + name + "() public pure returns (address) { " + body + " }"
+      source +=
+        "  function " +
+        name +
+        "() public pure returns (address) { " +
+        body +
+        " }";
       source += "\n";
     });
 
@@ -29,20 +34,22 @@ var Deployed = {
   },
 
   // Pulled from ethereumjs-util, but I don't want all its dependencies at the moment.
-  toChecksumAddress: function (address) {
+  toChecksumAddress: function(address) {
     address = address.toLowerCase().replace("0x", "");
-    var hash = TronWrap().sha3(address).replace("0x", "");
-    var ret = '0x'
+    var hash = EarthWrap()
+      .sha3(address)
+      .replace("0x", "");
+    var ret = "0x";
 
     for (var i = 0; i < address.length; i++) {
       if (parseInt(hash[i], 16) >= 8) {
-        ret += address[i].toUpperCase()
+        ret += address[i].toUpperCase();
       } else {
-        ret += address[i]
+        ret += address[i];
       }
     }
 
-    return ret
+    return ret;
   }
 };
 

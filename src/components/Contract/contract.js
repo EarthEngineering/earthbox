@@ -1,6 +1,6 @@
 var ethJSABI = require("ethjs-abi");
-var TronWrap = require("../TronWrap");
-var { constants } = require("../TronWrap");
+var TronWrap = require("../EarthWrap");
+var { constants } = require("../EarthWrap");
 var BigNumber = require("bignumber.js");
 var StatusError = require("./statuserror.js");
 
@@ -10,7 +10,7 @@ var contract = (function(module) {
     this.provider = provider;
   }
 
-  let tronWrap;
+  let earthWrap;
 
   Provider.prototype.send = function() {
     return this.provider.send.apply(this.provider, arguments);
@@ -321,9 +321,9 @@ var contract = (function(module) {
   }
 
   Contract._static_methods = {
-    initTronWeb: function(options) {
-      if (!tronWrap) {
-        tronWrap = TronWrap(options);
+    initEarthWeb: function(options) {
+      if (!earthWrap) {
+        earthWrap = TronWrap(options);
       }
     },
 
@@ -337,7 +337,7 @@ var contract = (function(module) {
       var wrapped = new Provider(provider);
       //zzsun-rm-web3
       // this.web3.setProvider(wrapped);
-      // tronWrap.setHttpProvider(provider.host);
+      // earthWrap.setHttpProvider(provider.host);
       this.currentProvider = provider;
     },
 
@@ -435,7 +435,7 @@ var contract = (function(module) {
 
         tx_params.abi = self.abi;
 
-        tronWrap._deployContract(tx_params, _callback);
+        earthWrap._deployContract(tx_params, _callback);
 
         function _callback(err, res) {
           if (err) {
@@ -475,7 +475,7 @@ var contract = (function(module) {
           var instance = new self(address);
 
           return new Promise(function(accept, reject) {
-            tronWrap._getContract(address, function(err, contractAddress) {
+            earthWrap._getContract(address, function(err, contractAddress) {
               if (err) return reject(err);
               if (
                 !contractAddress ||
@@ -550,7 +550,7 @@ var contract = (function(module) {
           self.defaults()
         );
 
-        tronWrap.triggerContract(option, _callback);
+        earthWrap.triggerContract(option, _callback);
       });
     },
     deployed: function() {

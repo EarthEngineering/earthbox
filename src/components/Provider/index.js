@@ -1,5 +1,5 @@
-var {TronWeb} = require("../TronWrap");
-var wrapper = require('./wrapper');
+var { EarthWeb } = require("../EarthWrap");
+var wrapper = require("./wrapper");
 
 module.exports = {
   wrap: function(provider, options) {
@@ -14,10 +14,9 @@ module.exports = {
     } else if (options.provider) {
       provider = options.provider;
     } else {
+      const HttpProvider = EarthWeb.providers.HttpProvider;
 
-      const HttpProvider = TronWeb.providers.HttpProvider
-
-      HttpProvider.prototype.send = function (payload) {
+      HttpProvider.prototype.send = function(payload) {
         var request = this.prepareRequest(false);
 
         try {
@@ -37,10 +36,10 @@ module.exports = {
         return result;
       };
 
-      HttpProvider.prototype.sendAsync = function (payload, callback) {
+      HttpProvider.prototype.sendAsync = function(payload, callback) {
         var request = this.prepareRequest(true);
 
-        request.onreadystatechange = function () {
+        request.onreadystatechange = function() {
           if (request.readyState === 4 && request.timeout !== 1) {
             var result = request.responseText;
             var error = null;
@@ -55,7 +54,7 @@ module.exports = {
           }
         };
 
-        request.ontimeout = function () {
+        request.ontimeout = function() {
           callback(errors.ConnectionTimeout(this.timeout));
         };
 
@@ -73,6 +72,6 @@ module.exports = {
   },
 
   test_connection: function(provider, callback) {
-    callback(null, true)
+    callback(null, true);
   }
 };

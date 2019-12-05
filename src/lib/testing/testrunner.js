@@ -8,9 +8,9 @@ var path = require("path");
 var _ = require("lodash");
 var async = require("async");
 var fs = require("fs");
-var TronWrap = require('../../components/TronWrap');
-var TronWeb = require("tronweb");
-var waitForTransactionReceipt = require('./waitForTransactionReceipt');
+var EarthWrap = require("../../components/EarthWrap");
+var EarthWeb = require("earthweb");
+var waitForTransactionReceipt = require("./waitForTransactionReceipt");
 
 function TestRunner(options) {
   options = options || {};
@@ -31,29 +31,33 @@ function TestRunner(options) {
   this.first_snapshot = false;
   this.initial_snapshot = null;
   this.known_events = {};
-  this.tronwrap = TronWrap();
+  this.tronwrap = EarthWrap();
 
-  global.tronWeb = new TronWeb(
+  global.earthWeb = new EarthWeb(
     this.tronwrap.fullNode,
     this.tronwrap.solidityNode,
     this.tronwrap.eventServer,
     this.tronwrap.defaultPrivateKey
-  )
+  );
 
-  global.waitForTransactionReceipt = waitForTransactionReceipt(tronWeb)
+  global.waitForTransactionReceipt = waitForTransactionReceipt(earthWeb);
 
   // For each test
   this.currentTestStartBlock = null;
 
   this.BEFORE_TIMEOUT = 120000;
   this.TEST_TIMEOUT = 300000;
-};
+}
 
 TestRunner.prototype.initialize = function(callback) {
   var self = this;
 
   var test_source = new TestSource(self.config);
-  this.config.resolver = new TestResolver(self.initial_resolver, test_source, self.config.contracts_build_directory);
+  this.config.resolver = new TestResolver(
+    self.initial_resolver,
+    test_source,
+    self.config.contracts_build_directory
+  );
 
   var afterStateReset = function(err) {
     if (err) return callback(err);
@@ -62,38 +66,50 @@ TestRunner.prototype.initialize = function(callback) {
       if (err) return callback(err);
 
       files = _.filter(files, function(file) {
-        return path.extname(file) === ".json"
+        return path.extname(file) === ".json";
       });
 
-      async.map(files, function(file, finished) {
-        fs.readFile(path.join(self.config.contracts_build_directory, file), "utf8", finished);
-      }, function(err, data) {
-        if (err) return callback(err);
+      async.map(
+        files,
+        function(file, finished) {
+          fs.readFile(
+            path.join(self.config.contracts_build_directory, file),
+            "utf8",
+            finished
+          );
+        },
+        function(err, data) {
+          if (err) return callback(err);
 
-        var contracts = data.map(JSON.parse).map(contract);
-        var abis = _.flatMap(contracts, "abi");
+          var contracts = data.map(JSON.parse).map(contract);
+          var abis = _.flatMap(contracts, "abi");
 
-        abis.map(function(abi) {
-          if (/event/i.test(abi.type)) {
-            var signature = abi.name + "(" + _.map(abi.inputs, "type").join(",") + ")";
-            self.known_events[self.tronwrap.sha3(signature)] = {
-              signature: signature,
-              abi_entry: abi
-            };
-          }
-        });
-        callback();
-      });
+          abis.map(function(abi) {
+            if (/event/i.test(abi.type)) {
+              var signature =
+                abi.name + "(" + _.map(abi.inputs, "type").join(",") + ")";
+              self.known_events[self.tronwrap.sha3(signature)] = {
+                signature: signature,
+                abi_entry: abi
+              };
+            }
+          });
+          callback();
+        }
+      );
     });
   };
   afterStateReset();
 };
 
 TestRunner.prototype.deploy = function(callback) {
-  Migrate.run(this.config.with({
-    reset: true,
-    quiet: true
-  }), callback);
+  Migrate.run(
+    this.config.with({
+      reset: true,
+      quiet: true
+    }),
+    callback
+  );
 };
 
 TestRunner.prototype.resetState = function(callback) {
@@ -115,16 +131,15 @@ TestRunner.prototype.endTest = function(mocha, callback) {
   callback();
 };
 
-TestRunner.prototype.snapshot = function(callback) {
+(TestRunner.prototype.snapshot = function(callback) {
   this.rpc("evm_snapshot", function(err, result) {
     if (err) return callback(err);
     callback(null, result.result);
   });
-},
-
-TestRunner.prototype.revert = function(snapshot_id, callback) {
-  this.rpc("evm_revert", [snapshot_id], callback);
-}
+}),
+  (TestRunner.prototype.revert = function(snapshot_id, callback) {
+    this.rpc("evm_revert", [snapshot_id], callback);
+  });
 
 TestRunner.prototype.rpc = function(method, arg, cb) {
   var req = {

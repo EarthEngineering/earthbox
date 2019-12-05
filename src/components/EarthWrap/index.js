@@ -1,4 +1,4 @@
-var _TronWeb = require("tronweb");
+var _EarthWeb = require("earthweb");
 var chalk = require("chalk");
 var constants = require("./constants");
 var axios = require("axios");
@@ -6,7 +6,7 @@ var semver = require("semver");
 
 var instance;
 
-function TronWrap() {
+function EarthWeb() {
   this._toNumber = toNumber;
   this.EventList = [];
   this.filterMatchFunction = filterMatchFunction;
@@ -87,23 +87,23 @@ function init(options, extraOptions) {
   ) {
     if (!options) {
       throw new Error(
-        'It was not possible to instantiate TronWeb. The chosen network does not exist in your "earthbox.js".'
+        'It was not possible to instantiate EarthWeb. The chosen network does not exist in your "earthbox.js".'
       );
     } else {
       throw new Error(
-        'It was not possible to instantiate TronWeb. Some required parameters are missing in your "earthbox.js".'
+        'It was not possible to instantiate EarthWeb. Some required parameters are missing in your "earthbox.js".'
       );
     }
   }
 
-  TronWrap.prototype = new _TronWeb(
+  EarthWeb.prototype = new _EarthWeb(
     options.fullNode || options.fullHost,
     options.solidityNode || options.fullHost,
     options.eventServer || options.fullHost,
     options.privateKey
   );
 
-  const tronWrap = TronWrap.prototype;
+  const tronWrap = EarthWeb.prototype;
   // tronWrap._compilerVersion = 3
 
   tronWrap.networkConfig = filterNetworkConfig(options);
@@ -360,7 +360,7 @@ function init(options, extraOptions) {
       });
   };
 
-  return new TronWrap();
+  return new EarthWeb();
 }
 
 const logErrorAndExit = (logger, err) => {
@@ -406,4 +406,4 @@ module.exports.constants = constants;
 module.exports.logErrorAndExit = logErrorAndExit;
 module.exports.dlog = dlog;
 module.exports.sleep = sleep;
-module.exports.TronWeb = _TronWeb;
+module.exports.EarthWeb = _EarthWeb;
