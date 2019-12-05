@@ -14,6 +14,6 @@ purge () {
   rm -rf $file"node_modules"
   cd packages
   purge
-  cd packages/tronwrap
+  cd packages/earthwrap
   purge
 )

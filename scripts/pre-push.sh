@@ -1,19 +1,19 @@
 #!/usr/bin/env bash
 
-cd packages/tronwrap/tronweb
-current_tronweb_branch=$(git symbolic-ref HEAD | sed -e 's,.*/\(.*\),\1,')
+cd packages/earthwrap/earthweb
+current_earthweb_branch=$(git symbolic-ref HEAD | sed -e 's,.*/\(.*\),\1,')
 cd ../../..
 
-echo $current_tronweb_branch
+echo $current_earthweb_branch
 
-if [ $current_tronweb_branch = "master" ]
+if [ $current_earthweb_branch = "master" ]
 then
   exit 0 # push will execute
 else
     read -p "
 
 YOUR ATTENTION, PLEASE!
-You're about to push a tronweb branch which is not master.
+You're about to push a earthweb branch which is not master.
 
 Is that what you intended? [y|n] " -n 1 -r < /dev/tty
     echo

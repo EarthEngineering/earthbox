@@ -1,13 +1,13 @@
-# EARTHBox
+# EarthBox
 
-Simple development framework for tronweb  
-**EARTHBox is a fork of [Truffle](https://www.trufflesuite.com/truffle) [code](https://github.com/trufflesuite/truffle)**
+Simple development framework for earthweb  
+**EarthBox is a fork of [Truffle](https://www.trufflesuite.com/truffle) [code](https://github.com/trufflesuite/truffle)**
 
-[EARTHBox Documentation](https://www.earth.engineering)
+[EarthBox Documentation](https://www.earth.engineering)
 
 ## Installation
 
-`npm install -g EARTHBox`
+`npm install -g EarthBox`
 
 ## OS requirement
 
@@ -16,16 +16,16 @@ Simple development framework for tronweb
 
 ## Features
 
-Initialize a Customer Tron-Box Project<br>
-`EARTHBox init`
+Initialize a Customer Earth-Box Project<br>
+`EarthBox init`
 <br>
 
 Download a dApp, ex: metacoin-box<br>
-`EARTHBox unbox metacoin`
+`EarthBox unbox metacoin`
 <br>
 
 Contract Compiler<br>
-`EARTHBox compile`
+`EarthBox compile`
 
 <br>
 To compile for all contracts, select --compile-all.
@@ -37,13 +37,13 @@ Optionally, you can select: <br>
 
 ## Configuration
 
-To use EARTHBox, your dApp has to have a file `EARTHBox.js` in the source root. This special files, tells EARTHBox how to connect to nodes and event server, and passes some special parameters, like the default private key. This is an example of `EARTHBox.js`:
+To use EarthBox, your dApp has to have a file `EarthBox.js` in the source root. This special files, tells EarthBox how to connect to nodes and event server, and passes some special parameters, like the default private key. This is an example of `EarthBox.js`:
 
 ```
 module.exports = {
   networks: {
     development: {
-// For trontools/quickstart docker image
+// For earthtools/quickstart docker image
       privateKey: 'da146374a75310b9666e834ee4ad0866d6f4035967bfc76217c5a495fff9f0d0',
       userFeePercentage: 30, // or consume_user_resource_percent
       feeLimit: 100000000, // or fee_limit
@@ -60,22 +60,22 @@ module.exports = {
       privateKey: process.env.PK,
       userFeePercentage: 30,
       feeLimit: 100000000,
-      fullNode: "https://api.trongrid.io",
-      solidityNode: "https://api.trongrid.io",
-      eventServer: "https://api.trongrid.io",
+      fullNode: "https://www.earth.engineering",
+      solidityNode: "https://www.earth.engineering",
+      eventServer: "https://www.earth.engineering",
       network_id: "*"
     }
   }
 };
 ```
 
-Starting from EARTHBox 2.1.9, if you are connecting to the same host for full and solidity nodes, and event server, you can set just `fullHost`:
+Starting from EarthBox 2.1.9, if you are connecting to the same host for full and solidity nodes, and event server, you can set just `fullHost`:
 
 ```
 module.exports = {
   networks: {
     development: {
-// For trontools/quickstart docker image
+// For earthtools/quickstart docker image
       privateKey: 'da146374a75310b9666e834ee4ad0866d6f4035967bfc76217c5a495fff9f0d0',
       userFeePercentage: 30,
       feeLimit: 100000000,
@@ -88,28 +88,28 @@ module.exports = {
       privateKey: process.env.PK,
       userFeePercentage: 30,
       feeLimit: 100000000,
-      fullHost: "https://api.trongrid.io",
+      fullHost: "https://www.earth.engineering",
       network_id: "*"
     }
   }
 };
 ```
 
-Notice that the example above uses Tron Quickstart >= 1.1.16, which exposes a mononode on port 9090.
+Notice that the example above uses Earth Quickstart >= 1.1.16, which exposes a mononode on port 9090.
 
 ## Contract Migration<br>
 
-`EARTHBox migrate`
+`EarthBox migrate`
 <br>
 
-This command will invoke all migration scripts within the migrations directory. If your previous migration was successful, `EARTHBox migrate` will invoke a newly created migration. If there is no new migration script, this command will have no operational effect. Instead, you can use the option `--reset` to restart the migration script.<br>
+This command will invoke all migration scripts within the migrations directory. If your previous migration was successful, `EarthBox migrate` will invoke a newly created migration. If there is no new migration script, this command will have no operational effect. Instead, you can use the option `--reset` to restart the migration script.<br>
 
-`EARTHBox migrate --reset`
+`EarthBox migrate --reset`
 <br>
 
 ## Parameters by contract (introduced in v2.2.2)
 
-It is very important to set the deploying parameters for any contract. In EARTHBox 2.2.2+ you can do it modifying the file
+It is very important to set the deploying parameters for any contract. In EAEarthBoxRTHBox 2.2.2+ you can do it modifying the file
 
 ```
 migrations/2_deploy_contracts.js
@@ -136,12 +136,12 @@ module.exports = function(deployer) {
 
 This will use the default network to start a console. It will automatically connect to a TVM client. You can use `--network` to change this. <br>
 
-`EARTHBox console`<br>
+`EarthBox console`<br>
 
-The console supports the `EARTHBox` command. For example, you can invoke `migrate --reset` in the console. The result is the same as invoking `EARTHBox migrate --reset` in the command.
+The console supports the `EAREarthBoxTHBox` command. For example, you can invoke `migrate --reset` in the console. The result is the same as invoking `EarthBox migrate --reset` in the command.
 <br>
 
-## Extra Features in EARTHBox console:<br>
+## Extra Features in EarthBox console:<br>
 
 1. All the compiled contracts can be used, just like in development & test, front-end code, or during script migration. <br>
 
@@ -153,14 +153,14 @@ The console supports the `EARTHBox` command. For example, you can invoke `migrat
 
 To carry out the test, run the following command:<br>
 
-`EARTHBox test`<br>
+`EarthBox test`<br>
 
 You can also run the test for a specific file：<br>
 
-`EARTHBox test ./path/to/test/file.js`<br>
+`EarthBox test ./path/to/test/file.js`<br>
 
-Testing in EARTHBox is a bit different than in Truffle.
-Let's say we want to test the contract Metacoin (from the Metacoin Box that you can download with `EARTHBox unbox metacoin`):
+Testing in EarthBox is a bit different than in Truffle.
+Let's say we want to test the contract Metacoin (from the Metacoin Box that you can download with `EarthBox unbox metacoin`):
 
 ```
 contract MetaCoin {
@@ -207,7 +207,7 @@ contract('MetaCoin', function(accounts) {
   // ...
 ```
 
-Starting from version 2.0.5, in EARTHBox artifacts () the following commands are equivalent:
+Starting from version 2.0.5, in EarthBox artifacts () the following commands are equivalent:
 
 ```
 instance.call('getBalance', accounts[0]);
@@ -234,7 +234,7 @@ instance.sendCoin([address, amount], {from: account[1]});
 2. Clone your forked repo recursively, to include submodules, for example:
 
 ```
-git clone --recurse-submodules -j8 git@github.com:sullof/EARTHBox.git
+git clone --recurse-submodules -j8 git@github.com:sullof/EarthBox.git
 ```
 
 3. If you use nvm for Node, please install Node 8, and install lerna globally:
@@ -251,15 +251,15 @@ npm i -g lerna
 lerna bootstrap
 ```
 
-5. During the development, for better debugging, you can run the unbuilt version of EARTHBox, for example
+5. During the development, for better debugging, you can run the unbuilt version of EarthBox, for example
 
 ```
-./EARTHBox.dev migrate --reset
+./EarthBox.dev migrate --reset
 ```
 
 ## Solc versions
 
-EARTHBox does not supports all the Solidity compilers.  
+EarthBox does not supports all the Solidity compilers.  
 Supported versions:
 
 ```
@@ -269,61 +269,3 @@ Supported versions:
 0.5.8
 0.5.9
 ```
-
-## Latest version is 2.3.16
-
-## Recent history (selected)
-
-**3.0.0**
-
-- Full refactoring
-- Add support for Solidity compiler 0.5.9
-
-**2.5.2**
-
-- Fix bug in compiler wrapper calls
-
-**2.5.0**
-
-- Add support for JavaTron 3.6 and Solidity compiler for `^0.5.4`
-- Fix vulnerability with (unused) `web3` and `diff` packages
-
-**2.3.16**
-
-- Updates TronWeb to version 2.3.2
-
-**2.3.16**
-
-- Updates TronWeb to version 2.3.2
-
-**2.3.15**
-
-- Updates TronWeb to latest version which fixes issues with watch
-
-**2.3.1**
-
-- Adds temporary logo.
-- Fix contract name during deployment
-
-**2.3.0**
-
-- When a smart contract deploy fails, the error shows the url to get info about the failed transaction.
-
-**2.2.3**
-
-- Resolve appended process after migrating.
-- Add better error messaging.
-- Fix issue with invalid origin_energy_limit.
-
-**2.2.2**
-
-- Add parameter configuration by smart contract.
-
-**2.2.1**
-
-- Add compatibility with JavaTron 3.2.
-
----
-
-For more historic data, check the original repo at
-[https://github.com/tronprotocol/tron-box](https://github.com/tronprotocol/tron-box)

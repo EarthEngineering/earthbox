@@ -63,7 +63,7 @@
     "truffle-blockchain-utils": "^0.0.5"
   },
   "bin": {
-    "tronbox": "build/tronbox.js"
+    "earthbox": "build/earthbox.js"
   },
   "scripts": {
     "test": "echo \"Error: tests will be fixed soon in a new release\" && exit 1",

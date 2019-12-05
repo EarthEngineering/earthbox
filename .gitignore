@@ -1,6 +1,7 @@
 node_modules
 .DS_Store
-yarn.lock
+#yarn.lock
+package-lock.json
 dependencies
 build
 tmp
