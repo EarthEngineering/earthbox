@@ -1,7 +1,7 @@
 {
   "name": "earthbox",
   "namespace": "earthengineering",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "EarthBox - Simple development framework for earthweb",
   "dependencies": {
     "@truffle/contract-sources": "^0.1.6",
