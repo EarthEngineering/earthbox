@@ -1,7 +1,7 @@
 {
   "name": "earthbox",
   "namespace": "earthengineering",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "EarthBox - Simple development framework for earthweb",
   "dependencies": {
     "@truffle/contract-sources": "^0.1.6",
@@ -41,7 +41,7 @@
     "spawn-args": "^0.1.0",
     "superagent": "^5.1.0",
     "temp": "^0.8.3",
-    "tronweb": "^2.7.2",
+    "earthweb": "0.1.1",
     "truffle-init": "^1.0.7",
     "web3-mock": "1.0.1",
     "yargs": "^8.0.2"

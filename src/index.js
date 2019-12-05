@@ -35,7 +35,7 @@ if (commands[0] === "--download-compiler" && commands[1]) {
               " - a development framework for earthweb" +
               OS.EOL +
               OS.EOL +
-              "Usage: earthweb <command> [options]"
+              "Usage: earthbox <command> [options]"
           )
           .epilog("See more at https://www.earth.engineering")
           .showHelp();
