@@ -1,9 +1,10 @@
 var command = {
-  command: 'watch',
-  description: 'Watch filesystem for changes and rebuild the project automatically',
+  command: "watch",
+  description:
+    "Watch filesystem for changes and rebuild the project automatically",
   builder: {},
-  run: function (options, done) {
-    process.env.CURRENT = 'watch'
+  run: function(options, done) {
+    process.env.CURRENT = "watch";
     var Build = require("../build");
     var Config = require("../../components/Config");
     var chokidar = require("chokidar");
@@ -15,7 +16,9 @@ var command = {
     var config = Config.detect(options);
 
     var printSuccess = function() {
-      config.logger.log(colors.green("Completed without errors on " + new Date().toString()));
+      config.logger.log(
+        colors.green("Completed without errors on " + new Date().toString())
+      );
     };
 
     var printFailure = function(err) {
@@ -35,25 +38,34 @@ var command = {
       path.join(config.working_directory, "app/**/*"),
       path.join(config.contracts_build_directory, "/**/*"),
       path.join(config.contracts_directory, "/**/*"),
-      path.join(config.working_directory, "tronbox-config.js"),
-      path.join(config.working_directory, "tronbox.js")
+      path.join(config.working_directory, "earthbox-config.js"),
+      path.join(config.working_directory, "earthbox.js")
     ];
 
-    chokidar.watch(watchPaths, {
-      ignored: /[\/\\]\./, // Ignore files prefixed with "."
-      cwd: config.working_directory,
-      ignoreInitial: true
-    }).on('all', function(event, filePath) {
-      // On changed/added/deleted
-      var display_path = path.join("./", filePath.replace(config.working_directory, ""));
-      config.logger.log(colors.cyan(">> File " + display_path + " changed."));
+    chokidar
+      .watch(watchPaths, {
+        ignored: /[\/\\]\./, // Ignore files prefixed with "."
+        cwd: config.working_directory,
+        ignoreInitial: true
+      })
+      .on("all", function(event, filePath) {
+        // On changed/added/deleted
+        var display_path = path.join(
+          "./",
+          filePath.replace(config.working_directory, "")
+        );
+        config.logger.log(colors.cyan(">> File " + display_path + " changed."));
 
-      needs_rebuild = true;
+        needs_rebuild = true;
 
-      if (path.join(config.working_directory, filePath).indexOf(config.contracts_directory) >= 0) {
-        needs_recompile = true;
-      }
-    });
+        if (
+          path
+            .join(config.working_directory, filePath)
+            .indexOf(config.contracts_directory) >= 0
+        ) {
+          needs_recompile = true;
+        }
+      });
 
     var check_rebuild = function() {
       if (working) {
@@ -94,6 +106,6 @@ var command = {
 
     check_rebuild();
   }
-}
+};
 
 module.exports = command;

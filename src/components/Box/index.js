@@ -7,12 +7,12 @@ var Config = require("../Config");
 var Box = {
   unbox: function(url, destination, options) {
     options = options || {};
-    options.logger = options.logger || {log: function() {}}
+    options.logger = options.logger || { log: function() {} };
 
     return Promise.resolve()
       .then(function() {
         options.logger.log("Downloading...");
-        return utils.downloadBox(url, destination)
+        return utils.downloadBox(url, destination);
       })
       .then(function() {
         options.logger.log("Unpacking...");
@@ -20,7 +20,7 @@ var Box = {
       })
       .then(function(boxConfig) {
         options.logger.log("Setting up...");
-        return utils.setupBox(boxConfig, destination)
+        return utils.setupBox(boxConfig, destination);
       })
       .then(function(boxConfig) {
         return boxConfig;
@@ -39,9 +39,10 @@ var Box = {
         return callback(err);
       }
 
-      self.unbox("https://github.com/trufflesuite/truffle-init-" + name, dir)
+      self
+        .unbox("https://github.com/trufflesuite/truffle-init-" + name, dir)
         .then(function() {
-          var config = Config.load(path.join(dir, "tronbox.js"), {});
+          var config = Config.load(path.join(dir, "earthbox.js"), {});
           callback(null, config);
         })
         .catch(callback);

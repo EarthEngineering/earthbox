@@ -5,22 +5,24 @@
  * - a string containing a repo under the `truffle-box` org
  */
 function normalizeURL(url) {
-  url = url || "https://github.com/tronbox-boxes/bare-box";
+  url = url || "https://github.com/earthengineering/bare-box";
 
   // full URL already
   if (url.indexOf("://") != -1 || url.indexOf("git@") != -1) {
     return url;
   }
 
-  if (url.split("/").length == 2) { // `org/repo`
+  if (url.split("/").length == 2) {
+    // `org/repo`
     return "https://github.com/" + url;
   }
 
-  if (url.indexOf("/") == -1) { // repo name only
+  if (url.indexOf("/") == -1) {
+    // repo name only
     if (url.indexOf("-box") == -1) {
       url = url + "-box";
     }
-    return "https://github.com/tronbox-boxes/" + url;
+    return "https://github.com/earthengineering/" + url;
   }
 
   throw new Error("Box specified in invalid format");
@@ -38,7 +40,10 @@ function formatCommands(commands) {
   var names = Object.keys(commands);
 
   var maxLength = Math.max.apply(
-    null, names.map(function(name) { return name.length })
+    null,
+    names.map(function(name) {
+      return name.length;
+    })
   );
 
   return names.map(function(name) {
@@ -48,8 +53,8 @@ function formatCommands(commands) {
 }
 
 var command = {
-  command: 'unbox',
-  description: 'Download a tronbox Box, a pre-built tronbox project',
+  command: "unbox",
+  description: "Download a earthbox Box, a pre-built earthbox project",
   builder: {},
   run: function(options, done) {
     var Config = require("../../components/Config");
@@ -61,7 +66,9 @@ var command = {
     });
 
     var url = normalizeURL(options._[0]);
-    Box.unbox(url, options.working_directory||config.working_directory, {logger: config.logger})
+    Box.unbox(url, options.working_directory || config.working_directory, {
+      logger: config.logger
+    })
       .then(function(boxConfig) {
         config.logger.log("Unbox successful. Sweet!" + OS.EOL);
 
@@ -81,6 +88,6 @@ var command = {
       })
       .catch(done);
   }
-}
+};
 
 module.exports = command;

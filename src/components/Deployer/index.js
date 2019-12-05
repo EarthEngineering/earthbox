@@ -4,20 +4,16 @@ var deploy = require("./src/actions/deploy");
 var deployMany = require("./src/actions/deploymany");
 var link = require("./src/actions/link");
 var create = require("./src/actions/new");
-var {dlog} = require('../TronWrap')
+var { dlog } = require("../TronWrap");
 
 function Deployer(options) {
   var self = this;
   options = options || {};
 
-  expect.options(options, [
-    "provider",
-    "network",
-    "network_id"
-  ]);
+  expect.options(options, ["provider", "network", "network_id"]);
 
   this.chain = new DeferredChain();
-  this.logger = options.logger || {log: function() {}};
+  this.logger = options.logger || { log: function() {} };
   this.known_contracts = {};
   (options.contracts || []).forEach(function(contract) {
     self.known_contracts[contract.contract_name] = contract;
@@ -26,7 +22,7 @@ function Deployer(options) {
   this.network_id = options.network_id;
   this.provider = options.provider;
   this.basePath = options.basePath || process.cwd();
-};
+}
 
 // Note: In all code below we overwrite this.chain every time .then() is used
 // in order to ensure proper error processing.
@@ -44,10 +40,10 @@ Deployer.prototype.deploy = function() {
   var contract = args.shift();
 
   if (Array.isArray(contract)) {
-    dlog('Deploy many')
+    dlog("Deploy many");
     return this.queueOrExec(deployMany(contract, this));
   } else {
-    dlog('Deploy one')
+    dlog("Deploy one");
     return this.queueOrExec(deploy(contract, args, this));
   }
 };
@@ -60,7 +56,9 @@ Deployer.prototype.new = function() {
 };
 
 Deployer.prototype.exec = function(file) {
-  throw new Error("deployer.exec() has been deprecated; please seen the tronbox-require package for integration.")
+  throw new Error(
+    "deployer.exec() has been deprecated; please seen the earthbox-require package for integration."
+  );
 };
 
 Deployer.prototype.then = function(fn) {

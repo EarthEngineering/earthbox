@@ -1,8 +1,8 @@
 var command = {
-  command: 'test',
-  description: 'Run JavaScript and Solidity tests',
+  command: "test",
+  description: "Run JavaScript and Solidity tests",
   builder: {},
-  run: function (options, done) {
+  run: function(options, done) {
     var OS = require("os");
     var dir = require("node-dir");
     var temp = require("temp");
@@ -12,33 +12,34 @@ var command = {
     var fs = require("fs");
     var copy = require("../copy");
     var Environment = require("../environment");
-    var TronWrap = require('../../components/TronWrap')
-    const logErrorAndExit = require('../../components/TronWrap').logErrorAndExit
+    var TronWrap = require("../../components/TronWrap");
+    const logErrorAndExit = require("../../components/TronWrap")
+      .logErrorAndExit;
 
     var config = Config.detect(options);
 
     // if "development" exists, default to using that for testing
     if (!config.network) {
-      if (config.networks.development)
-        config.network = "development";
-      else if (config.networks.test)
-        config.network = "test";
+      if (config.networks.development) config.network = "development";
+      else if (config.networks.test) config.network = "test";
     }
 
     if (!config.network) {
-      console.error("\nERROR: Neither development nor test network has been set in tronbox.js\n")
-      return
+      console.error(
+        "\nERROR: Neither development nor test network has been set in earthbox.js\n"
+      );
+      return;
     }
 
     try {
       TronWrap(config.networks[config.network], {
         verify: true,
         log: options.log
-      })
-    } catch(err) {
-      logErrorAndExit(console, err.message)
+      });
+    } catch (err) {
+      logErrorAndExit(console, err.message);
     }
-    process.env.CURRENT = 'test'
+    process.env.CURRENT = "test";
 
     var ipcDisconnect;
 
@@ -56,7 +57,7 @@ var command = {
       }
 
       dir.files(config.test_directory, callback);
-    };
+    }
 
     getFiles(function(err, files) {
       if (err) return done(err);
@@ -65,7 +66,7 @@ var command = {
         return file.match(config.test_file_extension_regexp) != null;
       });
 
-      temp.mkdir('test-', function(err, temporaryDirectory) {
+      temp.mkdir("test-", function(err, temporaryDirectory) {
         if (err) return done(err);
 
         function cleanup() {
@@ -78,18 +79,21 @@ var command = {
               ipcDisconnect();
             }
           });
-        };
+        }
 
         function run() {
           // Set a new artifactor; don't rely on the one created by Environments.
           // TODO: Make the test artifactor configurable.
           config.artifactor = new Artifactor(temporaryDirectory);
 
-          Test.run(config.with({
-            test_files: files,
-            contracts_build_directory: temporaryDirectory
-          }), cleanup);
-        };
+          Test.run(
+            config.with({
+              test_files: files,
+              contracts_build_directory: temporaryDirectory
+            }),
+            cleanup
+          );
+        }
 
         var environmentCallback = function(err) {
           if (err) return done(err);
@@ -99,21 +103,24 @@ var command = {
           fs.stat(config.contracts_build_directory, function(err, stat) {
             if (err) return run();
 
-            copy(config.contracts_build_directory, temporaryDirectory, function(err) {
+            copy(config.contracts_build_directory, temporaryDirectory, function(
+              err
+            ) {
               if (err) return done(err);
 
-              config.logger.log("Using network '" + config.network + "'." + OS.EOL);
+              config.logger.log(
+                "Using network '" + config.network + "'." + OS.EOL
+              );
 
               run();
             });
           });
-        }
+        };
 
         if (config.networks[config.network]) {
           Environment.detect(config, environmentCallback);
         } else {
-
-          throw new Error('No development/test environment set in tronbox.js')
+          throw new Error("No development/test environment set in earthbox.js");
 
           // var ipcOptions = {
           //   network: "test"
@@ -135,6 +142,6 @@ var command = {
       });
     });
   }
-}
+};
 
 module.exports = command;

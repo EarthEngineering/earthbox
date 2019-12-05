@@ -1,4 +1,4 @@
-const port = process.env.HOST_PORT || 9090
+const port = process.env.HOST_PORT || 9090;
 
 module.exports = {
   networks: {
@@ -12,7 +12,7 @@ Create a .env file (it must be gitignored) containing something like
 
 Then, run the migration with:
 
-  source .env && tronbox migrate --network mainnet
+  source .env && earthbox migrate --network mainnet
 
 */
       userFeePercentage: 100,
@@ -29,12 +29,13 @@ Then, run the migration with:
     },
     development: {
       // For trontools/quickstart docker image
-      privateKey: 'da146374a75310b9666e834ee4ad0866d6f4035967bfc76217c5a495fff9f0d0',
+      privateKey:
+        "da146374a75310b9666e834ee4ad0866d6f4035967bfc76217c5a495fff9f0d0",
       userFeePercentage: 0,
       feeLimit: 1e8,
-      fullHost: 'http://127.0.0.1:' + port,
+      fullHost: "http://127.0.0.1:" + port,
       network_id: "9"
     }
   },
   useZeroFourCompiler: true
-}
+};

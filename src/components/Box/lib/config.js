@@ -8,9 +8,9 @@ function setDefaults(config) {
   return {
     ignore: config.ignore || [],
     commands: config.commands || {
-      "compile": "tronbox compile",
-      "migrate": "tronbox migrate",
-      "test": "tronbox test"
+      compile: "earthbox compile",
+      migrate: "earthbox migrate",
+      test: "earthbox test"
     },
     hooks: {
       "post-unpack": hooks["post-unpack"] || ""
@@ -19,7 +19,8 @@ function setDefaults(config) {
 }
 
 function read(path) {
-  return fs.readFile(path)
+  return fs
+    .readFile(path)
     .catch(function() {
       return "{}";
     })
@@ -30,4 +31,4 @@ function read(path) {
 module.exports = {
   read: read,
   setDefaults: setDefaults
-}
+};

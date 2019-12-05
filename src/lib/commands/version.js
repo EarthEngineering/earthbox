@@ -1,11 +1,11 @@
-var {supportedVersions} = require('../../components/TronSolc')
+var { supportedVersions } = require("../../components/TronSolc");
 
 var command = {
-  command: 'version',
-  description: 'Show version number and exit',
+  command: "version",
+  description: "Show version number and exit",
   builder: {},
-  run: function (options, done) {
-    process.env.CURRENT = 'version'
+  run: function(options, done) {
+    process.env.CURRENT = "version";
     var version = require("../version");
 
     var bundle_version;
@@ -16,11 +16,15 @@ var command = {
       bundle_version = "(unbundled)";
     }
 
-    options.logger.log("Tronbox " + bundle_version);
-    options.logger.log("Solidity v" + supportedVersions[supportedVersions.length - 1] + " (tron-solc)");
+    options.logger.log("EarthBox " + bundle_version);
+    options.logger.log(
+      "Solidity v" +
+        supportedVersions[supportedVersions.length - 1] +
+        " (tron-solc)"
+    );
 
     done();
   }
-}
+};
 
 module.exports = command;

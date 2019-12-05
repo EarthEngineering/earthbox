@@ -12,7 +12,7 @@ var os = require("os");
 var path = require("path");
 var EventEmitter = require("events");
 var inherits = require("util").inherits;
-const logErrorAndExit = require('../components/TronWrap').logErrorAndExit
+const logErrorAndExit = require("../components/TronWrap").logErrorAndExit;
 
 inherits(Console, EventEmitter);
 
@@ -47,9 +47,9 @@ function Console(tasks, options) {
     this.tronWrap = TronWrap(options.networks[options.network], {
       verify: true,
       log: options.log
-    })
-  } catch(err) {
-    logErrorAndExit(console, err.message)
+    });
+  } catch (err) {
+    logErrorAndExit(console, err.message);
   }
 
   // this.tronWrap.setHttpProvider(options.provider);
@@ -58,7 +58,7 @@ function Console(tasks, options) {
   this.repl.on("exit", function() {
     self.emit("exit");
   });
-};
+}
 
 Console.prototype.start = function(callback) {
   var self = this;
@@ -74,14 +74,16 @@ Console.prototype.start = function(callback) {
 
   this.provision(function(err, abstractions) {
     if (err) {
-      self.options.logger.log("Unexpected error: Cannot provision contracts while instantiating the console.");
+      self.options.logger.log(
+        "Unexpected error: Cannot provision contracts while instantiating the console."
+      );
       self.options.logger.log(err.stack || err.message || err);
     }
 
     self.repl.start({
-      prompt: "tronbox(" + self.options.network + ")> ",
+      prompt: "earthbox(" + self.options.network + ")> ",
       context: {
-        tronWrap: self.tronWrap,
+        tronWrap: self.tronWrap
       },
       interpreter: self.interpret.bind(self),
       done: callback
@@ -106,38 +108,48 @@ Console.prototype.provision = function(callback) {
     files = files || [];
 
     files.forEach(function(file) {
-      promises.push(new Promise(function(accept, reject) {
-        fs.readFile(path.join(self.options.contracts_build_directory, file), "utf8", function(err, body) {
-          if (err) return reject(err);
-          try {
-            body = JSON.parse(body);
-          } catch (e) {
-            return reject(new Error("Cannot parse " + file + ": " + e.message));
-          }
+      promises.push(
+        new Promise(function(accept, reject) {
+          fs.readFile(
+            path.join(self.options.contracts_build_directory, file),
+            "utf8",
+            function(err, body) {
+              if (err) return reject(err);
+              try {
+                body = JSON.parse(body);
+              } catch (e) {
+                return reject(
+                  new Error("Cannot parse " + file + ": " + e.message)
+                );
+              }
 
-          accept(body);
+              accept(body);
+            }
+          );
         })
-      }))
+      );
     });
 
-    Promise.all(promises).then(function(json_blobs) {
-      var abstractions = json_blobs.map(function(json) {
-        var abstraction = contract(json);
-        provision(abstraction, self.options);
-        return abstraction;
-      });
+    Promise.all(promises)
+      .then(function(json_blobs) {
+        var abstractions = json_blobs.map(function(json) {
+          var abstraction = contract(json);
+          provision(abstraction, self.options);
+          return abstraction;
+        });
 
-      self.resetContractsInConsoleContext(abstractions);
+        self.resetContractsInConsoleContext(abstractions);
 
-      callback(null, abstractions);
-    }).catch(callback);
+        callback(null, abstractions);
+      })
+      .catch(callback);
   });
 };
 
 Console.prototype.resetContractsInConsoleContext = function(abstractions) {
   var self = this;
 
-  abstractions = abstractions || []
+  abstractions = abstractions || [];
 
   var contextVars = {};
 
@@ -146,7 +158,7 @@ Console.prototype.resetContractsInConsoleContext = function(abstractions) {
   });
 
   self.repl.setContextVars(contextVars);
-}
+};
 
 Console.prototype.interpret = function(cmd, context, filename, callback) {
   var self = this;
@@ -183,7 +195,11 @@ Console.prototype.interpret = function(cmd, context, filename, callback) {
   }
 
   // Resolve all promises. This will leave non-promises alone.
-  Promise.resolve(result).then(function(res) { callback(null, res) }).catch(callback);
-}
+  Promise.resolve(result)
+    .then(function(res) {
+      callback(null, res);
+    })
+    .catch(callback);
+};
 
 module.exports = Console;

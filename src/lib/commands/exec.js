@@ -1,6 +1,6 @@
 var command = {
-  command: 'exec',
-  description: 'Execute a JS module within this tronBox environment',
+  command: "exec",
+  description: "Execute a JS module within this earthBox environment",
   builder: {
     file: {
       type: "string"
@@ -14,8 +14,8 @@ var command = {
       default: false
     }
   },
-  run: function (options, done) {
-    process.env.CURRENT = 'exec'
+  run: function(options, done) {
+    process.env.CURRENT = "exec";
     var Config = require("../../components/Config");
     var Contracts = require("../../components/WorkflowCompile");
     var ConfigurationError = require("../errors/configurationerror");
@@ -33,7 +33,11 @@ var command = {
     }
 
     if (file == null) {
-      done(new ConfigurationError("Please specify a file, passing the path of the script you'd like the run. Note that all scripts *must* call process.exit() when finished."));
+      done(
+        new ConfigurationError(
+          "Please specify a file, passing the path of the script you'd like the run. Note that all scripts *must* call process.exit() when finished."
+        )
+      );
       return;
     }
 
@@ -49,22 +53,28 @@ var command = {
       }
 
       // `--compile`
-      if (options.c || options.compile){
-        return Contracts.compile(config, function(err){
-          if(err) return done(err);
+      if (options.c || options.compile) {
+        return Contracts.compile(config, function(err) {
+          if (err) return done(err);
 
-          Require.exec(config.with({
-            file: file
-          }), done);
+          Require.exec(
+            config.with({
+              file: file
+            }),
+            done
+          );
         });
-      };
+      }
 
       // Just exec
-      Require.exec(config.with({
-        file: file
-      }), done);
+      Require.exec(
+        config.with({
+          file: file
+        }),
+        done
+      );
     });
   }
-}
+};
 
 module.exports = command;
