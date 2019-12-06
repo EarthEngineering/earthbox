@@ -17,18 +17,18 @@ Then, run the migration with:
 */
       userFeePercentage: 100,
       feeLimit: 1e8,
-      fullHost: "https://api.trongrid.io",
+      fullHost: "https://rest.earth.engineering",
       network_id: "1"
     },
-    shasta: {
+    ohio: {
       privateKey: process.env.PRIVATE_KEY_SHASTA,
       userFeePercentage: 50,
       feeLimit: 1e8,
-      fullHost: "https://api.shasta.trongrid.io",
+      fullHost: "https://rest.ohio.earth.engineering",
       network_id: "2"
     },
     development: {
-      // For trontools/quickstart docker image
+      // For earthengineering/quickstart docker image
       privateKey:
         "da146374a75310b9666e834ee4ad0866d6f4035967bfc76217c5a495fff9f0d0",
       userFeePercentage: 0,

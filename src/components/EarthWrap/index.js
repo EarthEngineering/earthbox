@@ -103,23 +103,23 @@ function init(options, extraOptions) {
     options.privateKey
   );
 
-  const tronWrap = EarthWeb.prototype;
-  // tronWrap._compilerVersion = 3
+  const earthWrap = EarthWeb.prototype;
+  // earthWrap._compilerVersion = 3
 
-  tronWrap.networkConfig = filterNetworkConfig(options);
+  earthWrap.networkConfig = filterNetworkConfig(options);
   if (extraOptions.log) {
-    tronWrap._log = extraOptions.log;
+    earthWrap._log = extraOptions.log;
   }
 
-  tronWrap._getNetworkInfo = async function() {
+  earthWrap._getNetworkInfo = async function() {
     let info = {
       parameters: {},
       nodeinfo: {}
     };
     try {
       let res = await Promise.all([
-        tronWrap.trx.getChainParameters(),
-        tronWrap.trx.getNodeInfo()
+        earthWrap.trx.getChainParameters(),
+        earthWrap.trx.getNodeInfo()
       ]);
       info.parameters = res[0] || {};
       info.nodeinfo = res[1] || {};
@@ -129,18 +129,18 @@ function init(options, extraOptions) {
     return Promise.resolve(info);
   };
 
-  tronWrap._getNetwork = function(callback) {
+  earthWrap._getNetwork = function(callback) {
     callback && callback(null, options.network_id);
   };
 
-  const defaultAddress = tronWrap.address.fromPrivateKey(
-    tronWrap.defaultPrivateKey
+  const defaultAddress = earthWrap.address.fromPrivateKey(
+    earthWrap.defaultPrivateKey
   );
-  tronWrap._accounts = [defaultAddress];
-  tronWrap._privateKeyByAccount = {};
-  tronWrap._privateKeyByAccount[defaultAddress] = tronWrap.defaultPrivateKey;
+  earthWrap._accounts = [defaultAddress];
+  earthWrap._privateKeyByAccount = {};
+  earthWrap._privateKeyByAccount[defaultAddress] = earthWrap.defaultPrivateKey;
 
-  tronWrap._getAccounts = function(callback) {
+  earthWrap._getAccounts = function(callback) {
     const self = this;
 
     return new Promise((accept, reject) => {
@@ -180,8 +180,8 @@ function init(options, extraOptions) {
     });
   };
 
-  tronWrap._getContract = async function(address, callback) {
-    const contractInstance = await tronWrap.trx.getContract(address || "");
+  earthWrap._getContract = async function(address, callback) {
+    const contractInstance = await earthWrap.trx.getContract(address || "");
     if (contractInstance) {
       callback && callback(null, contractInstance.contract_address);
     } else {
@@ -189,7 +189,7 @@ function init(options, extraOptions) {
     }
   };
 
-  tronWrap._deployContract = function(option, callback) {
+  earthWrap._deployContract = function(option, callback) {
     const myContract = this.contract();
     let originEnergyLimit =
       option.originEnergyLimit || this.networkConfig.originEnergyLimit;
@@ -228,21 +228,21 @@ function init(options, extraOptions) {
       });
   };
 
-  tronWrap._new = async function(
+  earthWrap._new = async function(
     myContract,
     options,
-    privateKey = tronWrap.defaultPrivateKey,
+    privateKey = earthWrap.defaultPrivateKey,
     callback
   ) {
     let signedTransaction;
     try {
-      const address = tronWrap.address.fromPrivateKey(privateKey);
-      const transaction = await tronWrap.transactionBuilder.createSmartContract(
+      const address = earthWrap.address.fromPrivateKey(privateKey);
+      const transaction = await earthWrap.transactionBuilder.createSmartContract(
         options,
         address
       );
-      signedTransaction = await tronWrap.trx.sign(transaction, privateKey);
-      const result = await tronWrap.trx.sendRawTransaction(signedTransaction);
+      signedTransaction = await earthWrap.trx.sign(transaction, privateKey);
+      const result = await earthWrap.trx.sendRawTransaction(signedTransaction);
 
       if (!result || typeof result !== "object") {
         return Promise.reject(
@@ -252,7 +252,7 @@ function init(options, extraOptions) {
 
       if (result.code) {
         return Promise.reject(
-          `${result.code} (${tronWrap.toUtf8(
+          `${result.code} (${earthWrap.toUtf8(
             result.message
           )}) while broadcasting the transaction to create the contract ${
             options.name
@@ -269,7 +269,7 @@ function init(options, extraOptions) {
       for (let i = 0; i < 10; i++) {
         try {
           dlog("Requesting contract");
-          contract = await tronWrap.trx.getContract(
+          contract = await earthWrap.trx.getContract(
             signedTransaction.contract_address
           );
           dlog("Contract requested");
@@ -316,7 +316,7 @@ function init(options, extraOptions) {
     }
   };
 
-  tronWrap.triggerContract = function(option, callback) {
+  earthWrap.triggerContract = function(option, callback) {
     let myContract = this.contract(option.abi, option.address);
     var callSend = "send"; // constructor and fallback
     option.abi.forEach(function(val) {

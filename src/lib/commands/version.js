@@ -1,4 +1,4 @@
-var { supportedVersions } = require("../../components/TronSolc");
+var { supportedVersions } = require("../../components/EarthSolc");
 
 var command = {
   command: "version",
@@ -20,7 +20,7 @@ var command = {
     options.logger.log(
       "Solidity v" +
         supportedVersions[supportedVersions.length - 1] +
-        " (tron-solc)"
+        " (earth-solc)"
     );
 
     done();

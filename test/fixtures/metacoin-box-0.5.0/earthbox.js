@@ -28,7 +28,7 @@ Then, run the migration with:
       network_id: "2"
     },
     development: {
-      // For trontools/quickstart docker image
+      // For earthengineering/quickstart docker image
       privateKey:
         "da146374a75310b9666e834ee4ad0866d6f4035967bfc76217c5a495fff9f0d0",
       userFeePercentage: 0,

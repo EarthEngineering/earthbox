@@ -31,13 +31,13 @@ function TestRunner(options) {
   this.first_snapshot = false;
   this.initial_snapshot = null;
   this.known_events = {};
-  this.tronwrap = EarthWrap();
+  this.earthwrap = EarthWrap();
 
   global.earthWeb = new EarthWeb(
-    this.tronwrap.fullNode,
-    this.tronwrap.solidityNode,
-    this.tronwrap.eventServer,
-    this.tronwrap.defaultPrivateKey
+    this.earthwrap.fullNode,
+    this.earthwrap.solidityNode,
+    this.earthwrap.eventServer,
+    this.earthwrap.defaultPrivateKey
   );
 
   global.waitForTransactionReceipt = waitForTransactionReceipt(earthWeb);
@@ -88,7 +88,7 @@ TestRunner.prototype.initialize = function(callback) {
             if (/event/i.test(abi.type)) {
               var signature =
                 abi.name + "(" + _.map(abi.inputs, "type").join(",") + ")";
-              self.known_events[self.tronwrap.sha3(signature)] = {
+              self.known_events[self.earthwrapwrap.sha3(signature)] = {
                 signature: signature,
                 abi_entry: abi
               };

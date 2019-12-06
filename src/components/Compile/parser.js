@@ -1,6 +1,6 @@
 var CompileError = require("./compileerror");
-const {getWrapper} = require("../TronSolc")
-// var solc = require("tron-solc");
+const { getWrapper } = require("../EarthSolc");
+// var solc = require("earth-solc");
 var fs = require("fs");
 var path = require("path");
 
@@ -13,9 +13,9 @@ if (solc_listener) {
 }
 
 // Warning issued by a pre-release compiler version, ignored by this component.
-var preReleaseCompilerWarning = require('./messages').preReleaseCompilerWarning
+var preReleaseCompilerWarning = require("./messages").preReleaseCompilerWarning;
 
-var installedContractsDir = "installed_contracts"
+var installedContractsDir = "installed_contracts";
 
 module.exports = {
   parse: function(body, fileName, options) {
@@ -28,15 +28,17 @@ module.exports = {
       // e.g. "my_pkg/=installed_contracts/my_pkg/contracts/"
       var remappings = [];
 
-      if (fs.existsSync('ethpm.json')) {
-        ethpm = JSON.parse(fs.readFileSync('ethpm.json'));
+      if (fs.existsSync("ethpm.json")) {
+        ethpm = JSON.parse(fs.readFileSync("ethpm.json"));
         for (pkg in ethpm.dependencies) {
-          remappings.push(pkg + "/=" + path.join(installedContractsDir, pkg, 'contracts', '/'));
+          remappings.push(
+            pkg + "/=" + path.join(installedContractsDir, pkg, "contracts", "/")
+          );
         }
       }
 
       return remappings;
-    }
+    };
 
     var fileName = fileName || "ParsedContract.sol";
 
@@ -53,40 +55,46 @@ module.exports = {
         remappings: remappings,
         outputSelection: {
           "*": {
-            "": [
-              "ast"
-            ]
+            "": ["ast"]
           }
         }
       }
     };
 
     var solc = getWrapper(options);
-    var output = solc[solc.compileStandard ? 'compileStandard' : 'compile'](JSON.stringify(solcStandardInput), function(file_path) {
-      // Resolve dependency manually.
-      if (fs.existsSync(file_path)) {
-        contents = fs.readFileSync(file_path, {encoding: 'UTF-8'});
+    var output = solc[solc.compileStandard ? "compileStandard" : "compile"](
+      JSON.stringify(solcStandardInput),
+      function(file_path) {
+        // Resolve dependency manually.
+        if (fs.existsSync(file_path)) {
+          contents = fs.readFileSync(file_path, { encoding: "UTF-8" });
+        } else {
+          contents = "pragma solidity ^0.4.0;";
+        }
+        return { contents: contents };
       }
-      else {
-        contents = "pragma solidity ^0.4.0;";
-      }
-      return {contents: contents};
-    });
+    );
 
     output = JSON.parse(output);
 
     // Filter out the "pre-release compiler" warning, if present.
-    var errors = output.errors ? output.errors.filter(function(solidity_error) {
-      return solidity_error.message.indexOf(preReleaseCompilerWarning) < 0;
-    }) : [];
+    var errors = output.errors
+      ? output.errors.filter(function(solidity_error) {
+          return solidity_error.message.indexOf(preReleaseCompilerWarning) < 0;
+        })
+      : [];
 
     // Filter out warnings.
-    var warnings = output.errors ? output.errors.filter(function(solidity_error) {
-      return solidity_error.severity == "warning";
-    }) : [];
-    var errors = output.errors ? output.errors.filter(function(solidity_error) {
-      return solidity_error.severity != "warning";
-    }) : [];
+    var warnings = output.errors
+      ? output.errors.filter(function(solidity_error) {
+          return solidity_error.severity == "warning";
+        })
+      : [];
+    var errors = output.errors
+      ? output.errors.filter(function(solidity_error) {
+          return solidity_error.severity != "warning";
+        })
+      : [];
 
     if (errors.length > 0) {
       throw new CompileError(errors[0].formattedMessage);
@@ -136,12 +144,15 @@ module.exports = {
     };
 
     var solc = getWrapper(options);
-    var output = solc[solc.compileStandard ? 'compileStandard' : 'compile'](JSON.stringify(solcStandardInput), function() {
-      // The existence of this function ensures we get a parsable error message.
-      // Without this, we'll get an error message we *can* detect, but the key will make it easier.
-      // Note: This is not a normal callback. See docs here: https://github.com/ethereum/solc-js#from-version-021
-      return {error: importErrorKey};
-    });
+    var output = solc[solc.compileStandard ? "compileStandard" : "compile"](
+      JSON.stringify(solcStandardInput),
+      function() {
+        // The existence of this function ensures we get a parsable error message.
+        // Without this, we'll get an error message we *can* detect, but the key will make it easier.
+        // Note: This is not a normal callback. See docs here: https://github.com/ethereum/solc-js#from-version-021
+        return { error: importErrorKey };
+      }
+    );
 
     output = JSON.parse(output);
 
@@ -165,15 +176,19 @@ module.exports = {
 
     // Now, all errors must be import errors.
     // Filter out our forced import, then get the import paths of the rest.
-    var imports = errors.filter(function(solidity_error) {
-      return solidity_error.message.indexOf(failingImportFileName) < 0;
-    }).map(function(solidity_error) {
-      var matches = solidity_error.formattedMessage.match(/import[^'"]+("|')([^'"]+)("|');/);
+    var imports = errors
+      .filter(function(solidity_error) {
+        return solidity_error.message.indexOf(failingImportFileName) < 0;
+      })
+      .map(function(solidity_error) {
+        var matches = solidity_error.formattedMessage.match(
+          /import[^'"]+("|')([^'"]+)("|');/
+        );
 
-      // Return the item between the quotes.
-      return matches[2];
-    });
+        // Return the item between the quotes.
+        return matches[2];
+      });
 
     return imports;
   }
-}
+};

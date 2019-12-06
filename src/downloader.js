@@ -11,7 +11,7 @@ async function downloader(compilerVersion) {
 
   let res = await req
     .get(
-      `https://tron-us.github.io/tron-solc-bin/bin/soljson_v${compilerVersion}.js`
+      `https://github.com/EarthEngineering/earth-solc-bin/blob/master/bin/${compilerVersion}.js`
     )
     .responseType("blob");
 
