@@ -19,7 +19,7 @@
 //     if (accounts.length < 3) {
 //       console.info(
 //         chalk.blue(
-//           '\nYOUR ATTENTION, PLEASE.]\nTo test MetaCoin you should use Tron Quickstart (https://github.com/earthengineering/docker-earth-quickstart) as your private network.\nAlternatively, you must set your own accounts in the "before" statement in "test/metacoin.js".\n'
+//           '\nYOUR ATTENTION, PLEASE.]\nTo test MetaCoin you should use Earth Quickstart (https://github.com/earthengineering/docker-earth-quickstart) as your private network.\nAlternatively, you must set your own accounts in the "before" statement in "test/metacoin.js".\n'
 //         )
 //       );
 //     }

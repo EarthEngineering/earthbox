@@ -1,20 +1,21 @@
-const _ = require('lodash')
-const path = require('path')
-const {constants} = require('./EarthWrap')
-const Provider = require('./Provider')
-const TruffleError = require('@truffle/error')
-const Module = require('module')
-const findUp = require('find-up')
-const originalrequire = require('original-require')
+const _ = require("lodash");
+const path = require("path");
+const { constants } = require("./EarthWrap");
+const Provider = require("./Provider");
+const TruffleError = require("@truffle/error");
+const Module = require("module");
+const findUp = require("find-up");
+const originalrequire = require("original-require");
 
-const DEFAULT_CONFIG_FILENAME = 'earthbox.js'
-const BACKUP_CONFIG_FILENAME = 'earthbox-config.js' // For Windows + Command Prompt
+const DEFAULT_CONFIG_FILENAME = "earthbox.js";
+const BACKUP_CONFIG_FILENAME = "earthbox-config.js"; // For Windows + Command Prompt
 
 function Config(truffle_directory, working_directory, network) {
-  const self = this
-  const default_tx_values = constants.deployParameters
+  const self = this;
+  const default_tx_values = constants.deployParameters;
   this._values = {
-    truffle_directory: truffle_directory || path.resolve(path.join(__dirname, '../')),
+    truffle_directory:
+      truffle_directory || path.resolve(path.join(__dirname, "../")),
     working_directory: working_directory || process.cwd(),
     network: network,
     networks: {},
@@ -35,348 +36,372 @@ function Config(truffle_directory, working_directory, network) {
     resolver: null,
     artifactor: null,
     ethpm: {
-      ipfs_host: 'ipfs.infura.io',
-      ipfs_protocol: 'https',
-      registry: '0x8011df4830b4f696cd81393997e5371b93338878',
-      install_provider_uri: 'https://ropsten.infura.io/truffle'
+      ipfs_host: "ipfs.infura.io",
+      ipfs_protocol: "https",
+      registry: "0x8011df4830b4f696cd81393997e5371b93338878",
+      install_provider_uri: "https://ropsten.infura.io/truffle"
     },
     solc: {
       optimizer: {
         enabled: false,
         runs: 200
       },
-      evmVersion: 'byzantium'
+      evmVersion: "byzantium"
     },
     logger: {
       log: function() {}
     }
-  }
+  };
 
   const props = {
     // These are already set.
-    truffle_directory: function () {
-    },
-    working_directory: function () {
-    },
-    network: function () {
-    },
-    networks: function () {
-    },
-    verboseRpc: function () {
-    },
-    build: function () {
-    },
-    resolver: function () {
-    },
-    artifactor: function () {
-    },
-    ethpm: function () {
-    },
-    solc: function () {
-    },
-    logger: function () {
-    },
+    truffle_directory: function() {},
+    working_directory: function() {},
+    network: function() {},
+    networks: function() {},
+    verboseRpc: function() {},
+    build: function() {},
+    resolver: function() {},
+    artifactor: function() {},
+    ethpm: function() {},
+    solc: function() {},
+    logger: function() {},
 
-    build_directory: function () {
-      return path.join(self.working_directory, 'build')
+    build_directory: function() {
+      return path.join(self.working_directory, "build");
     },
-    contracts_directory: function () {
-      return path.join(self.working_directory, 'contracts')
+    contracts_directory: function() {
+      return path.join(self.working_directory, "contracts");
     },
-    contracts_build_directory: function () {
-      return path.join(self.build_directory, 'contracts')
+    contracts_build_directory: function() {
+      return path.join(self.build_directory, "contracts");
     },
-    migrations_directory: function () {
-      return path.join(self.working_directory, 'migrations')
+    migrations_directory: function() {
+      return path.join(self.working_directory, "migrations");
     },
-    test_directory: function () {
-      return path.join(self.working_directory, 'test')
+    test_directory: function() {
+      return path.join(self.working_directory, "test");
     },
     test_file_extension_regexp: function() {
       return /.*\.(js|es|es6|jsx|sol)$/;
     },
-    example_project_directory: function () {
-      return path.join(self.truffle_directory, 'example')
+    example_project_directory: function() {
+      return path.join(self.truffle_directory, "example");
     },
     network_id: {
       get: function() {
         try {
-          return self.network_config.network_id
+          return self.network_config.network_id;
         } catch (e) {
-          return null
+          return null;
         }
       },
-      set: function () {
-        throw new Error('Do not set config.network_id. Instead, set config.networks and then config.networks[<network name>].network_id')
+      set: function() {
+        throw new Error(
+          "Do not set config.network_id. Instead, set config.networks and then config.networks[<network name>].network_id"
+        );
       }
     },
     network_config: {
-      get: function () {
-        const network = self.network
+      get: function() {
+        const network = self.network;
 
         if (!network) {
-          throw new Error('Network not set. Cannot determine network to use.')
+          throw new Error("Network not set. Cannot determine network to use.");
         }
 
-        return _.extend({}, default_tx_values, self.networks[network] || {})
+        return _.extend({}, default_tx_values, self.networks[network] || {});
       },
-      set: function () {
-        throw new Error("Don't set config.network_config. Instead, set config.networks with the desired values.")
+      set: function() {
+        throw new Error(
+          "Don't set config.network_config. Instead, set config.networks with the desired values."
+        );
       }
     },
     from: {
       get: function() {
         try {
-          return self.network_config.from
+          return self.network_config.from;
         } catch (e) {
-          return default_tx_values.from
+          return default_tx_values.from;
         }
       },
-      set: function () {
-        throw new Error("Don't set config.from directly. Instead, set config.networks and then config.networks[<network name>].from")
+      set: function() {
+        throw new Error(
+          "Don't set config.from directly. Instead, set config.networks and then config.networks[<network name>].from"
+        );
       }
     },
     privateKey: {
       get: function() {
         try {
-          return self.network_config.privateKey
+          return self.network_config.privateKey;
         } catch (e) {
-          return default_tx_values.privateKey
+          return default_tx_values.privateKey;
         }
       },
-      set: function () {
-        throw new Error("Don't set config.privateKey directly. Instead, set config.networks and then config.networks[<network name>].privateKey")
+      set: function() {
+        throw new Error(
+          "Don't set config.privateKey directly. Instead, set config.networks and then config.networks[<network name>].privateKey"
+        );
       }
     },
     fullNode: {
       get: function() {
         try {
-          return self.network_config.fullNode
+          return self.network_config.fullNode;
         } catch (e) {
-          return default_tx_values.fullNode
+          return default_tx_values.fullNode;
         }
       },
-      set: function () {
-        throw new Error("Don't set config.fullNode directly. Instead, set config.networks and then config.networks[<network name>].fullNode")
+      set: function() {
+        throw new Error(
+          "Don't set config.fullNode directly. Instead, set config.networks and then config.networks[<network name>].fullNode"
+        );
       }
     },
     fullHost: {
       get: function() {
         try {
-          return self.network_config.fullHost
+          return self.network_config.fullHost;
         } catch (e) {
-          return default_tx_values.fullHost
+          return default_tx_values.fullHost;
         }
       },
-      set: function () {
-        throw new Error("Don't set config.fullHost directly. Instead, set config.networks and then config.networks[<network name>].fullHost")
+      set: function() {
+        throw new Error(
+          "Don't set config.fullHost directly. Instead, set config.networks and then config.networks[<network name>].fullHost"
+        );
       }
     },
     solidityNode: {
       get: function() {
         try {
-          return self.network_config.solidityNode
+          return self.network_config.solidityNode;
         } catch (e) {
-          return default_tx_values.solidityNode
+          return default_tx_values.solidityNode;
         }
       },
-      set: function () {
-        throw new Error("Don't set config.solidityNode directly. Instead, set config.networks and then config.networks[<network name>].solidityNode")
+      set: function() {
+        throw new Error(
+          "Don't set config.solidityNode directly. Instead, set config.networks and then config.networks[<network name>].solidityNode"
+        );
       }
     },
     eventServer: {
       get: function() {
         try {
-          return self.network_config.eventServer
+          return self.network_config.eventServer;
         } catch (e) {
-          return default_tx_values.eventServer
+          return default_tx_values.eventServer;
         }
       },
-      set: function () {
-        throw new Error("Don't set config.eventServer directly. Instead, set config.networks and then config.networks[<network name>].eventServer")
+      set: function() {
+        throw new Error(
+          "Don't set config.eventServer directly. Instead, set config.networks and then config.networks[<network name>].eventServer"
+        );
       }
     },
     userFeePercentage: {
       get: function() {
         try {
-          return self.network_config.userFeePercentage || self.network_config.consume_user_resource_percent
+          return (
+            self.network_config.userFeePercentage ||
+            self.network_config.consume_user_resource_percent
+          );
         } catch (e) {
-          return default_tx_values.userFeePercentage
+          return default_tx_values.userFeePercentage;
         }
       },
-      set: function () {
-        throw new Error("Don't set config.userFeePercentage directly. Instead, set config.networks and then config.networks[<network name>].userFeePercentage")
+      set: function() {
+        throw new Error(
+          "Don't set config.userFeePercentage directly. Instead, set config.networks and then config.networks[<network name>].userFeePercentage"
+        );
       }
     },
     feeLimit: {
       get: function() {
         try {
-          return self.network_config.feeLimit || self.network_config.fee_limit
+          return self.network_config.feeLimit || self.network_config.fee_limit;
         } catch (e) {
-          return default_tx_values.feeLimit
+          return default_tx_values.feeLimit;
         }
       },
-      set: function () {
-        throw new Error("Don't set config.feeLimit directly. Instead, set config.networks and then config.networks[<network name>].feeLimit")
+      set: function() {
+        throw new Error(
+          "Don't set config.feeLimit directly. Instead, set config.networks and then config.networks[<network name>].feeLimit"
+        );
       }
     },
     originEnergyLimit: {
       get: function() {
         try {
-          return self.network_config.originEnergyLimit
+          return self.network_config.originEnergyLimit;
         } catch (e) {
-          return default_tx_values.originEnergyLimit
+          return default_tx_values.originEnergyLimit;
         }
       },
-      set: function () {
-        throw new Error("Don't set config.originEnergyLimit directly. Instead, set config.networks and then config.networks[<network name>].originEnergyLimit")
+      set: function() {
+        throw new Error(
+          "Don't set config.originEnergyLimit directly. Instead, set config.networks and then config.networks[<network name>].originEnergyLimit"
+        );
       }
     },
     tokenValue: {
       get: function() {
         try {
-          return self.network_config.tokenValue
+          return self.network_config.tokenValue;
         } catch (e) {
           // no default value
         }
       },
-      set: function () {
-        throw new Error("Don't set config.tokenValue directly. Instead, set config.networks and then config.networks[<network name>].tokenValue")
+      set: function() {
+        throw new Error(
+          "Don't set config.tokenValue directly. Instead, set config.networks and then config.networks[<network name>].tokenValue"
+        );
       }
     },
     tokenId: {
       get: function() {
         try {
-          return self.network_config.tokenId
+          return self.network_config.tokenId;
         } catch (e) {
           // no default value
         }
       },
-      set: function () {
-        throw new Error("Don't set config.tokenId directly. Instead, set config.networks and then config.networks[<network name>].tokenId")
+      set: function() {
+        throw new Error(
+          "Don't set config.tokenId directly. Instead, set config.networks and then config.networks[<network name>].tokenId"
+        );
       }
     },
     provider: {
       get: function() {
         if (!self.network) {
-          return null
+          return null;
         }
 
-        const options = self.network_config
-        options.verboseRpc = self.verboseRpc
-        return Provider.create(options)
+        const options = self.network_config;
+        options.verboseRpc = self.verboseRpc;
+        return Provider.create(options);
       },
-      set: function () {
-        throw new Error("Don't set config.provider directly. Instead, set config.networks and then set config.networks[<network name>].provider")
+      set: function() {
+        throw new Error(
+          "Don't set config.provider directly. Instead, set config.networks and then set config.networks[<network name>].provider"
+        );
       }
     },
     callValue: {
       get: function() {
         try {
-          return self.network_config.callValue || self.network_config.call_value
+          return (
+            self.network_config.callValue || self.network_config.call_value
+          );
         } catch (e) {
-          return default_tx_values.callValue
+          return default_tx_values.callValue;
         }
       },
-      set: function () {
-        throw new Error("Don't set config.callValue directly. Instead, set config.networks and then config.networks[<network name>].callValue")
+      set: function() {
+        throw new Error(
+          "Don't set config.callValue directly. Instead, set config.networks and then config.networks[<network name>].callValue"
+        );
       }
-    },
-  }
+    }
+  };
 
-  Object.keys(props).forEach(function (prop) {
-    self.addProp(prop, props[prop])
-  })
-
+  Object.keys(props).forEach(function(prop) {
+    self.addProp(prop, props[prop]);
+  });
 }
 
-Config.prototype.addProp = function (key, obj) {
+Config.prototype.addProp = function(key, obj) {
   Object.defineProperty(this, key, {
-    get: obj.get || function () {
-      return this._values[key] || obj()
-    },
-    set: obj.set || function (val) {
-      this._values[key] = val
-    },
+    get:
+      obj.get ||
+      function() {
+        return this._values[key] || obj();
+      },
+    set:
+      obj.set ||
+      function(val) {
+        this._values[key] = val;
+      },
     configurable: true,
     enumerable: true
-  })
-}
+  });
+};
 
-Config.prototype.normalize = function (obj) {
-  const clone = {}
-  Object.keys(obj).forEach(function (key) {
+Config.prototype.normalize = function(obj) {
+  const clone = {};
+  Object.keys(obj).forEach(function(key) {
     try {
-      clone[key] = obj[key]
+      clone[key] = obj[key];
     } catch (e) {
       // Do nothing with values that throw.
     }
-  })
-  return clone
-}
+  });
+  return clone;
+};
 
-Config.prototype.with = function (obj) {
-  const normalized = this.normalize(obj)
-  const current = this.normalize(this)
+Config.prototype.with = function(obj) {
+  const normalized = this.normalize(obj);
+  const current = this.normalize(this);
 
-  return _.extend({}, current, normalized)
-}
+  return _.extend({}, current, normalized);
+};
 
-Config.prototype.merge = function (obj) {
-  const self = this
-  const clone = this.normalize(obj)
+Config.prototype.merge = function(obj) {
+  const self = this;
+  const clone = this.normalize(obj);
 
   // Only set keys for values that don't throw.
   Object.keys(obj).forEach(function(key) {
     try {
-      self[key] = clone[key]
+      self[key] = clone[key];
     } catch (e) {
       // Do nothing.
     }
-  })
+  });
 
-  return this
-}
+  return this;
+};
 
-Config.default = function () {
-  return new Config()
-}
+Config.default = function() {
+  return new Config();
+};
 
-Config.detect = function (options, filename) {
+Config.detect = function(options, filename) {
   let search;
 
-  (!filename)
-    ? search = [DEFAULT_CONFIG_FILENAME, BACKUP_CONFIG_FILENAME]
-    : search = filename
+  !filename
+    ? (search = [DEFAULT_CONFIG_FILENAME, BACKUP_CONFIG_FILENAME])
+    : (search = filename);
 
-  const file = findUp.sync(search, {cwd: options.working_directory || options.workingDirectory})
+  const file = findUp.sync(search, {
+    cwd: options.working_directory || options.workingDirectory
+  });
 
   if (!file) {
-    throw new TruffleError('Could not find suitable configuration file.')
+    throw new TruffleError("Could not find suitable configuration file.");
   }
 
-  return this.load(file, options)
-}
+  return this.load(file, options);
+};
 
-<<<<<<< HEAD
 Config.load = function(file, options) {
-  var config = new Config();
-=======
-Config.load = function (file, options) {
-  const config = new Config()
->>>>>>> 579001f13f560effe3a1a59575ea42ac963107b9
+  const config = new Config();
 
-  config.working_directory = path.dirname(path.resolve(file))
+  config.working_directory = path.dirname(path.resolve(file));
 
   // The require-nocache module used to do this for us, but
   // it doesn't bundle very well. So we've pulled it out ourselves.
-  delete require.cache[Module._resolveFilename(file, module)]
-  const static_config = originalrequire(file)
+  delete require.cache[Module._resolveFilename(file, module)];
+  const static_config = originalrequire(file);
 
-  config.merge(static_config)
-  config.merge(options)
+  config.merge(static_config);
+  config.merge(options);
 
-  return config
-}
+  return config;
+};
 
-module.exports = Config
+module.exports = Config;
