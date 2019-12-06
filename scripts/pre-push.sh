@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 
-cd packages/earthwrap/earthweb
+# cd packages/earthwrap/earthweb
 current_earthweb_branch=$(git symbolic-ref HEAD | sed -e 's,.*/\(.*\),\1,')
-cd ../../..
-
-echo $current_earthweb_branch
+# cd ../../..
 
 if [ $current_earthweb_branch = "master" ]
 then
@@ -12,10 +10,10 @@ then
 else
     read -p "
 
-YOUR ATTENTION, PLEASE!
-You're about to push a earthweb branch which is not master.
+# YOUR ATTENTION, PLEASE!
+# You're about to push a earthweb branch which is not master.
 
-Is that what you intended? [y|n] " -n 1 -r < /dev/tty
+# Is that what you intended? [y|n] " -n 1 -r < /dev/tty
     echo
     if echo $REPLY | grep -E '^[Yy]$' > /dev/null
     then
