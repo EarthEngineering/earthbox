@@ -1,102 +1,98 @@
-let ReplManager = require("./repl");
-let Command = require("./command");
-let provision = require("../components/Provisioner");
-let contract = require("../components/Contract");
-let TronWrap = require("../components/EarthWrap");
-let vm = require("vm");
-let expect = require("@truffle/expect");
-let _ = require("lodash");
-let TruffleError = require("@truffle/error");
-let fs = require("fs");
-let os = require("os");
-let path = require("path");
-let EventEmitter = require("events");
-let inherits = require("util").inherits;
-const logErrorAndExit = require("../components/EarthWrap").logErrorAndExit;
+const ReplManager = require('./repl')
+const Command = require('./command')
+const provision = require('../components/Provisioner')
+const contract = require('../components/Contract')
+const TronWrap = require('../components/TronWrap')
+const vm = require('vm')
+const expect = require('@truffle/expect')
+const TruffleError = require('@truffle/error')
+const fs = require('fs')
+const path = require('path')
+const EventEmitter = require('events')
+const inherits = require('util').inherits
+const logErrorAndExit = require('../components/TronWrap').logErrorAndExit
 
-inherits(Console, EventEmitter);
+inherits(Console, EventEmitter)
 
 function Console(tasks, options) {
-  EventEmitter.call(this);
+  EventEmitter.call(this)
 
-  let self = this;
+  const self = this
 
   expect.options(options, [
-    "working_directory",
-    "contracts_directory",
-    "contracts_build_directory",
-    "migrations_directory",
-    "network",
-    "network_id",
-    "provider",
-    "resolver",
-    "build_directory"
-  ]);
+    'working_directory',
+    'contracts_directory',
+    'contracts_build_directory',
+    'migrations_directory',
+    'network',
+    'network_id',
+    'provider',
+    'resolver',
+    'build_directory'
+  ])
 
-  this.options = options;
+  this.options = options
 
-  this.repl = options.repl || new ReplManager(options);
-  this.command = new Command(tasks);
+  this.repl = options.repl || new ReplManager(options)
+  this.command = new Command(tasks)
 
   // if "development" exists, default to using that
   if (!options.network && options.networks.development) {
-    options.network = "development";
+    options.network = 'development'
   }
 
   try {
-    this.earthWrap = TronWrap(options.networks[options.network], {
+    this.tronWrap = TronWrap(options.networks[options.network], {
       verify: true,
       log: options.log
-    });
+    })
   } catch (err) {
-    logErrorAndExit(console, err.message);
+    logErrorAndExit(console, err.message)
   }
 
-  // this.earthWrap.setHttpProvider(options.provider);
+  // this.tronWrap.setHttpProvider(options.provider);
 
   // Bubble the ReplManager's exit event
-  this.repl.on("exit", function() {
-    self.emit("exit");
-  });
+  this.repl.on('exit', function () {
+    self.emit('exit')
+  })
 }
 
-Console.prototype.start = function(callback) {
-  let self = this;
+Console.prototype.start = function (callback) {
+  const self = this
 
   if (!this.repl) {
-    this.repl = new Repl(this.options);
+    this.repl = new ReplManager(this.options)
   }
 
   // TODO: This should probalby be elsewhere.
   // It's here to ensure the repl manager instance gets
   // passed down to commands.
-  this.options.repl = this.repl;
+  this.options.repl = this.repl
 
-  this.provision(function(err, abstractions) {
+  this.provision(function (err, abstractions) {
     if (err) {
-      self.options.logger.log(
-        "Unexpected error: Cannot provision contracts while instantiating the console."
-      );
-      self.options.logger.log(err.stack || err.message || err);
+      self.options.logger.log('Unexpected error: Cannot provision contracts while instantiating the console.')
+      self.options.logger.log(err.stack || err.message || err)
     }
 
     self.repl.start({
-      prompt: "earthcli(" + self.options.network + ")> ",
+      prompt: 'tronbox(' + self.options.network + ')> ',
       context: {
-        earthWrap: self.earthWrap
+        tronWrap: self.tronWrap,
       },
       interpreter: self.interpret.bind(self),
       done: callback
-    });
+    })
 
-    self.resetContractsInConsoleContext(abstractions);
-  });
-};
+    self.resetContractsInConsoleContext(abstractions)
+  })
+}
 
-Console.prototype.provision = function(callback) {
-  let self = this;
+Console.prototype.provision = function (callback) {
+  const self = this
 
-  fs.readdir(this.options.contracts_build_directory, function(err, files) {
+  fs.readdir(this.options.contracts_build_directory, function (err, files) {
     if (err) {
       // Error reading the build directory? Must mean it doesn't exist or we don't have access to it.
       // Couldn't provision the contracts if we wanted. It's possible we're hiding very rare FS
@@ -104,102 +100,90 @@ Console.prototype.provision = function(callback) {
       // doesn't exist" 99.9% of the time.
     }
 
-    let promises = [];
-    files = files || [];
+    const promises = []
+    files = files || []
 
-    files.forEach(function(file) {
-      promises.push(
-        new Promise(function(accept, reject) {
-          fs.readFile(
-            path.join(self.options.contracts_build_directory, file),
-            "utf8",
-            function(err, body) {
-              if (err) return reject(err);
-              try {
-                body = JSON.parse(body);
-              } catch (e) {
-                return reject(
-                  new Error("Cannot parse " + file + ": " + e.message)
-                );
-              }
+    files.forEach(function (file) {
+      promises.push(new Promise(function (accept, reject) {
+        fs.readFile(path.join(self.options.contracts_build_directory, file), 'utf8', function (err, body) {
+          if (err) return reject(err)
+          try {
+            body = JSON.parse(body)
+          } catch (e) {
+            return reject(new Error('Cannot parse ' + file + ': ' + e.message))
+          }
 
-              accept(body);
-            }
-          );
+          accept(body)
         })
-      );
-    });
+      }))
+    })
 
-    Promise.all(promises)
-      .then(function(json_blobs) {
-        let abstractions = json_blobs.map(function(json) {
-          let abstraction = contract(json);
-          provision(abstraction, self.options);
-          return abstraction;
-        });
-
-        self.resetContractsInConsoleContext(abstractions);
-
-        callback(null, abstractions);
+    Promise.all(promises).then(function (json_blobs) {
+      const abstractions = json_blobs.map(function (json) {
+        const abstraction = contract(json)
+        provision(abstraction, self.options)
+        return abstraction
       })
-      .catch(callback);
-  });
-};
 
-Console.prototype.resetContractsInConsoleContext = function(abstractions) {
-  let self = this;
+      self.resetContractsInConsoleContext(abstractions)
 
-  abstractions = abstractions || [];
+      callback(null, abstractions)
+    }).catch(callback)
+  })
+}
 
-  let contextVars = {};
+Console.prototype.resetContractsInConsoleContext = function (abstractions) {
+  const self = this
 
-  abstractions.forEach(function(abstraction) {
-    contextVars[abstraction.contract_name] = abstraction;
-  });
+  abstractions = abstractions || []
 
-  self.repl.setContextVars(contextVars);
-};
+  const contextVars = {}
 
-Console.prototype.interpret = function(cmd, context, filename, callback) {
-  let self = this;
+  abstractions.forEach(function (abstraction) {
+    contextVars[abstraction.contract_name] = abstraction
+  })
+
+  self.repl.setContextVars(contextVars)
+}
+
+Console.prototype.interpret = function (cmd, context, filename, callback) {
+  const self = this
 
   if (this.command.getCommand(cmd.trim(), this.options.noAliases) != null) {
-    return self.command.run(cmd.trim(), this.options, function(err) {
+    return self.command.run(cmd.trim(), this.options, function (err) {
       if (err) {
         // Perform error handling ourselves.
         if (err instanceof TruffleError) {
-          console.log(err.message);
+          console.error(err.message)
         } else {
           // Bubble up all other unexpected errors.
-          console.log(err.stack || err.toString());
+          console.error(err.stack || err.toString())
         }
-        return callback();
+        return callback()
       }
 
       // Reprovision after each command as it may change contracts.
-      self.provision(function(err, abstractions) {
+      self.provision(function (err) {
         // Don't pass abstractions to the callback if they're there or else
         // they'll get printed in the repl.
-        callback(err);
-      });
-    });
+        callback(err)
+      })
+    })
   }
 
-  let result;
+  let result
   try {
     result = vm.runInContext(cmd, context, {
       displayErrors: false
-    });
+    })
   } catch (e) {
-    return callback(e);
+    return callback(e)
   }
 
   // Resolve all promises. This will leave non-promises alone.
-  Promise.resolve(result)
-    .then(function(res) {
-      callback(null, res);
-    })
-    .catch(callback);
-};
+  Promise.resolve(result).then(function (res) {
+    callback(null, res)
+  }).catch(callback)
+}
 
-module.exports = Console;
+module.exports = Console

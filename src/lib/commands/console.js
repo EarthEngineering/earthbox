@@ -1,20 +1,19 @@
-let command = {
+const command = {
   command: "console",
   description:
     "Run a console with contract abstractions and commands available",
   builder: {},
   run: function(options, done) {
     process.env.CURRENT = "console";
-    let Config = require("../../components/Config");
-    let Console = require("../console");
-    let Environment = require("../environment");
-    // let TruffleError = require("@truffle/error");
+    const Config = require("../../components/Config");
+    const Console = require("../console");
+    const Environment = require("../environment");
 
-    let EarthWrap = require("../../components/EarthWrap");
+    const EarthWrap = require("../../components/EarthWrap");
     const logErrorAndExit = require("../../components/EarthWrap")
       .logErrorAndExit;
 
-    let config = Config.detect(options);
+    const config = Config.detect(options);
 
     if (!config.network && config.networks.development) {
       config.network = "development";
@@ -30,14 +29,14 @@ let command = {
     }
 
     // This require a smell?
-    let commands = require("./index");
-    let excluded = ["console", "init", "watch", "serve"];
+    const commands = require("./index");
+    const excluded = ["console", "init", "watch", "serve"];
 
-    let available_commands = Object.keys(commands).filter(function(name) {
-      return excluded.indexOf(name) == -1;
+    const available_commands = Object.keys(commands).filter(function(name) {
+      return excluded.indexOf(name) === -1;
     });
 
-    let console_commands = {};
+    const console_commands = {};
     available_commands.forEach(function(name) {
       console_commands[name] = commands[name];
     });
@@ -45,7 +44,7 @@ let command = {
     Environment.detect(config, function(err) {
       if (err) return done(err);
 
-      let c = new Console(
+      const c = new Console(
         console_commands,
         config.with({
           noAliases: true

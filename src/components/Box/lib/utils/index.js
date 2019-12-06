@@ -1,4 +1,4 @@
-let unbox = require("./unbox");
+const unbox = require("./unbox");
 
 module.exports = {
   downloadBox: function(url, destination) {

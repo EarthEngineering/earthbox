@@ -1,45 +1,38 @@
-var fs = require("fs");
-var dir = require("node-dir");
-var path = require("path");
-var ResolverIntercept = require("./resolverintercept");
-var Require = require("@truffle/require");
-var async = require("async");
-// var Web3 = require("web3-mock");
-var expect = require("@truffle/expect");
-var Deployer = require("../Deployer");
-var chalk = require("chalk");
+const dir = require("node-dir");
+const path = require("path");
+const ResolverIntercept = require("./resolverintercept");
+const Require = require("../Require");
+const async = require("async");
+const expect = require("@truffle/expect");
+const Deployer = require("../Deployer");
 
-var EarthWrap = require("../EarthWrap");
+const EarthWrap = require("../EarthWrap");
 const logErrorAndExit = require("../EarthWrap").logErrorAndExit;
-var earthWrap;
+let earthWrap;
 
 function Migration(file) {
   this.file = path.resolve(file);
   this.number = parseInt(path.basename(file));
 }
 
-function sleep(millis) {
-  return new Promise(resolve => setTimeout(resolve, millis));
-}
-
 Migration.prototype.run = function(options, callback) {
-  var self = this;
-  var logger = options.logger;
+  const self = this;
+  const logger = options.logger;
 
   logger.log(
     "Running migration: " +
       path.relative(options.migrations_directory, this.file)
   );
 
-  var resolver = new ResolverIntercept(options.resolver);
+  const resolver = new ResolverIntercept(options.resolver);
 
   earthWrap = EarthWrap(options);
   // Initial context.
-  var context = {
+  const context = {
     earthWrap: earthWrap
   };
 
-  var deployer = new Deployer({
+  const deployer = new Deployer({
     logger: {
       log: function(msg) {
         logger.log("  " + msg);
@@ -51,21 +44,20 @@ Migration.prototype.run = function(options, callback) {
     basePath: path.dirname(this.file)
   });
 
-  var finish = function(err) {
+  const finish = function(err) {
     if (err) return callback(err);
     deployer
       .start()
       .then(async function() {
         if (options.save === false) return;
 
-        var Migrations = resolver.require("./Migrations.sol");
+        const Migrations = resolver.require("./Migrations.sol");
 
         if (Migrations && Migrations.isDeployed()) {
           logger.log("Saving successful migration to network...");
 
-          let result;
           await Migrations.deployed();
-          result = Migrations.call("setCompleted", [self.number]);
+          const result = Migrations.call("setCompleted", [self.number]);
 
           return Promise.resolve(result);
 
@@ -105,7 +97,7 @@ Migration.prototype.run = function(options, callback) {
   finish();
 };
 
-var Migrate = {
+const Migrate = {
   Migration: Migration,
 
   assemble: function(options, callback) {
@@ -115,7 +107,7 @@ var Migrate = {
       options.allowed_extensions =
         options.allowed_extensions || /^\.(js|es6?)$/;
 
-      var migrations = files
+      let migrations = files
         .filter(function(file) {
           return isNaN(parseInt(path.basename(file))) === false;
         })
@@ -141,7 +133,7 @@ var Migrate = {
   },
 
   run: function(options, callback) {
-    var self = this;
+    const self = this;
 
     expect.options(options, [
       "working_directory",
@@ -169,7 +161,7 @@ var Migrate = {
   },
 
   runFrom: function(number, options, callback) {
-    var self = this;
+    const self = this;
 
     this.assemble(options, function(err, migrations) {
       if (err) return callback(err);
@@ -200,7 +192,7 @@ var Migrate = {
     // Perform a shallow clone of the options object
     // so that we can override the provider option without
     // changing the original options object passed in.
-    var clone = {};
+    const clone = {};
 
     Object.keys(options).forEach(function(key) {
       clone[key] = options[key];
@@ -228,15 +220,15 @@ var Migrate = {
   },
 
   wrapProvider: function(provider, logger) {
-    var printTransaction = function(tx_hash) {
+    const printTransaction = function(tx_hash) {
       logger.log("  ... " + tx_hash);
     };
 
     return {
       send: function(payload) {
-        var result = provider.send(payload);
+        const result = provider.send(payload);
 
-        if (payload.method == "eth_sendTransaction") {
+        if (payload.method === "eth_sendTransaction") {
           printTransaction(result.result);
         }
 
@@ -246,7 +238,7 @@ var Migrate = {
         provider.sendAsync(payload, function(err, result) {
           if (err) return callback(err);
 
-          if (payload.method == "eth_sendTransaction") {
+          if (payload.method === "eth_sendTransaction") {
             printTransaction(result.result);
           }
 
@@ -259,7 +251,7 @@ var Migrate = {
   wrapResolver: function(resolver, provider) {
     return {
       require: function(import_path, search_path) {
-        var abstraction = resolver.require(import_path, search_path);
+        const abstraction = resolver.require(import_path, search_path);
 
         abstraction.setProvider(provider);
 
@@ -270,15 +262,13 @@ var Migrate = {
   },
 
   lastCompletedMigration: function(options, callback) {
-    var Migrations;
-
     // if called from console, earthWrap is null here
     // but the singleton has been initiated so:
     if (!earthWrap) {
       earthWrap = EarthWrap();
     }
 
-    Migrations = options.resolver.require("Migrations");
+    const Migrations = options.resolver.require("Migrations");
 
     if (Migrations.isDeployed() === false) {
       return callback(null, 0);
@@ -296,8 +286,8 @@ var Migrate = {
           : migrations.call("lastCompletedMigration");
       })
       .then(function(completed_migration) {
-        var value =
-          typeof completed_migration == "object" ? completed_migration : "0";
+        const value =
+          typeof completed_migration === "object" ? completed_migration : "0";
         callback(null, earthWrap._toNumber(value));
       })
       .catch(() => {
@@ -307,9 +297,9 @@ var Migrate = {
   },
 
   needsMigrating: function(options, callback) {
-    var self = this;
+    const self = this;
 
-    if (options.reset == true) {
+    if (options.reset) {
       return callback(null, true);
     }
 

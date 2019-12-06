@@ -1,10 +1,11 @@
-var ethJSABI = require("ethjs-abi");
-var TronWrap = require("../EarthWrap");
-var { constants } = require("../EarthWrap");
-var BigNumber = require("bignumber.js");
-var StatusError = require("./statuserror.js");
+const ethJSABI = require("ethjs-abi");
+const EarthWrap = require("../EarthWrap");
+const { constants } = require("../EarthWrap");
+const BigNumber = require("bignumber.js");
+const StatusError = require("./statuserror.js");
 
-var contract = (function(module) {
+// eslint-disable-next-line no-unused-vars
+const contract = (function(module) {
   // Planned for future features, logging, etc.
   function Provider(provider) {
     this.provider = provider;
@@ -20,12 +21,12 @@ var contract = (function(module) {
     return this.provider.sendAsync.apply(this.provider, arguments);
   };
 
-  var Utils = {
+  const Utils = {
     is_object: function(val) {
-      return typeof val == "object" && !Array.isArray(val);
+      return typeof val === "object" && !Array.isArray(val);
     },
     is_big_number: function(val) {
-      if (typeof val != "object") return false;
+      if (typeof val !== "object") return false;
 
       // Instanceof won't work because we have multiple versions of Web3.
       try {
@@ -38,23 +39,23 @@ var contract = (function(module) {
     decodeLogs: function(C, instance, logs) {
       return logs
         .map(function(log) {
-          var logABI = C.events[log.topics[0]];
+          const logABI = C.events[log.topics[0]];
 
-          if (logABI == null) {
+          if (!logABI) {
             return null;
           }
 
           // This function has been adapted from web3's SolidityEvent.decode() method,
           // and built to work with ethjs-abi.
 
-          var copy = Utils.merge({}, log);
+          const copy = Utils.merge({}, log);
 
           function partialABI(fullABI, indexed) {
-            var inputs = fullABI.inputs.filter(function(i) {
+            const inputs = fullABI.inputs.filter(function(i) {
               return i.indexed === indexed;
             });
 
-            var partial = {
+            const partial = {
               inputs: inputs,
               name: fullABI.name,
               type: fullABI.type,
@@ -64,21 +65,23 @@ var contract = (function(module) {
             return partial;
           }
 
-          var argTopics = logABI.anonymous ? copy.topics : copy.topics.slice(1);
-          var indexedData =
+          const argTopics = logABI.anonymous
+            ? copy.topics
+            : copy.topics.slice(1);
+          const indexedData =
             "0x" +
             argTopics
               .map(function(topics) {
                 return topics.slice(2);
               })
               .join("");
-          var indexedParams = ethJSABI.decodeEvent(
+          const indexedParams = ethJSABI.decodeEvent(
             partialABI(logABI, true),
             indexedData
           );
 
-          var notIndexedData = copy.data;
-          var notIndexedParams = ethJSABI.decodeEvent(
+          const notIndexedData = copy.data;
+          const notIndexedParams = ethJSABI.decodeEvent(
             partialABI(logABI, false),
             notIndexedData
           );
@@ -86,7 +89,7 @@ var contract = (function(module) {
           copy.event = logABI.name;
 
           copy.args = logABI.inputs.reduce(function(acc, current) {
-            var val = indexedParams[current.name];
+            let val = indexedParams[current.name];
 
             if (val === undefined) {
               val = notIndexedParams[current.name];
@@ -97,7 +100,7 @@ var contract = (function(module) {
           }, {});
 
           Object.keys(copy.args).forEach(function(key) {
-            var val = copy.args[key];
+            const val = copy.args[key];
 
             // We have BN. Convert it to BigNumber
             if (val.constructor.isBN) {
@@ -115,13 +118,12 @@ var contract = (function(module) {
         });
     },
     promisifyFunction: function(fn, C) {
-      var self = this;
       return function() {
-        var instance = this;
+        const instance = this;
 
-        var args = Array.prototype.slice.call(arguments);
-        var tx_params = {};
-        var last_arg = args[args.length - 1];
+        const args = Array.prototype.slice.call(arguments);
+        let tx_params = {};
+        const last_arg = args[args.length - 1];
 
         // It's only tx_params if it's an object and not a BigNumber.
         if (Utils.is_object(last_arg) && !Utils.is_big_number(last_arg)) {
@@ -131,7 +133,7 @@ var contract = (function(module) {
         tx_params = Utils.merge(C.class_defaults, tx_params);
 
         return new Promise(function(accept, reject) {
-          var callback = function(error, result) {
+          const callback = function(error, result) {
             if (error != null) {
               reject(error);
             } else {
@@ -144,11 +146,11 @@ var contract = (function(module) {
       };
     },
     synchronizeFunction: function(fn, instance, C) {
-      var self = this;
+      const self = this;
       return function() {
-        var args = Array.prototype.slice.call(arguments);
-        var tx_params = {};
-        var last_arg = args[args.length - 1];
+        const args = Array.prototype.slice.call(arguments);
+        let tx_params = {};
+        const last_arg = args[args.length - 1];
 
         // It's only tx_params if it's an object and not a BigNumber.
         if (Utils.is_object(last_arg) && !Utils.is_big_number(last_arg)) {
@@ -158,13 +160,13 @@ var contract = (function(module) {
         tx_params = Utils.merge(C.class_defaults, tx_params);
 
         return new Promise(function(accept, reject) {
-          var callback = function(error, tx) {
+          const callback = function(error, tx) {
             if (error != null) {
               reject(error);
               return;
             }
 
-            var timeout;
+            let timeout;
             if (
               C.synchronization_timeout === 0 ||
               C.synchronization_timeout !== undefined
@@ -174,9 +176,9 @@ var contract = (function(module) {
               timeout = 240000;
             }
 
-            var start = new Date().getTime();
+            const start = new Date().getTime();
 
-            var make_attempt = function() {
+            const make_attempt = function() {
               C.web3.eth.getTransactionReceipt(tx, function(err, receipt) {
                 if (err && !err.toString().includes("unknown transaction")) {
                   return reject(err);
@@ -185,8 +187,8 @@ var contract = (function(module) {
                 // Reject on transaction failures, accept otherwise
                 // Handles "0x00" or hex 0
                 if (receipt != null) {
-                  if (parseInt(receipt.status, 16) == 0) {
-                    var statusError = new StatusError(tx_params, tx, receipt);
+                  if (parseInt(receipt.status, 16) === 0) {
+                    const statusError = new StatusError(tx_params, tx, receipt);
                     return reject(statusError);
                   } else {
                     return accept({
@@ -222,15 +224,15 @@ var contract = (function(module) {
       };
     },
     merge: function() {
-      var merged = {};
-      var args = Array.prototype.slice.call(arguments);
+      const merged = {};
+      const args = Array.prototype.slice.call(arguments);
 
-      for (var i = 0; i < args.length; i++) {
-        var object = args[i];
-        var keys = Object.keys(object);
-        for (var j = 0; j < keys.length; j++) {
-          var key = keys[j];
-          var value = object[key];
+      for (let i = 0; i < args.length; i++) {
+        const object = args[i];
+        const keys = Object.keys(object);
+        for (let j = 0; j < keys.length; j++) {
+          const key = keys[j];
+          const value = object[key];
           merged[key] = value;
         }
       }
@@ -242,8 +244,8 @@ var contract = (function(module) {
       if (!arr.length) {
         return callback(null, []);
       }
-      var index = 0;
-      var results = new Array(arr.length);
+      let index = 0;
+      const results = new Array(arr.length);
       arr.forEach(function(fn, position) {
         fn(function(err, result) {
           if (err) {
@@ -274,13 +276,13 @@ var contract = (function(module) {
     },
     linkBytecode: function(bytecode, links) {
       Object.keys(links).forEach(function(library_name) {
-        var library_address = links[library_name];
-        var regex = new RegExp("__" + library_name + "_+", "g");
+        const library_address = links[library_name];
+        const regex = new RegExp("__" + library_name + "_+", "g");
         bytecode = bytecode.replace(
           regex,
           library_address.replace("0x", "").replace("41", "")
         );
-        // var address = TronWrap.address2HexString(library_address);
+        // var address = EarthWrap.address2HexString(library_address);
         // bytecode = bytecode.replace(eval('/'+library_address+"/ig"),address.replace("41", ""));
       });
 
@@ -289,9 +291,9 @@ var contract = (function(module) {
   };
 
   function Contract(contract) {
-    var constructor = this.constructor;
+    const constructor = this.constructor;
     this.abi = constructor.abi;
-    if (typeof contract == "string") {
+    if (typeof contract === "string") {
       this.address = contract;
     } else {
       this.allEvents = contract.allEvents;
@@ -305,15 +307,15 @@ var contract = (function(module) {
   }
 
   function filterEnergyParameter(args) {
-    let deployParameters = Object.keys(constants.deployParameters);
-    let lastArg = args[args.length - 1];
+    const deployParameters = Object.keys(constants.deployParameters);
+    const lastArg = args[args.length - 1];
     if (typeof lastArg !== "object" || Array.isArray(lastArg))
       return [args, {}];
     args.pop();
-    let res = {};
-    for (let property in lastArg) {
-      let camelCased = toCamelCase(property);
-      if (!!~deployParameters.indexOf(camelCased)) {
+    const res = {};
+    for (const property in lastArg) {
+      const camelCased = toCamelCase(property);
+      if (~deployParameters.indexOf(camelCased)) {
         res[camelCased] = lastArg[property];
       }
     }
@@ -323,7 +325,7 @@ var contract = (function(module) {
   Contract._static_methods = {
     initEarthWeb: function(options) {
       if (!earthWrap) {
-        earthWrap = TronWrap(options);
+        earthWrap = EarthWrap(options);
       }
     },
 
@@ -334,24 +336,20 @@ var contract = (function(module) {
         );
       }
 
-      var wrapped = new Provider(provider);
-      //zzsun-rm-web3
-      // this.web3.setProvider(wrapped);
-      // earthWrap.setHttpProvider(provider.host);
       this.currentProvider = provider;
     },
 
     new: function() {
-      var self = this;
+      const self = this;
 
-      if (this.currentProvider == null) {
+      if (!this.currentProvider) {
         throw new Error(
           this.contractName +
             " error: Please call setProvider() first before calling new()."
         );
       }
 
-      var [args, params] = filterEnergyParameter(
+      const [args, params] = filterEnergyParameter(
         Array.prototype.slice.call(arguments)
       );
 
@@ -363,8 +361,8 @@ var contract = (function(module) {
       }
 
       // After the network is set, check to make sure everything's ship shape.
-      var regex = /__[^_]+_+/g;
-      var unlinked_libraries = self.binary.match(regex);
+      const regex = /__[^_]+_+/g;
+      let unlinked_libraries = self.binary.match(regex);
 
       if (unlinked_libraries != null) {
         unlinked_libraries = unlinked_libraries
@@ -379,7 +377,7 @@ var contract = (function(module) {
               return true;
             }
 
-            return name != arr[index + 1];
+            return name !== arr[index + 1];
           })
           .join(", ");
 
@@ -393,10 +391,10 @@ var contract = (function(module) {
       }
       return new Promise(function(accept, reject) {
         // var contract_class = self.web3.eth.contract(self.abi);
-        var tx_params = {
+        let tx_params = {
           parameters: args
         };
-        var last_arg = args[args.length - 1];
+        const last_arg = args[args.length - 1];
 
         // It's only tx_params if it's an object and not a BigNumber.
         if (Utils.is_object(last_arg) && !Utils.is_big_number(last_arg)) {
@@ -404,7 +402,7 @@ var contract = (function(module) {
         }
 
         // Validate constructor args
-        var constructor = self.abi.filter(function(item) {
+        const constructor = self.abi.filter(function(item) {
           return item.type === "constructor";
         });
 
@@ -422,14 +420,14 @@ var contract = (function(module) {
         }
         tx_params = Utils.merge(self.class_defaults, tx_params);
 
-        if (tx_params.data == null) {
+        if (!tx_params.data) {
           tx_params.data = self.binary;
         }
 
         // for debugging only:
         tx_params.contractName = self.contractName;
 
-        for (let param in params) {
+        for (const param in params) {
           tx_params[param] = params[param];
         }
 
@@ -447,65 +445,16 @@ var contract = (function(module) {
       });
     },
 
-    at: function(address) {
-      var self = this;
-
+    at: function() {
       throw new Error(
-        "The construct contractArtifacts.at(address) is not currently supported by EarthCli. It will be in the future. Stay in touch."
+        "The construct contractArtifacts.at(address) is not currently supported by EarthBox. It will be in the future. Stay in touch."
       );
-
-      if (
-        address == null ||
-        typeof address != "string" ||
-        address.length != 42
-      ) {
-        throw new Error(
-          "Invalid address passed to " +
-            this._json.contractName +
-            ".at(): " +
-            address
-        );
-      }
-
-      var contract = new this(address);
-
-      // Add thennable to allow people opt into new recommended usage.
-      contract.then = function(fn) {
-        return new Promise(function() {
-          var instance = new self(address);
-
-          return new Promise(function(accept, reject) {
-            earthWrap._getContract(address, function(err, contractAddress) {
-              if (err) return reject(err);
-              if (
-                !contractAddress ||
-                contractAddress.replace(/^0x/, "").replace(/0/g, "") === ""
-              ) {
-                return reject(
-                  new Error(
-                    "Cannot create instance of " +
-                      self.contractName +
-                      "; no code at address " +
-                      address
-                  )
-                );
-              }
-              // for (let prop in contract) console.log(1, prop)
-              // for (let prop in instance) console.log(1, prop)
-
-              accept(instance);
-            });
-          });
-        }).then(fn);
-      };
-
-      return contract;
     },
     call: function(methodName, ...args) {
-      var self = this;
-      var methodArgs = {};
+      const self = this;
+      let methodArgs = {};
 
-      var lastArg = args[args.length - 1];
+      const lastArg = args[args.length - 1];
       if (!Array.isArray(lastArg) && typeof lastArg === "object") {
         methodArgs = args.pop();
       }
@@ -518,7 +467,7 @@ var contract = (function(module) {
         if (Array.isArray(args[0][0])) {
           args = args[0];
         } else {
-          for (let item of self.abi) {
+          for (const item of self.abi) {
             if (item.name === methodName) {
               if (!/\[\]$/.test(item.inputs[0].type)) {
                 args = args[0];
@@ -528,7 +477,7 @@ var contract = (function(module) {
         }
       }
 
-      var option = {};
+      let option = {};
 
       return new Promise(function(accept, reject) {
         function _callback(err, res) {
@@ -554,7 +503,7 @@ var contract = (function(module) {
       });
     },
     deployed: function() {
-      var self = this;
+      const self = this;
       return new Promise(function(accept, reject) {
         // If we found the network but it's not deployed
         if (!self.isDeployed()) {
@@ -562,15 +511,16 @@ var contract = (function(module) {
             self.contractName + " has not been deployed to detected network"
           );
         }
-        TronWrap()
+        EarthWrap()
           .trx.getContract(self.address)
           .then(res => {
             const abi = res.abi && res.abi.entrys ? res.abi.entrys : [];
-            for (var i = 0; i < abi.length; i++) {
-              let item = abi[i];
+            for (let i = 0; i < abi.length; i++) {
+              const item = abi[i];
+              // eslint-disable-next-line no-prototype-builtins
               if (self.hasOwnProperty(item.name)) continue;
               if (/(function|event)/i.test(item.type) && item.name) {
-                let f = (...args) => {
+                const f = (...args) => {
                   return self.call.apply(null, [item.name].concat(args));
                 };
                 self[item.name] = f;
@@ -586,17 +536,17 @@ var contract = (function(module) {
     },
 
     defaults: function(class_defaults) {
-      if (this.class_defaults == null) {
+      if (!this.class_defaults) {
         this.class_defaults = {};
       }
 
-      if (class_defaults == null) {
+      if (!class_defaults) {
         class_defaults = {};
       }
 
-      var self = this;
+      const self = this;
       Object.keys(class_defaults).forEach(function(key) {
-        var value = class_defaults[key];
+        const value = class_defaults[key];
         self.class_defaults[key] = value;
       });
 
@@ -608,11 +558,11 @@ var contract = (function(module) {
     },
 
     isDeployed: function() {
-      if (this.network_id == null) {
+      if (!this.network_id) {
         return false;
       }
 
-      if (this._json.networks[this.network_id] == null) {
+      if (!this._json.networks[this.network_id]) {
         return false;
       }
 
@@ -630,12 +580,12 @@ var contract = (function(module) {
     },
 
     link: function(name, address) {
-      var self = this;
+      const self = this;
 
-      if (typeof name == "function") {
-        var contract = name;
+      if (typeof name === "function") {
+        const contract = name;
 
-        if (contract.isDeployed() == false) {
+        if (!contract.isDeployed()) {
           throw new Error("Cannot link contract without an address.");
         }
 
@@ -649,16 +599,16 @@ var contract = (function(module) {
         return;
       }
 
-      if (typeof name == "object") {
-        var obj = name;
+      if (typeof name === "object") {
+        const obj = name;
         Object.keys(obj).forEach(function(name) {
-          var a = obj[name];
+          const a = obj[name];
           self.link(name, a);
         });
         return;
       }
 
-      if (this._json.networks[this.network_id] == null) {
+      if (!this._json.networks[this.network_id]) {
         this._json.networks[this.network_id] = {
           events: {},
           links: {}
@@ -672,21 +622,21 @@ var contract = (function(module) {
     // 1. Object with a bunch of data; this data will be merged with the json data of contract being cloned.
     // 2. network id; this will clone the contract and set a specific network id upon cloning.
     clone: function(json) {
-      var self = this;
+      const self = this;
 
       json = json || {};
 
-      var temp = function TruffleContract() {
+      const temp = function TruffleContract() {
         this.constructor = temp;
         return Contract.apply(this, arguments);
       };
 
       temp.prototype = Object.create(self.prototype);
 
-      var network_id;
+      let network_id;
 
       // If we have a network id passed
-      if (typeof json != "object") {
+      if (typeof json !== "object") {
         network_id = json;
         json = self._json;
       }
@@ -709,7 +659,7 @@ var contract = (function(module) {
 
       // Copy over custom key/values to the contract class
       Object.keys(json).forEach(function(key) {
-        if (key.indexOf("x-") != 0) return;
+        if (key.indexOf("x-") !== 0) return;
         temp[key] = json[key];
       });
 
@@ -717,16 +667,16 @@ var contract = (function(module) {
     },
 
     addProp: function(key, fn) {
-      var self = this;
+      const self = this;
 
-      var getter = function() {
+      const getter = function() {
         if (fn.get != null) {
           return fn.get.call(self);
         }
 
         return self._property_values[key] || fn.call(self);
       };
-      var setter = function(val) {
+      const setter = function(val) {
         if (fn.set != null) {
           fn.set.call(self, val);
           return;
@@ -736,7 +686,7 @@ var contract = (function(module) {
         throw new Error(key + " property is immutable");
       };
 
-      var definition = {};
+      const definition = {};
       definition.enumerable = false;
       definition.configurable = false;
       definition.get = getter;
@@ -777,9 +727,9 @@ var contract = (function(module) {
       }
     },
     network: function() {
-      var network_id = this.network_id;
+      const network_id = this.network_id;
 
-      if (network_id == null) {
+      if (!network_id) {
         throw new Error(
           this.contractName +
             " has no network id set, cannot lookup artifact data. Either set the network manually using " +
@@ -791,7 +741,7 @@ var contract = (function(module) {
       }
 
       // TODO: this might be bad; setting a value on a get.
-      if (this._json.networks[network_id] == null) {
+      if (!this._json.networks[network_id]) {
         throw new Error(
           this.contractName +
             " has no network configuration for its current network id (" +
@@ -800,14 +750,14 @@ var contract = (function(module) {
         );
       }
 
-      var returnVal = this._json.networks[network_id];
+      const returnVal = this._json.networks[network_id];
 
       // Normalize output
-      if (returnVal.links == null) {
+      if (!returnVal.links) {
         returnVal.links = {};
       }
 
-      if (returnVal.events == null) {
+      if (!returnVal.events) {
         returnVal.events = {};
       }
 
@@ -818,9 +768,9 @@ var contract = (function(module) {
     },
     address: {
       get: function() {
-        var address = this.network.address;
+        const address = this.network.address;
 
-        if (address == null) {
+        if (!address) {
           throw new Error(
             "Cannot find deployed address: " +
               this.contractName +
@@ -831,15 +781,15 @@ var contract = (function(module) {
         return address;
       },
       set: function(val) {
-        if (val == null) {
+        if (!val) {
           throw new Error(
             "Cannot set deployed address; malformed value: " + val
           );
         }
 
-        var network_id = this.network_id;
+        const network_id = this.network_id;
 
-        if (network_id == null) {
+        if (!network_id) {
           throw new Error(
             this.contractName +
               " has no network id set, cannot lookup artifact data. Either set the network manually using " +
@@ -851,7 +801,7 @@ var contract = (function(module) {
         }
 
         // Create a network if we don't have one.
-        if (this._json.networks[network_id] == null) {
+        if (!this._json.networks[network_id]) {
           this._json.networks[network_id] = {
             events: {},
             links: {}
@@ -864,7 +814,7 @@ var contract = (function(module) {
     },
     transactionHash: {
       get: function() {
-        var transactionHash = this.network.transactionHash;
+        const transactionHash = this.network.transactionHash;
 
         if (transactionHash === null) {
           throw new Error(
@@ -890,49 +840,14 @@ var contract = (function(module) {
         );
       }
 
-      if (this._json.networks[this.network_id] == null) {
+      if (!this._json.networks[this.network_id]) {
         return {};
       }
 
       return this.network.links || {};
     },
     events: function() {
-      // helper web3; not used for provider
-      // var web3 = new Web3();zzsun-add
       return [];
-
-      var events;
-
-      if (this._json.networks[this.network_id] == null) {
-        events = {};
-      } else {
-        events = this.network.events || {};
-      }
-
-      // Merge abi events with whatever's returned.
-      var abi = this.abi;
-
-      abi.forEach(function(item) {
-        if (item.type != "event") return;
-
-        var signature = item.name + "(";
-
-        item.inputs.forEach(function(input, index) {
-          signature += input.type;
-
-          if (index < item.inputs.length - 1) {
-            signature += ",";
-          }
-        });
-
-        signature += ")";
-
-        var topic = TronWrap().sha3(signature);
-
-        events[topic] = item;
-      });
-
-      return events;
     },
     binary: function() {
       return Utils.linkBytecode(this.bytecode, this.links);
@@ -960,18 +875,18 @@ var contract = (function(module) {
     },
     deployedBytecode: {
       get: function() {
-        var code = this._json.deployedBytecode;
+        let code = this._json.deployedBytecode;
 
-        if (code.indexOf("0x") != 0) {
+        if (code.indexOf("0x") !== 0) {
           code = "0x" + code;
         }
 
         return code;
       },
       set: function(val) {
-        var code = val;
+        let code = val;
 
-        if (val.indexOf("0x") != 0) {
+        if (val.indexOf("0x") !== 0) {
           code = "0x" + code;
         }
 

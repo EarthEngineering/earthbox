@@ -1,5 +1,5 @@
-var { EarthWeb } = require("../EarthWrap");
-var wrapper = require("./wrapper");
+const { EarthWeb } = require("../EarthWrap");
+const wrapper = require("./wrapper");
 
 module.exports = {
   wrap: function(provider, options) {
@@ -7,9 +7,9 @@ module.exports = {
   },
 
   create: function(options) {
-    var provider;
+    let provider;
 
-    if (options.provider && typeof options.provider == "function") {
+    if (options.provider && typeof options.provider === "function") {
       provider = options.provider();
     } else if (options.provider) {
       provider = options.provider;
@@ -17,37 +17,37 @@ module.exports = {
       const HttpProvider = EarthWeb.providers.HttpProvider;
 
       HttpProvider.prototype.send = function(payload) {
-        var request = this.prepareRequest(false);
+        const request = this.prepareRequest(false);
 
         try {
           request.send(JSON.stringify(payload));
         } catch (error) {
-          throw errors.InvalidConnection(this.host);
+          throw new Error(`Invalid Connection (${this.host})`);
         }
 
-        var result = request.responseText;
+        let result = request.responseText;
 
         try {
           result = JSON.parse(result);
         } catch (e) {
-          throw errors.InvalidResponse(request.responseText);
+          throw new Error(`Invalid Response (${request.responseText})`);
         }
 
         return result;
       };
 
       HttpProvider.prototype.sendAsync = function(payload, callback) {
-        var request = this.prepareRequest(true);
+        const request = this.prepareRequest(true);
 
         request.onreadystatechange = function() {
           if (request.readyState === 4 && request.timeout !== 1) {
-            var result = request.responseText;
-            var error = null;
+            let result = request.responseText;
+            let error = null;
 
             try {
               result = JSON.parse(result);
             } catch (e) {
-              error = errors.InvalidResponse(request.responseText);
+              error = new Error(`Invalid Response (${request.responseText})`);
             }
 
             callback(error, result);
@@ -55,13 +55,13 @@ module.exports = {
         };
 
         request.ontimeout = function() {
-          callback(errors.ConnectionTimeout(this.timeout));
+          throw new Error(`Connection Timeout (${this.timeout})`);
         };
 
         try {
           request.send(JSON.stringify(payload));
         } catch (error) {
-          callback(errors.InvalidConnection(this.host));
+          callback(new Error(`Invalid Connection (${this.host})`));
         }
         return request;
       };

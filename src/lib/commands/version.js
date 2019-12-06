@@ -1,30 +1,26 @@
-let { supportedVersions } = require("../../components/EarthSolc");
+const {maxVersion} = require('../../components/TronSolc')
 
-let command = {
-  command: "version",
-  description: "Show version number and exit",
+const command = {
+  command: 'version',
+  description: 'Show version number and exit',
   builder: {},
-  run: function(options, done) {
-    process.env.CURRENT = "version";
-    let version = require("../version");
+  run: function (options, done) {
+    process.env.CURRENT = 'version'
+    const version = require('../version')
 
-    let bundle_version;
+    let bundle_version
 
     if (version.bundle) {
-      bundle_version = "v" + version.bundle;
+      bundle_version = 'v' + version.bundle
     } else {
-      bundle_version = "(unbundled)";
+      bundle_version = '(unbundled)'
     }
 
-    options.logger.log("EarthCli " + bundle_version);
-    options.logger.log(
-      "Solidity v" +
-        supportedVersions[supportedVersions.length - 1] +
-        " (earth-solc)"
-    );
+    options.logger.log('Tronbox ' + bundle_version)
+    options.logger.log('Solidity v' + maxVersion + ' (tron-solc)')
 
-    done();
+    done()
   }
-};
+}
 
-module.exports = command;
+module.exports = command

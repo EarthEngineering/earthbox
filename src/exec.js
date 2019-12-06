@@ -1,17 +1,16 @@
-#!/usr/bin/env node
-let path = require("path");
-let spawn = require("child_process").spawn;
+const path = require("path");
+const spawn = require("child_process").spawn;
 
-let cli_path = path.resolve(path.join(__dirname, "./index.js"));
+const cli_path = path.resolve(path.join(__dirname, "./index.js"));
 
-let args = [cli_path, "exec"];
+const args = [cli_path, "exec"];
 
 Array.prototype.push.apply(args, process.argv.slice(2));
 
-let cmd = spawn("node", args);
+const cmd = spawn("node", args);
 
 cmd.stdout.on("data", data => {
-  console.log(data.toString());
+  console.info(data.toString());
 });
 
 cmd.stderr.on("data", data => {
@@ -19,6 +18,7 @@ cmd.stderr.on("data", data => {
 });
 
 cmd.on("close", code => {
+  // eslint-disable-next-line no-process-exit
   process.exit(code);
 });
 

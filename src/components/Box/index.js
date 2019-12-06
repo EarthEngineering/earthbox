@@ -1,53 +1,22 @@
-var utils = require("./lib/utils");
-var tmp = require("tmp");
-var path = require("path");
+const utils = require("./lib/utils");
 
-var Config = require("../Config");
-
-var Box = {
-  unbox: function(url, destination, options) {
+class Box {
+  static async unbox(url, destination, options) {
     options = options || {};
-    options.logger = options.logger || { log: function() {} };
+    options.logger = options.logger || {
+      log: function() {}
+    };
 
-    return Promise.resolve()
-      .then(function() {
-        options.logger.log("Downloading...");
-        return utils.downloadBox(url, destination);
-      })
-      .then(function() {
-        options.logger.log("Unpacking...");
-        return utils.unpackBox(destination);
-      })
-      .then(function(boxConfig) {
-        options.logger.log("Setting up...");
-        return utils.setupBox(boxConfig, destination);
-      })
-      .then(function(boxConfig) {
-        return boxConfig;
-      });
-  },
+    options.logger.log("Downloading...");
+    await utils.downloadBox(url, destination);
 
-  sandbox: function(name, callback) {
-    var self = this;
-    if (typeof name === "function") {
-      callback = name;
-      name = "default";
-    }
+    options.logger.log("Unpacking...");
+    const boxConfig = await utils.unpackBox(destination);
 
-    tmp.dir(function(err, dir, cleanupCallback) {
-      if (err) {
-        return callback(err);
-      }
-
-      self
-        .unbox("https://github.com/trufflesuite/truffle-init-" + name, dir)
-        .then(function() {
-          var config = Config.load(path.join(dir, "earthcli.js"), {});
-          callback(null, config);
-        })
-        .catch(callback);
-    });
+    options.logger.log("Setting up...");
+    await utils.setupBox(boxConfig, destination);
+    return boxConfig;
   }
-};
+}
 
 module.exports = Box;

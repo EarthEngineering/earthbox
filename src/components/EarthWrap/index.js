@@ -1,12 +1,11 @@
-var _EarthWeb = require("earthweb");
-var chalk = require("chalk");
-var constants = require("./constants");
-var axios = require("axios");
-var semver = require("semver");
+const _EarthWeb = require("earthweb");
+const chalk = require("chalk");
+const constants = require("./constants");
+const axios = require("axios");
 
-var instance;
+let instance;
 
-function EarthWeb() {
+function EarthWrap() {
   this._toNumber = toNumber;
   this.EventList = [];
   this.filterMatchFunction = filterMatchFunction;
@@ -30,7 +29,7 @@ function filterMatchFunction(method, abi) {
     return null;
   }
   methodObj = methodObj[0];
-  let parametersObj = methodObj.inputs.map(item => item.type);
+  const parametersObj = methodObj.inputs.map(item => item.type);
   return {
     function: methodObj.name + "(" + parametersObj.join(",") + ")",
     parameter: parametersObj,
@@ -44,7 +43,7 @@ function sleep(millis) {
 }
 
 function filterNetworkConfig(options) {
-  let userFeePercentage =
+  const userFeePercentage =
     typeof options.userFeePercentage === "number"
       ? options.userFeePercentage
       : typeof options.consume_user_resource_percent === "number"
@@ -71,7 +70,7 @@ function filterNetworkConfig(options) {
   };
 }
 
-function init(options, extraOptions) {
+function init(options, extraOptions = {}) {
   if (instance) {
     return instance;
   }
@@ -96,14 +95,14 @@ function init(options, extraOptions) {
     }
   }
 
-  EarthWeb.prototype = new _EarthWeb(
+  EarthWrap.prototype = new _EarthWeb(
     options.fullNode || options.fullHost,
     options.solidityNode || options.fullHost,
     options.eventServer || options.fullHost,
     options.privateKey
   );
 
-  const earthWrap = EarthWeb.prototype;
+  const earthWrap = EarthWrap.prototype;
   // earthWrap._compilerVersion = 3
 
   earthWrap.networkConfig = filterNetworkConfig(options);
@@ -112,20 +111,18 @@ function init(options, extraOptions) {
   }
 
   earthWrap._getNetworkInfo = async function() {
-    let info = {
+    const info = {
       parameters: {},
       nodeinfo: {}
     };
     try {
-      let res = await Promise.all([
+      const res = await Promise.all([
         earthWrap.trx.getChainParameters(),
         earthWrap.trx.getNodeInfo()
       ]);
       info.parameters = res[0] || {};
       info.nodeinfo = res[1] || {};
-    } catch (err) {
-      // console.log('Error', err)
-    }
+    } catch (err) {}
     return Promise.resolve(info);
   };
 
@@ -143,7 +140,7 @@ function init(options, extraOptions) {
   earthWrap._getAccounts = function(callback) {
     const self = this;
 
-    return new Promise((accept, reject) => {
+    return new Promise(accept => {
       function cb() {
         if (callback) {
           callback(null, self._accounts);
@@ -164,8 +161,8 @@ function init(options, extraOptions) {
           if (data.length > 0 && data[0].length === 64) {
             self._accounts = [];
             self._privateKeyByAccount = {};
-            for (let account of data) {
-              let address = this.address.fromPrivateKey(account);
+            for (const account of data) {
+              const address = this.address.fromPrivateKey(account);
               self._privateKeyByAccount[address] = account;
               self._accounts.push(address);
             }
@@ -173,7 +170,7 @@ function init(options, extraOptions) {
           self._accountsRequested = true;
           return cb();
         })
-        .catch(err => {
+        .catch(() => {
           self._accountsRequested = true;
           return cb();
         });
@@ -191,7 +188,7 @@ function init(options, extraOptions) {
 
   earthWrap._deployContract = function(option, callback) {
     const myContract = this.contract();
-    let originEnergyLimit =
+    const originEnergyLimit =
       option.originEnergyLimit || this.networkConfig.originEnergyLimit;
     if (
       originEnergyLimit < 0 ||
@@ -200,7 +197,7 @@ function init(options, extraOptions) {
       throw new Error("Origin Energy Limit must be > 0 and <= 10,000,000");
     }
 
-    let userFeePercentage =
+    const userFeePercentage =
       typeof options.userFeePercentage === "number"
         ? options.userFeePercentage
         : this.networkConfig.userFeePercentage;
@@ -219,7 +216,7 @@ function init(options, extraOptions) {
       },
       option.privateKey
     )
-      .then(result => {
+      .then(() => {
         callback(null, myContract);
         option.address = myContract.address;
       })
@@ -231,8 +228,7 @@ function init(options, extraOptions) {
   earthWrap._new = async function(
     myContract,
     options,
-    privateKey = earthWrap.defaultPrivateKey,
-    callback
+    privateKey = earthWrap.defaultPrivateKey
   ) {
     let signedTransaction;
     try {
@@ -298,13 +294,15 @@ function init(options, extraOptions) {
       dlog("Contract deployed");
       return Promise.resolve(myContract);
     } catch (ex) {
+      let e;
       if (ex.toString().includes("does not exist")) {
-        let url =
+        const url =
           this.networkConfig.fullNode +
           "/wallet/gettransactionbyid?value=" +
           signedTransaction.txID;
 
-        ex =
+        // eslint-disable-next-line no-ex-assign
+        e =
           "Contract " +
           chalk.bold(options.name) +
           " has not been deployed on the network.\nFor more details, check the transaction at:\n" +
@@ -312,13 +310,13 @@ function init(options, extraOptions) {
           "\nIf the transaction above is empty, most likely, your address had no bandwidth/energy to deploy the contract.";
       }
 
-      return Promise.reject(ex);
+      return Promise.reject(e || ex);
     }
   };
 
   earthWrap.triggerContract = function(option, callback) {
-    let myContract = this.contract(option.abi, option.address);
-    var callSend = "send"; // constructor and fallback
+    const myContract = this.contract(option.abi, option.address);
+    let callSend = "send"; // constructor and fallback
     option.abi.forEach(function(val) {
       if (val.name === option.methodName) {
         callSend = /payable/.test(val.stateMutability) ? "send" : "call";
@@ -329,7 +327,7 @@ function init(options, extraOptions) {
 
     dlog(option.methodName, option.args, options.methodArgs);
 
-    var privateKey;
+    let privateKey;
     if (callSend === "send" && option.methodArgs.from) {
       privateKey = this._privateKeyByAccount[option.methodArgs.from];
     }
@@ -360,7 +358,7 @@ function init(options, extraOptions) {
       });
   };
 
-  return new EarthWeb();
+  return new EarthWrap();
 }
 
 const logErrorAndExit = (logger, err) => {
@@ -383,6 +381,7 @@ const logErrorAndExit = (logger, err) => {
   } else {
     log("Error encountered, bailing. Network state unknown.");
   }
+  // eslint-disable-next-line no-process-exit
   process.exit();
 };
 
@@ -392,16 +391,18 @@ const dlog = function(...args) {
       if (typeof args[i] === "object") {
         try {
           args[i] = JSON.stringify(args[i], null, 2);
-        } catch (err) {}
+        } catch (err) {
+          // eslint-disable-next-line no-empty
+        }
       }
     }
-    console.log(chalk.blue(args.join(" ")));
+    console.debug(chalk.blue(args.join(" ")));
   }
 };
 
 module.exports = init;
 
-module.exports.config = () => console.log("config");
+module.exports.config = () => console.info("config");
 module.exports.constants = constants;
 module.exports.logErrorAndExit = logErrorAndExit;
 module.exports.dlog = dlog;

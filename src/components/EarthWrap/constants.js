@@ -1,5 +1,4 @@
 module.exports = {
-
   deployParameters: {
     feeLimit: 1e9,
     userFeePercentage: 100,
@@ -8,5 +7,4 @@ module.exports = {
     tokenValue: undefined,
     tokenId: undefined
   }
-
-}
+};

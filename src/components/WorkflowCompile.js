@@ -1,18 +1,15 @@
-let async = require("async");
-let fs = require("fs");
-let mkdirp = require("mkdirp");
-let path = require("path");
-let Config = require("./Config");
-let compile = require("./Compile");
-let expect = require("@truffle/expect");
-let _ = require("lodash");
-let Resolver = require("./Resolver");
-let Artifactor = require("./Artifactor");
-let OS = require("os");
-let EarthWrap = require("./EarthWrap");
+const mkdirp = require("mkdirp");
+const path = require("path");
+const Config = require("./Config");
+const compile = require("./Compile");
+const expect = require("@truffle/expect");
+const Resolver = require("./Resolver");
+const Artifactor = require("./Artifactor");
+const OS = require("os");
+const EarthWrap = require("./EarthWrap");
 
 async function getCompilerVersion(options) {
-  var config = Config.detect(options);
+  const config = Config.detect(options);
 
   // if "development" exists, default to using that
   if (!config.network && config.networks.development) {
@@ -31,7 +28,7 @@ async function getCompilerVersion(options) {
   }
 }
 
-let Contracts = {
+const Contracts = {
   // contracts_directory: String. Directory where .sol files can be found.
   // contracts_build_directory: String. Directory where .sol.js files can be found and written to.
   // all: Boolean. Compile all sources found. Defaults to true. If false, will compare sources against built files
@@ -40,14 +37,14 @@ let Contracts = {
   // quiet: Boolean. Suppress output. Defaults to false.
   // strict: Boolean. Return compiler warnings as errors. Defaults to false.
   compile: function(options, callback) {
-    let self = this;
+    const self = this;
 
     expect.options(options, ["contracts_build_directory"]);
 
     expect.one(options, ["contracts_directory", "files"]);
 
     // Use a config object to ensure we get the default sources.
-    let config = Config.default().merge(options);
+    const config = Config.default().merge(options);
 
     if (!config.resolver) {
       config.resolver = new Resolver(config);
@@ -82,19 +79,19 @@ let Contracts = {
         config.networkInfo = networkInfo;
         start();
       })
-      .catch(err => start());
+      .catch(start);
   },
 
   write_contracts: function(contracts, options, callback) {
-    let logger = options.logger || console;
+    const logger = options.logger || console;
 
-    mkdirp(options.contracts_build_directory, function(err, result) {
+    mkdirp(options.contracts_build_directory, function(err) {
       if (err != null) {
         callback(err);
         return;
       }
 
-      if (options.quiet != true && options.quietWrite != true) {
+      if (!options.quiet && !options.quietWrite) {
         logger.log(
           "Writing artifacts to ." +
             path.sep +
@@ -106,7 +103,7 @@ let Contracts = {
         );
       }
 
-      let extra_opts = {
+      const extra_opts = {
         network_id: options.network_id
       };
 

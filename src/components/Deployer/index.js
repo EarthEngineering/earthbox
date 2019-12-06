@@ -1,19 +1,21 @@
-var expect = require("@truffle/expect");
-var DeferredChain = require("./src/deferredchain");
-var deploy = require("./src/actions/deploy");
-var deployMany = require("./src/actions/deploymany");
-var link = require("./src/actions/link");
-var create = require("./src/actions/new");
-var { dlog } = require("../EarthWrap");
+const expect = require("@truffle/expect");
+const DeferredChain = require("./src/deferredchain");
+const deploy = require("./src/actions/deploy");
+const deployMany = require("./src/actions/deploymany");
+const link = require("./src/actions/link");
+const create = require("./src/actions/new");
+const { dlog } = require("../EarthWrap");
 
 function Deployer(options) {
-  var self = this;
+  const self = this;
   options = options || {};
 
   expect.options(options, ["provider", "network", "network_id"]);
 
   this.chain = new DeferredChain();
-  this.logger = options.logger || { log: function() {} };
+  this.logger = options.logger || {
+    log: function() {}
+  };
   this.known_contracts = {};
   (options.contracts || []).forEach(function(contract) {
     self.known_contracts[contract.contract_name] = contract;
@@ -36,8 +38,8 @@ Deployer.prototype.link = function(library, destinations) {
 };
 
 Deployer.prototype.deploy = function() {
-  var args = Array.prototype.slice.call(arguments);
-  var contract = args.shift();
+  const args = Array.prototype.slice.call(arguments);
+  const contract = args.shift();
 
   if (Array.isArray(contract)) {
     dlog("Deploy many");
@@ -49,20 +51,20 @@ Deployer.prototype.deploy = function() {
 };
 
 Deployer.prototype.new = function() {
-  var args = Array.prototype.slice.call(arguments);
-  var contract = args.shift();
+  const args = Array.prototype.slice.call(arguments);
+  const contract = args.shift();
 
   return this.queueOrExec(create(contract, args, this));
 };
 
-Deployer.prototype.exec = function(file) {
+Deployer.prototype.exec = function() {
   throw new Error(
-    "deployer.exec() has been deprecated; please seen the earthcli-require package for integration."
+    "deployer.exec() has been deprecated; please seen the earthbox-require package for integration."
   );
 };
 
 Deployer.prototype.then = function(fn) {
-  var self = this;
+  const self = this;
 
   return this.queueOrExec(function() {
     self.logger.log("Running step...");
@@ -71,10 +73,8 @@ Deployer.prototype.then = function(fn) {
 };
 
 Deployer.prototype.queueOrExec = function(fn) {
-  var self = this;
-
-  if (this.chain.started == true) {
-    return new Promise(function(accept, reject) {
+  if (this.chain.started) {
+    return new Promise(function(accept) {
       accept();
     }).then(fn);
   } else {

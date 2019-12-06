@@ -1,25 +1,30 @@
-let path = require("path");
-let fs = require("fs-extra");
-let homedir = require("homedir");
-let req = require("superagent");
+const path = require("path");
+const fs = require("fs-extra");
+const homedir = require("homedir");
+const req = require("superagent");
 
 async function downloader(compilerVersion) {
-  let dir = path.join(homedir(), ".earthcli", "solc");
-  let soljsonPath = path.join(dir, `soljson_v${compilerVersion}.js`);
+  const dir = path.join(homedir(), ".earthcli", "solc");
+  const soljsonPath = path.join(dir, `soljson_v${compilerVersion}.js`);
 
   await fs.ensureDir(path.join(dir));
 
-  let res = await req
-    .get(
-      `https://github.com/EarthEngineering/earth-solc-bin/blob/master/bin/${compilerVersion}.js`
-    )
+  const res = await req
+    .get(`https://github.com/earth-solc-bin/bin/soljson_v${compilerVersion}.js`)
     .responseType("blob");
 
   if (res && res.body) {
     await fs.writeFile(soljsonPath, res.body);
+    // double check
+    if (!fs.existsSync(soljsonPath)) {
+      console.error("Error. Permission required.");
+    } else {
+      console.info("Compiler downloaded.");
+    }
   } else {
-    console.log("Error. Wrong Solidity compiler version.");
+    console.error("Error. Wrong Solidity compiler version.");
   }
+  // eslint-disable-next-line no-process-exit
   process.exit();
 }
 

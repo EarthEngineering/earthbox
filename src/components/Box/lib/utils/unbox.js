@@ -1,22 +1,23 @@
-let fs = require("fs-extra");
-let path = require("path");
-let ghdownload = require("github-download");
-let request = require("request");
-let vcsurl = require("vcsurl");
-let parseURL = require("url").parse;
-let tmp = require("tmp");
-let exec = require("child_process").exec;
-let cwd = require("process").cwd();
+const fs = require("fs-extra");
+const path = require("path");
+const ghdownload = require("github-download");
+const request = require("request");
+const vcsurl = require("vcsurl");
+// eslint-disable-next-line node/no-deprecated-api
+const parseURL = require("url").parse;
+const tmp = require("tmp");
+const exec = require("child_process").exec;
+const cwd = process.cwd();
 
-let config = require("../config");
+const config = require("../config");
 
 function checkDestination(destination) {
   return Promise.resolve().then(function() {
-    let contents = fs.readdirSync(destination);
+    const contents = fs.readdirSync(destination);
     if (contents.length) {
-      let err =
+      const err =
         "Something already exists at the destination. " +
-        "`earthcli init` and `earthcli unbox` must be executed in an empty folder. " +
+        "`earthbox init` and `earthbox unbox` must be executed in an empty folder. " +
         "Stopping to prevent overwriting data.";
 
       throw new Error(err);
@@ -28,13 +29,13 @@ function verifyURL(url) {
   // Next let's see if the expected repository exists. If it doesn't, ghdownload
   // will fail spectacularly in a way we can't catch, so we have to do it ourselves.
   return new Promise(function(accept, reject) {
-    let configURL = parseURL(
+    const configURL = parseURL(
       vcsurl(url)
         .replace("github.com", "raw.githubusercontent.com")
-        .replace(/#.*/, "") + "/master/earthcli.js"
+        .replace(/#.*/, "") + "/master/earthbox.js"
     );
 
-    let options = {
+    const options = {
       method: "HEAD",
       uri: "https://" + configURL.host + configURL.path
     };
@@ -49,15 +50,15 @@ function verifyURL(url) {
               ". Please check the format of the requested resource."
           )
         );
-      } else if (r.statusCode == 404) {
+      } else if (r.statusCode === 404) {
         return reject(
           new Error(
-            "earthcli Box at URL " +
+            "earthbox Box at URL " +
               url +
-              " doesn't exist. If you believe this is an error, please contact earthcli support."
+              " doesn't exist. If you believe this is an error, please contact earthbox support."
           )
         );
-      } else if (r.statusCode != 200) {
+      } else if (r.statusCode !== 200) {
         return reject(
           new Error(
             "Error connecting to github.com. Please check your internet connection and try again."
@@ -106,12 +107,12 @@ function copyTempIntoDestination(tmpDir, destination) {
 }
 
 function readBoxConfig(destination) {
-  let possibleConfigs = [
-    path.join(destination, "earthcli.json"),
-    path.join(destination, "earthcli-init.json")
+  const possibleConfigs = [
+    path.join(destination, "earthbox.json"),
+    path.join(destination, "earthbox-init.json")
   ];
 
-  let configPath = possibleConfigs.reduce(function(path, alt) {
+  const configPath = possibleConfigs.reduce(function(path, alt) {
     return path || (fs.existsSync(alt) && alt);
   }, undefined);
 
@@ -119,13 +120,13 @@ function readBoxConfig(destination) {
 }
 
 function cleanupUnpack(boxConfig, destination) {
-  let needingRemoval = boxConfig.ignore || [];
+  const needingRemoval = boxConfig.ignore || [];
 
   // remove box config file
-  needingRemoval.push("earthcli.json");
-  needingRemoval.push("earthcli-init.json");
+  needingRemoval.push("earthbox.json");
+  needingRemoval.push("earthbox-init.json");
 
-  let promises = needingRemoval
+  const promises = needingRemoval
     .map(function(file_path) {
       return path.join(destination, file_path);
     })
@@ -142,7 +143,7 @@ function cleanupUnpack(boxConfig, destination) {
 }
 
 function installBoxDependencies(boxConfig, destination) {
-  let postUnpack = boxConfig.hooks["post-unpack"];
+  const postUnpack = boxConfig.hooks["post-unpack"];
 
   return new Promise(function(accept, reject) {
     if (postUnpack.length === 0) {

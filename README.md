@@ -259,7 +259,8 @@ lerna bootstrap
 
 ## Solc versions
 
-EarthCli does not supports all the Solidity compilers.  
+EarthCli does not supports all the Solidity compilers.
+
 Supported versions:
 
 ```

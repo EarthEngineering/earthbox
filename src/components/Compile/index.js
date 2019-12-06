@@ -1,13 +1,10 @@
-var Profiler = require("./profiler");
-var OS = require("os");
-var path = require("path");
-// var fs = require("fs");
-// var async = require("async");
-var CompileError = require("./compileerror");
-var expect = require("@truffle/expect");
-var find_contracts = require("@truffle/contract-sources");
-var Config = require("../Config");
-// var debug = require("debug")("compile");
+const Profiler = require("./profiler");
+const OS = require("os");
+const path = require("path");
+const CompileError = require("./compileerror");
+const expect = require("@truffle/expect");
+const find_contracts = require("@truffle/contract-sources");
+const Config = require("../Config");
 
 // Most basic of the compile commands. Takes a hash of sources, where
 // the keys are file or module paths and the values are the bodies of
@@ -20,15 +17,16 @@ var Config = require("../Config");
 //   logger: console
 // }
 
-var preReleaseCompilerWarning = require("./messages").preReleaseCompilerWarning;
+const preReleaseCompilerWarning = require("./messages")
+  .preReleaseCompilerWarning;
 
-var compile = function(sources, options, callback) {
-  if (typeof options == "function") {
+const compile = function(sources, options, callback) {
+  if (typeof options === "function") {
     callback = options;
     options = {};
   }
 
-  if (options.logger == null) {
+  if (!options.logger) {
     options.logger = console;
   }
 
@@ -37,10 +35,10 @@ var compile = function(sources, options, callback) {
   // Load solc module only when compilation is actually required.
   const { getWrapper } = require("../EarthSolc");
 
-  var solc = getWrapper(options);
+  const solc = getWrapper(options);
   // Clean up after solc.
-  var listeners = process.listeners("uncaughtException");
-  var solc_listener = listeners[listeners.length - 1];
+  const listeners = process.listeners("uncaughtException");
+  const solc_listener = listeners[listeners.length - 1];
 
   if (solc_listener) {
     process.removeListener("uncaughtException", solc_listener);
@@ -48,15 +46,15 @@ var compile = function(sources, options, callback) {
 
   // Ensure sources have operating system independent paths
   // i.e., convert backslashes to forward slashes; things like C: are left intact.
-  var operatingSystemIndependentSources = {};
-  var originalPathMappings = {};
+  const operatingSystemIndependentSources = {};
+  const originalPathMappings = {};
 
   Object.keys(sources).forEach(function(source) {
     // Turn all backslashes into forward slashes
-    var replacement = source.replace(/\\/g, "/");
+    let replacement = source.replace(/\\/g, "/");
 
     // Turn G:/.../ into /G/.../ for Windows
-    if (replacement.length >= 2 && replacement[1] == ":") {
+    if (replacement.length >= 2 && replacement[1] === ":") {
       replacement = "/" + replacement;
       replacement = replacement.replace(":", "");
     }
@@ -68,7 +66,7 @@ var compile = function(sources, options, callback) {
     originalPathMappings[replacement] = source;
   });
 
-  var solcStandardInput = {
+  const solcStandardInput = {
     language: "Solidity",
     sources: {},
     settings: {
@@ -90,7 +88,7 @@ var compile = function(sources, options, callback) {
   };
 
   // Nothing to compile? Bail.
-  if (Object.keys(sources).length == 0) {
+  if (!Object.keys(sources).length) {
     return callback(null, [], []);
   }
 
@@ -100,14 +98,14 @@ var compile = function(sources, options, callback) {
     };
   });
 
-  var result = solc[solc.compileStandard ? "compileStandard" : "compile"](
+  const result = solc[solc.compileStandard ? "compileStandard" : "compile"](
     JSON.stringify(solcStandardInput)
   );
 
-  var standardOutput = JSON.parse(result);
+  const standardOutput = JSON.parse(result);
 
-  var errors = standardOutput.errors || [];
-  var warnings = [];
+  let errors = standardOutput.errors || [];
+  let warnings = [];
 
   if (options.strict !== true) {
     warnings = errors.filter(function(error) {
@@ -118,7 +116,7 @@ var compile = function(sources, options, callback) {
     });
 
     errors = errors.filter(function(error) {
-      return error.severity != "warning";
+      return error.severity !== "warning";
     });
 
     if (options.quiet !== true && warnings.length > 0) {
@@ -146,24 +144,24 @@ var compile = function(sources, options, callback) {
     );
   }
 
-  var contracts = standardOutput.contracts;
+  const contracts = standardOutput.contracts;
 
-  var files = [];
+  const files = [];
   Object.keys(standardOutput.sources).forEach(function(filename) {
-    var source = standardOutput.sources[filename];
+    const source = standardOutput.sources[filename];
     files[source.id] = originalPathMappings[filename];
   });
 
-  var returnVal = {};
+  const returnVal = {};
 
   // This block has comments in it as it's being prepared for solc > 0.4.10
   Object.keys(contracts).forEach(function(source_path) {
-    var files_contracts = contracts[source_path];
+    const files_contracts = contracts[source_path];
 
     Object.keys(files_contracts).forEach(function(contract_name) {
-      var contract = files_contracts[contract_name];
+      const contract = files_contracts[contract_name];
 
-      var contract_definition = {
+      const contract_definition = {
         contract_name: contract_name,
         sourcePath: originalPathMappings[source_path], // Save original source path, not modified ones
         source: operatingSystemIndependentSources[source_path],
@@ -191,10 +189,10 @@ var compile = function(sources, options, callback) {
       Object.keys(contract.evm.bytecode.linkReferences).forEach(function(
         file_name
       ) {
-        var fileLinks = contract.evm.bytecode.linkReferences[file_name];
+        const fileLinks = contract.evm.bytecode.linkReferences[file_name];
 
         Object.keys(fileLinks).forEach(function(library_name) {
-          var linkReferences = fileLinks[library_name] || [];
+          const linkReferences = fileLinks[library_name] || [];
 
           contract_definition.bytecode = replaceLinkReferences(
             contract_definition.bytecode,
@@ -212,11 +210,11 @@ var compile = function(sources, options, callback) {
       // Now for the deployed bytecode
       Object.keys(contract.evm.deployedBytecode.linkReferences).forEach(
         function(file_name) {
-          var fileLinks =
+          const fileLinks =
             contract.evm.deployedBytecode.linkReferences[file_name];
 
           Object.keys(fileLinks).forEach(function(library_name) {
-            var linkReferences = fileLinks[library_name] || [];
+            const linkReferences = fileLinks[library_name] || [];
 
             contract_definition.deployedBytecode = replaceLinkReferences(
               contract_definition.deployedBytecode,
@@ -235,7 +233,7 @@ var compile = function(sources, options, callback) {
 };
 
 function replaceLinkReferences(bytecode, linkReferences, libraryName) {
-  var linkId = "__" + libraryName;
+  let linkId = "__" + libraryName;
 
   while (linkId.length < 40) {
     linkId += "_";
@@ -243,7 +241,7 @@ function replaceLinkReferences(bytecode, linkReferences, libraryName) {
 
   linkReferences.forEach(function(ref) {
     // ref.start is a byte offset. Convert it to character offset.
-    var start = ref.start * 2 + 2;
+    const start = ref.start * 2 + 2;
 
     bytecode =
       bytecode.substring(0, start) + linkId + bytecode.substring(start + 40);
@@ -253,12 +251,11 @@ function replaceLinkReferences(bytecode, linkReferences, libraryName) {
 }
 
 function orderABI(contract) {
-  var contract_definition;
-  var ordered_function_names = [];
-  var ordered_functions = [];
+  let contract_definition;
+  const ordered_function_names = [];
 
-  for (var i = 0; i < contract.legacyAST.children.length; i++) {
-    var definition = contract.legacyAST.children[i];
+  for (let i = 0; i < contract.legacyAST.children.length; i++) {
+    const definition = contract.legacyAST.children[i];
 
     // AST can have multiple contract definitions, make sure we have the
     // one that matches our contract
@@ -277,13 +274,13 @@ function orderABI(contract) {
   if (!contract_definition.children) return contract.abi;
 
   contract_definition.children.forEach(function(child) {
-    if (child.name == "FunctionDefinition") {
+    if (child.name === "FunctionDefinition") {
       ordered_function_names.push(child.attributes.name);
     }
   });
 
   // Put function names in a hash with their order, lowest first, for speed.
-  var functions_to_remove = ordered_function_names.reduce(function(
+  const functions_to_remove = ordered_function_names.reduce(function(
     obj,
     value,
     index
@@ -294,14 +291,14 @@ function orderABI(contract) {
   {});
 
   // Filter out functions from the abi
-  var function_definitions = contract.abi.filter(function(item) {
+  let function_definitions = contract.abi.filter(function(item) {
     return functions_to_remove[item.name] != null;
   });
 
   // Sort removed function defintions
   function_definitions = function_definitions.sort(function(item_a, item_b) {
-    var a = functions_to_remove[item_a.name];
-    var b = functions_to_remove[item_b.name];
+    const a = functions_to_remove[item_a.name];
+    const b = functions_to_remove[item_b.name];
 
     if (a > b) return 1;
     if (a < b) return -1;
@@ -309,7 +306,7 @@ function orderABI(contract) {
   });
 
   // Create a new ABI, placing ordered functions at the end.
-  var newABI = [];
+  const newABI = [];
   contract.abi.forEach(function(item) {
     if (functions_to_remove[item.name] != null) return;
     newABI.push(item);
@@ -325,7 +322,6 @@ function orderABI(contract) {
 // quiet: Boolean. Suppress output. Defaults to false.
 // strict: Boolean. Return compiler warnings as errors. Defaults to false.
 compile.all = function(options, callback) {
-  var self = this;
   find_contracts(options.contracts_directory, function(err, files) {
     options.paths = files;
     compile.with_dependencies(options, callback);
@@ -339,13 +335,12 @@ compile.all = function(options, callback) {
 // quiet: Boolean. Suppress output. Defaults to false.
 // strict: Boolean. Return compiler warnings as errors. Defaults to false.
 compile.necessary = function(options, callback) {
-  var self = this;
   options.logger = options.logger || console;
 
   Profiler.updated(options, function(err, updated) {
     if (err) return callback(err);
 
-    if (updated.length == 0 && options.quiet != true) {
+    if (updated.length === 0 && options.quiet !== true) {
       return callback(null, [], {});
     }
 
@@ -365,9 +360,8 @@ compile.with_dependencies = function(options, callback) {
     "resolver"
   ]);
 
-  var config = Config.default().merge(options);
+  const config = Config.default().merge(options);
 
-  var self = this;
   Profiler.required_sources(
     config.with({
       paths: options.paths,
@@ -377,11 +371,11 @@ compile.with_dependencies = function(options, callback) {
     function(err, result) {
       if (err) return callback(err);
 
-      if (options.quiet != true) {
+      if (!options.quiet) {
         Object.keys(result)
           .sort()
           .forEach(function(import_path) {
-            var display_path = import_path;
+            let display_path = import_path;
             if (path.isAbsolute(import_path)) {
               display_path =
                 "." +

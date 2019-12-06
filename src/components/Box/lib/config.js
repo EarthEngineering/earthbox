@@ -1,9 +1,9 @@
-var fs = require("fs-extra");
+const fs = require("fs-extra");
 
 function setDefaults(config) {
   config = config || {};
 
-  var hooks = config.hooks || {};
+  const hooks = config.hooks || {};
 
   return {
     ignore: config.ignore || [],

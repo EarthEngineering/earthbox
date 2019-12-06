@@ -1,56 +1,52 @@
 require("source-map-support/register");
 
-// let Config = require("./components/Config");
-let Command = require("./lib/command");
-let TaskError = require("./lib/errors/taskerror");
-let TruffleError = require("@truffle/error");
-let version = require("./lib/version");
-let OS = require("os");
-let downloader = require("./downloader");
+const Command = require('./lib/command')
+const TaskError = require('./lib/errors/taskerror')
+const TruffleError = require('@truffle/error')
+const version = require('./lib/version')
+const OS = require('os')
+const downloader = require('./downloader')
 
-let command = new Command(require("./lib/commands"));
+const command = new Command(require('./lib/commands'))
 
-let options = {
+const options = {
   logger: console
-};
+}
 
-let commands = process.argv.slice(2);
+const commands = process.argv.slice(2)
+
+if (commands[0] === '--download-compiler' && commands[1]) {
+
+  downloader(commands[1])
 
 if (commands[0] === "--download-compiler" && commands[1]) {
   downloader(commands[1]);
 } else {
   let command = new Command(require("./lib/commands"));
 
-  let options = {
-    logger: console
-  };
-
-  command.run(process.argv.slice(2), options, function(err) {
+  command.run(process.argv.slice(2), options, function (err) {
     if (err) {
       if (err instanceof TaskError) {
         command.args
-          .usage(
-            "EarthCli v" +
-              (version.bundle || version.core) +
-              " - a development framework for earthweb" +
-              OS.EOL +
-              OS.EOL +
-              "Usage: earthcli <command> [options]"
-          )
-          .epilog("See more at https://www.earth.engineering")
-          .showHelp();
+          .usage('Earthcli v' + (version.bundle || version.core) + ' - a development framework for earthweb'
+            + OS.EOL + OS.EOL
+            + 'Usage: earthcli <command> [options]')
+          .epilog('See more at https://www.earth.engineering')
+          .showHelp()
       } else {
         if (err instanceof TruffleError) {
-          console.log(err.message);
-        } else if (typeof err == "number") {
+          console.error(err.message)
+        } else if (typeof err === 'number') {
           // If a number is returned, exit with that number.
-          process.exit(err);
+          // eslint-disable-next-line no-process-exit
+          process.exit(err)
         } else {
           // Bubble up all other unexpected errors.
-          console.log(err.stack || err.toString());
+          console.error(err.stack || err.toString())
         }
       }
-      process.exit(1);
+      // eslint-disable-next-line no-process-exit
+      process.exit(1)
     }
 
     // Don't exit if no error; if something is keeping the process open,
@@ -58,11 +54,12 @@ if (commands[0] === "--download-compiler" && commands[1]) {
 
     // Clear any polling or open sockets - `provider-engine` in HDWallet
     // and `web3 1.0 confirmations` both leave interval timers etc wide open.
-    const handles = process._getActiveHandles();
+    const handles = process._getActiveHandles()
     handles.forEach(handle => {
-      if (typeof handle.close === "function") {
-        handle.close();
+      if (typeof handle.close === 'function') {
+        handle.close()
       }
-    });
-  });
+    })
+  })
+
 }
