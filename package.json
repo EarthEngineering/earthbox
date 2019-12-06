@@ -1,7 +1,7 @@
 {
   "name": "earthbox",
   "namespace": "earthengineering",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "EarthBox - Simple development framework for earthweb",
   "dependencies": {
     "@truffle/contract-sources": "^0.1.6",
@@ -27,7 +27,7 @@
     "fs-extra": "^8.1.0",
     "graphlib": "^2.1.7",
     "homedir": "^0.6.0",
-    "lodash": "^4.17.15",
+    "lodash": "^4.5.0",
     "mkdirp": "^0.5.1",
     "mocha": "5.2.0",
     "node-dir": "0.1.17",
