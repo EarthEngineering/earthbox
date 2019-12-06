@@ -451,7 +451,7 @@ var contract = (function(module) {
       var self = this;
 
       throw new Error(
-        "The construct contractArtifacts.at(address) is not currently supported by EarthBox. It will be in the future. Stay in touch."
+        "The construct contractArtifacts.at(address) is not currently supported by EarthCli. It will be in the future. Stay in touch."
       );
 
       if (

@@ -21,7 +21,7 @@ function getWrapper(options = {}) {
   } catch (e) {}
 
   let compilerVersion = "0.5.4";
-  let solcDir = path.join(homedir(), ".earthbox", "solc");
+  let solcDir = path.join(homedir(), ".earthcli", "solc");
 
   if (options.networks) {
     if (options.networks.useZeroFourCompiler) {
@@ -36,7 +36,7 @@ function getWrapper(options = {}) {
         compilerVersion = version;
       } else {
         console.error(`Error:
-EarthBox supports only the following versions:
+EarthCli supports only the following versions:
 ${supportedVersions.join(" - ")}
 `);
         process.exit();
@@ -47,8 +47,8 @@ ${supportedVersions.join(" - ")}
   let soljsonPath = path.join(solcDir, `soljson_v${compilerVersion}.js`);
 
   if (!fs.existsSync(soljsonPath)) {
-    if (process.env.EARTHBOX_NAME) {
-      name = process.env.EARTHBOX_NAME;
+    if (process.env.EARTHCLI_NAME) {
+      name = process.env.EARTHCLI_NAME;
     }
     execSync(`${name} --download-compiler ${compilerVersion}`).toString();
   }

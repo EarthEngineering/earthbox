@@ -1,6 +1,6 @@
 let command = {
   command: "init",
-  description: "Initialize new and empty earthBox project",
+  description: "Initialize new and empty EarthCli project",
   builder: {},
   run: function(options, done) {
     process.env.CURRENT = "init";
@@ -14,13 +14,13 @@ let command = {
 
     if (options._ && options._.length > 0) {
       config.logger.log(
-        "Error: `earthbox init` no longer accepts a project template name as an argument."
+        "Error: `earthcli init` no longer accepts a project template name as an argument."
       );
       config.logger.log();
       config.logger.log(
-        " - For an empty project, use `earthbox init` with no arguments" +
+        " - For an empty project, use `earthcli init` with no arguments" +
           OS.EOL +
-          " - Or, browse the earthbox Boxes at <http://earthboxframework.com/boxes>!"
+          " - Or, browse the earthcli Boxes at <https://www.earth.engineering>!"
       );
       process.exit(1);
     }

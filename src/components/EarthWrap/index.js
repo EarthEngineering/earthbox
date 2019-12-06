@@ -87,11 +87,11 @@ function init(options, extraOptions) {
   ) {
     if (!options) {
       throw new Error(
-        'It was not possible to instantiate EarthWeb. The chosen network does not exist in your "earthbox.js".'
+        'It was not possible to instantiate EarthWeb. The chosen network does not exist in your "earthcli.js".'
       );
     } else {
       throw new Error(
-        'It was not possible to instantiate EarthWeb. Some required parameters are missing in your "earthbox.js".'
+        'It was not possible to instantiate EarthWeb. Some required parameters are missing in your "earthcli.js".'
       );
     }
   }
@@ -377,7 +377,7 @@ const logErrorAndExit = (logger, err) => {
     msg = msg.replace(/^error(:|) /i, "");
     if (msg === "Invalid URL provided to HttpProvider") {
       msg =
-        'Either invalid or wrong URL provided to HttpProvider. Verify the configuration in your "earthbox.js"';
+        'Either invalid or wrong URL provided to HttpProvider. Verify the configuration in your "earthcli.js"';
     }
     log(chalk.red(chalk.bold("ERROR:"), msg));
   } else {

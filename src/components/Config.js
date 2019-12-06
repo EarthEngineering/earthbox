@@ -8,8 +8,8 @@ var Module = require("module");
 var findUp = require("find-up");
 var originalrequire = require("original-require");
 
-var DEFAULT_CONFIG_FILENAME = "earthbox.js";
-var BACKUP_CONFIG_FILENAME = "earthbox-config.js"; // For Windows + Command Prompt
+var DEFAULT_CONFIG_FILENAME = "earthcli.js";
+var BACKUP_CONFIG_FILENAME = "earthcli-config.js"; // For Windows + Command Prompt
 
 function Config(truffle_directory, working_directory, network) {
   var self = this;

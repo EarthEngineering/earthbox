@@ -1,6 +1,6 @@
 let command = {
   command: "exec",
-  description: "Execute a JS module within this earthBox environment",
+  description: "Execute a JS module within this EarthCli environment",
   builder: {
     file: {
       type: "string"

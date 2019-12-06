@@ -26,7 +26,7 @@ let command = {
 
     if (!config.network) {
       console.error(
-        "\nERROR: Neither development nor test network has been set in earthbox.js\n"
+        "\nERROR: Neither development nor test network has been set in earthcli.js\n"
       );
       return;
     }
@@ -120,7 +120,7 @@ let command = {
         if (config.networks[config.network]) {
           Environment.detect(config, environmentCallback);
         } else {
-          throw new Error("No development/test environment set in earthbox.js");
+          throw new Error("No development/test environment set in earthcli.js");
 
           // var ipcOptions = {
           //   network: "test"

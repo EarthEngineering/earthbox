@@ -2,7 +2,7 @@ var wait = require("./helpers/wait");
 var chalk = require("chalk");
 var MetaCoin = artifacts.require("./MetaCoin.sol");
 
-// The following tests require EarthBox >= 2.1.x
+// The following tests require EarthCli >= 2.1.x
 // and EARTH Quickstart (https://github.com/earthengineering/docker-earth-quickstart)
 
 contract("MetaCoin", function(accounts) {

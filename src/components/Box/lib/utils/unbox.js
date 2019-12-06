@@ -16,7 +16,7 @@ function checkDestination(destination) {
     if (contents.length) {
       let err =
         "Something already exists at the destination. " +
-        "`earthbox init` and `earthbox unbox` must be executed in an empty folder. " +
+        "`earthcli init` and `earthcli unbox` must be executed in an empty folder. " +
         "Stopping to prevent overwriting data.";
 
       throw new Error(err);
@@ -31,7 +31,7 @@ function verifyURL(url) {
     let configURL = parseURL(
       vcsurl(url)
         .replace("github.com", "raw.githubusercontent.com")
-        .replace(/#.*/, "") + "/master/earthbox.js"
+        .replace(/#.*/, "") + "/master/earthcli.js"
     );
 
     let options = {
@@ -52,9 +52,9 @@ function verifyURL(url) {
       } else if (r.statusCode == 404) {
         return reject(
           new Error(
-            "earthbox Box at URL " +
+            "earthcli Box at URL " +
               url +
-              " doesn't exist. If you believe this is an error, please contact earthbox support."
+              " doesn't exist. If you believe this is an error, please contact earthcli support."
           )
         );
       } else if (r.statusCode != 200) {
@@ -107,8 +107,8 @@ function copyTempIntoDestination(tmpDir, destination) {
 
 function readBoxConfig(destination) {
   let possibleConfigs = [
-    path.join(destination, "earthbox.json"),
-    path.join(destination, "earthbox-init.json")
+    path.join(destination, "earthcli.json"),
+    path.join(destination, "earthcli-init.json")
   ];
 
   let configPath = possibleConfigs.reduce(function(path, alt) {
@@ -122,8 +122,8 @@ function cleanupUnpack(boxConfig, destination) {
   let needingRemoval = boxConfig.ignore || [];
 
   // remove box config file
-  needingRemoval.push("earthbox.json");
-  needingRemoval.push("earthbox-init.json");
+  needingRemoval.push("earthcli.json");
+  needingRemoval.push("earthcli-init.json");
 
   let promises = needingRemoval
     .map(function(file_path) {

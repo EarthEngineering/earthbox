@@ -81,7 +81,7 @@ Console.prototype.start = function(callback) {
     }
 
     self.repl.start({
-      prompt: "earthbox(" + self.options.network + ")> ",
+      prompt: "earthcli(" + self.options.network + ")> ",
       context: {
         earthWrap: self.earthWrap
       },

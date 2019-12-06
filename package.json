@@ -63,7 +63,7 @@
     "truffle-blockchain-utils": "^0.0.5"
   },
   "bin": {
-    "earthbox": "build/earthbox.js"
+    "earthcli": "build/earthcli.js"
   },
   "scripts": {
     "test": "echo \"Error: tests will be fixed soon in a new release\" && exit 1",
@@ -72,11 +72,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/earthengineering/earthbox.git"
+    "url": "git+https://github.com/earthengineering/earthcli.git"
   },
-  "homepage": "https://github.com/earthengineering/earthbox/",
+  "homepage": "https://github.com/earthengineering/earthcli/",
   "bugs": {
-    "url": "https://github.com/earthengineering/earthbox/issues"
+    "url": "https://github.com/earthengineering/earthcli/issues"
   },
   "originalAuthor": "consensys.net",
   "author": "earth.engineering",

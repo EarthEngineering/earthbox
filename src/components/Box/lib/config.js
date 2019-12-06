@@ -8,9 +8,9 @@ function setDefaults(config) {
   return {
     ignore: config.ignore || [],
     commands: config.commands || {
-      compile: "earthbox compile",
-      migrate: "earthbox migrate",
-      test: "earthbox test"
+      compile: "earthcli compile",
+      migrate: "earthcli migrate",
+      test: "earthcli test"
     },
     hooks: {
       "post-unpack": hooks["post-unpack"] || ""

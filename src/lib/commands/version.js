@@ -16,7 +16,7 @@ let command = {
       bundle_version = "(unbundled)";
     }
 
-    options.logger.log("EarthBox " + bundle_version);
+    options.logger.log("EarthCli " + bundle_version);
     options.logger.log(
       "Solidity v" +
         supportedVersions[supportedVersions.length - 1] +

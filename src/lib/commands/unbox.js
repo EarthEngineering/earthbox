@@ -54,7 +54,7 @@ function formatCommands(commands) {
 
 let command = {
   command: "unbox",
-  description: "Download a earthbox Box, a pre-built earthbox project",
+  description: "Download a earthcli Box, a pre-built earthcli project",
   builder: {},
   run: function(options, done) {
     let Config = require("../../components/Config");

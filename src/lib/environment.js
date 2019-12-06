@@ -36,7 +36,7 @@ let Environment = {
         new TruffleError(
           'Unknown network "' +
             config.network +
-            '". See your earthbox configuration file for available networks.'
+            '". See your earthcli configuration file for available networks.'
         )
       );
     }
