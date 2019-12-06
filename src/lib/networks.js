@@ -1,11 +1,11 @@
-var fs = require("fs");
-var path = require("path");
-var OS = require("os");
-var BlockchainUtils = require("truffle-blockchain-utils");
-var Provider = require("../components/Provider");
-var async = require("async");
+let fs = require("fs");
+let path = require("path");
+let OS = require("os");
+let BlockchainUtils = require("truffle-blockchain-utils");
+let Provider = require("../components/Provider");
+let async = require("async");
 
-var Networks = {
+let Networks = {
   deployed: function(options, callback) {
     fs.readdir(options.contracts_build_directory, function(err, files) {
       if (err) {
@@ -13,7 +13,7 @@ var Networks = {
         files = [];
       }
 
-      var promises = [];
+      let promises = [];
 
       files.forEach(function(file) {
         promises.push(
@@ -39,16 +39,16 @@ var Networks = {
 
       Promise.all(promises)
         .then(function(binaries) {
-          var ids_to_names = {};
-          var networks = {};
+          let ids_to_names = {};
+          let networks = {};
 
           // binaries.map(function(b) {return b.contract_name + ": " + JSON.stringify(b.networks, null, 2)}).forEach(function(b) {
           //   console.log(b);
           // });
 
           Object.keys(options.networks).forEach(function(network_name) {
-            var network = options.networks[network_name];
-            var network_id = network.network_id;
+            let network = options.networks[network_name];
+            let network_id = network.network_id;
 
             if (network_id == null) {
               return;
@@ -60,13 +60,13 @@ var Networks = {
 
           binaries.forEach(function(json) {
             Object.keys(json.networks).forEach(function(network_id) {
-              var network_name = ids_to_names[network_id] || network_id;
+              let network_name = ids_to_names[network_id] || network_id;
 
               if (networks[network_name] == null) {
                 networks[network_name] = {};
               }
 
-              var address = json.networks[network_id].address;
+              let address = json.networks[network_id].address;
 
               if (address == null) return;
 
@@ -84,9 +84,9 @@ var Networks = {
     this.deployed(config, function(err, networks) {
       if (err) return callback(err);
 
-      var network_names = Object.keys(networks).sort();
+      let network_names = Object.keys(networks).sort();
 
-      var star_networks = network_names.filter(function(network_name) {
+      let star_networks = network_names.filter(function(network_name) {
         return (
           config.networks[network_name] != null &&
           config.networks[network_name].network_id == "*"
@@ -98,11 +98,11 @@ var Networks = {
         return star_networks.indexOf(network_name) < 0;
       });
 
-      var unknown_networks = network_names.filter(function(network_name) {
-        var configured_networks = Object.keys(config.networks);
-        var found = false;
-        for (var i = 0; i < configured_networks.length; i++) {
-          var configured_network_name = configured_networks[i];
+      let unknown_networks = network_names.filter(function(network_name) {
+        let configured_networks = Object.keys(config.networks);
+        let found = false;
+        for (let i = 0; i < configured_networks.length; i++) {
+          let configured_network_name = configured_networks[i];
           if (network_name == configured_network_name) {
             found = true;
             break;
@@ -141,10 +141,10 @@ var Networks = {
       network_names.forEach(function(network_name) {
         config.logger.log("");
 
-        var output = Object.keys(networks[network_name])
+        let output = Object.keys(networks[network_name])
           .sort()
           .map(function(contract_name) {
-            var address = networks[network_name][contract_name];
+            let address = networks[network_name][contract_name];
             return contract_name + ": " + address;
           });
 
@@ -152,9 +152,9 @@ var Networks = {
           output = ["No contracts deployed."];
         }
 
-        var message = "Network: ";
+        let message = "Network: ";
 
-        var is_id = config.networks[network_name] == null;
+        let is_id = config.networks[network_name] == null;
 
         if (is_id) {
           message += "UNKNOWN (id: " + network_name + ")";
@@ -186,13 +186,13 @@ var Networks = {
     fs.readdir(config.contracts_build_directory, function(err, files) {
       if (err) return callback(err);
 
-      var configured_networks = Object.keys(config.networks);
-      var promises = [];
+      let configured_networks = Object.keys(config.networks);
+      let promises = [];
 
       files.forEach(function(file) {
         promises.push(
           new Promise(function(accept, reject) {
-            var file_path = path.join(config.contracts_build_directory, file);
+            let file_path = path.join(config.contracts_build_directory, file);
             fs.readFile(file_path, "utf8", function(err, body) {
               if (err) return reject(err);
 
@@ -205,9 +205,9 @@ var Networks = {
               Object.keys(body.networks).forEach(function(
                 installed_network_id
               ) {
-                var found = false;
-                for (var i = 0; i < configured_networks.length; i++) {
-                  var configured_network = configured_networks[i];
+                let found = false;
+                for (let i = 0; i < configured_networks.length; i++) {
+                  let configured_network = configured_networks[i];
 
                   // If an installed network id matches a configured id, then we can ignore this one.
                   if (
@@ -256,7 +256,7 @@ var Networks = {
       networks = Object.keys(options.networks);
     }
 
-    var result = {
+    let result = {
       uris: {},
       failed: []
     };
@@ -264,7 +264,7 @@ var Networks = {
     async.each(
       networks,
       function(network_name, finished) {
-        var provider = Provider.create(options.networks[network_name]);
+        let provider = Provider.create(options.networks[network_name]);
         BlockchainUtils.asURI(provider, function(err, uri) {
           if (err) {
             result.failed.push(network_name);
@@ -282,17 +282,17 @@ var Networks = {
   },
 
   matchesNetwork: function(network_id, network_options, callback) {
-    var provider = Provider.create(network_options);
+    let provider = Provider.create(network_options);
 
-    var first = network_id + "";
-    var second = network_options.network_id + "";
+    let first = network_id + "";
+    let second = network_options.network_id + "";
 
     if (first == second) {
       return callback(null, true);
     }
 
-    var isFirstANumber = isNaN(parseInt(network_id)) === false;
-    var isSecondANumber = isNaN(parseInt(network_options.network_id)) === false;
+    let isFirstANumber = isNaN(parseInt(network_id)) === false;
+    let isSecondANumber = isNaN(parseInt(network_options.network_id)) === false;
 
     // If both network ids are numbers, then they don't match, and we should quit.
     if (isFirstANumber && isSecondANumber) {

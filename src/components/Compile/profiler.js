@@ -1,27 +1,25 @@
 // Compares .sol files to their .sol.js counterparts,
 // determines which .sol files have been updated.
 
-var path = require("path");
-var async = require("async");
-var fs = require("fs");
-var Graph = require("graphlib").Graph;
-var isAcyclic = require("graphlib/lib/alg").isAcyclic;
-var Parser = require("./parser");
-var CompileError = require("./compileerror");
-var expect = require("@truffle/expect");
-var find_contracts = require("@truffle/contract-sources");
-var debug = require("debug")("compile:profiler");
+let path = require("path");
+let async = require("async");
+let fs = require("fs");
+let Graph = require("graphlib").Graph;
+// let isAcyclic = require("graphlib/lib/alg").isAcyclic;
+let Parser = require("./parser");
+// let CompileError = require("./compileerror");
+let expect = require("@truffle/expect");
+let find_contracts = require("@truffle/contract-sources");
+// let debug = require("debug")("compile:profiler");
 
 module.exports = {
   updated: function(options, callback) {
-    var self = this;
+    // var self = this;
 
-    expect.options(options, [
-      "resolver"
-    ]);
+    expect.options(options, ["resolver"]);
 
-    var contracts_directory = options.contracts_directory;
-    var build_directory = options.contracts_build_directory;
+    let contracts_directory = options.contracts_directory;
+    let build_directory = options.contracts_build_directory;
 
     function getFiles(done) {
       if (options.files) {
@@ -31,147 +29,172 @@ module.exports = {
       }
     }
 
-    var sourceFilesArtifacts = {};
-    var sourceFilesArtifactsUpdatedTimes = {};
+    let sourceFilesArtifacts = {};
+    let sourceFilesArtifactsUpdatedTimes = {};
 
-    var updatedFiles = [];
+    let updatedFiles = [];
 
-    async.series([
-      // Get all the source files and create an object out of them.
-      function(c) {
-        getFiles(function(err, files) {
-          if (err) return c(err);
-
-          // Use an object for O(1) access.
-          files.forEach(function(sourceFile) {
-            sourceFilesArtifacts[sourceFile] = [];
-          });
-
-          c();
-        })
-      },
-      // Get all the artifact files, and read them, parsing them as JSON
-      function(c) {
-        fs.readdir(build_directory, function(err, build_files) {
-          if (err) {
-            // The build directory may not always exist.
-            if (err.message.indexOf("ENOENT: no such file or directory") >= 0) {
-              // Ignore it.
-              build_files = [];
-            } else {
-              return c(err);
-            }
-          }
-
-          build_files = build_files.filter(function(build_file) {
-            return path.extname(build_file) == ".json";
-          });
-
-          async.map(build_files, function(buildFile, finished) {
-            fs.readFile(path.join(build_directory, buildFile), "utf8", function(err, body) {
-              if (err) return finished(err);
-              finished(null, body);
-            });
-          }, function(err, jsonData) {
+    async.series(
+      [
+        // Get all the source files and create an object out of them.
+        function(c) {
+          getFiles(function(err, files) {
             if (err) return c(err);
 
-            try {
-              for (var i = 0; i < jsonData.length; i++) {
-                var data = JSON.parse(jsonData[i]);
-
-                // In case there are artifacts from other source locations.
-                if (sourceFilesArtifacts[data.sourcePath] == null) {
-                  sourceFilesArtifacts[data.sourcePath] = [];
-                }
-
-                sourceFilesArtifacts[data.sourcePath].push(data);
-              }
-            } catch (e) {
-              return c(e);
-            }
+            // Use an object for O(1) access.
+            files.forEach(function(sourceFile) {
+              sourceFilesArtifacts[sourceFile] = [];
+            });
 
             c();
           });
-        });
-      },
-      function(c) {
-        // Get the minimum updated time for all of a source file's artifacts
-        // (note: one source file might have multiple artifacts).
-        Object.keys(sourceFilesArtifacts).forEach(function(sourceFile) {
-          var artifacts = sourceFilesArtifacts[sourceFile];
-
-          sourceFilesArtifactsUpdatedTimes[sourceFile] = artifacts.reduce(function(minimum, current) {
-            var updatedAt = new Date(current.updatedAt).getTime();
-
-            if (updatedAt < minimum) {
-              return updatedAt;
-            }
-            return minimum;
-          }, Number.MAX_SAFE_INTEGER);
-
-          // Empty array?
-          if (sourceFilesArtifactsUpdatedTimes[sourceFile] == Number.MAX_SAFE_INTEGER) {
-            sourceFilesArtifactsUpdatedTimes[sourceFile] = 0;
-          }
-        });
-
-        c();
-      },
-      // Stat all the source files, getting there updated times, and comparing them to
-      // the artifact updated times.
-      function(c) {
-        var sourceFiles = Object.keys(sourceFilesArtifacts);
-
-        async.map(sourceFiles, function(sourceFile, finished) {
-          fs.stat(sourceFile, function(err, stat) {
+        },
+        // Get all the artifact files, and read them, parsing them as JSON
+        function(c) {
+          fs.readdir(build_directory, function(err, build_files) {
             if (err) {
-              // Ignore it. This means the source file was removed
-              // but the artifact file possibly exists. Return null
-              // to signfy that we should ignore it.
-              stat = null;
+              // The build directory may not always exist.
+              if (
+                err.message.indexOf("ENOENT: no such file or directory") >= 0
+              ) {
+                // Ignore it.
+                build_files = [];
+              } else {
+                return c(err);
+              }
             }
-            finished(null, stat);
+
+            build_files = build_files.filter(function(build_file) {
+              return path.extname(build_file) == ".json";
+            });
+
+            async.map(
+              build_files,
+              function(buildFile, finished) {
+                fs.readFile(
+                  path.join(build_directory, buildFile),
+                  "utf8",
+                  function(err, body) {
+                    if (err) return finished(err);
+                    finished(null, body);
+                  }
+                );
+              },
+              function(err, jsonData) {
+                if (err) return c(err);
+
+                try {
+                  for (var i = 0; i < jsonData.length; i++) {
+                    var data = JSON.parse(jsonData[i]);
+
+                    // In case there are artifacts from other source locations.
+                    if (sourceFilesArtifacts[data.sourcePath] == null) {
+                      sourceFilesArtifacts[data.sourcePath] = [];
+                    }
+
+                    sourceFilesArtifacts[data.sourcePath].push(data);
+                  }
+                } catch (e) {
+                  return c(e);
+                }
+
+                c();
+              }
+            );
           });
-        }, function(err, sourceFileStats) {
-          if (err) return callback(err);
+        },
+        function(c) {
+          // Get the minimum updated time for all of a source file's artifacts
+          // (note: one source file might have multiple artifacts).
+          Object.keys(sourceFilesArtifacts).forEach(function(sourceFile) {
+            var artifacts = sourceFilesArtifacts[sourceFile];
 
-          sourceFiles.forEach(function(sourceFile, index) {
-            var sourceFileStat = sourceFileStats[index];
+            sourceFilesArtifactsUpdatedTimes[sourceFile] = artifacts.reduce(
+              function(minimum, current) {
+                var updatedAt = new Date(current.updatedAt).getTime();
 
-            // Ignore updating artifacts if source file has been removed.
-            if (sourceFileStat == null) {
-              return;
-            }
+                if (updatedAt < minimum) {
+                  return updatedAt;
+                }
+                return minimum;
+              },
+              Number.MAX_SAFE_INTEGER
+            );
 
-            var artifactsUpdatedTime = sourceFilesArtifactsUpdatedTimes[sourceFile] || 0;
-            var sourceFileUpdatedTime = (sourceFileStat.mtime || sourceFileStat.ctime).getTime();
-
-            if (sourceFileUpdatedTime > artifactsUpdatedTime) {
-              updatedFiles.push(sourceFile);
+            // Empty array?
+            if (
+              sourceFilesArtifactsUpdatedTimes[sourceFile] ==
+              Number.MAX_SAFE_INTEGER
+            ) {
+              sourceFilesArtifactsUpdatedTimes[sourceFile] = 0;
             }
           });
 
           c();
-        });
+        },
+        // Stat all the source files, getting there updated times, and comparing them to
+        // the artifact updated times.
+        function(c) {
+          var sourceFiles = Object.keys(sourceFilesArtifacts);
+
+          async.map(
+            sourceFiles,
+            function(sourceFile, finished) {
+              fs.stat(sourceFile, function(err, stat) {
+                if (err) {
+                  // Ignore it. This means the source file was removed
+                  // but the artifact file possibly exists. Return null
+                  // to signfy that we should ignore it.
+                  stat = null;
+                }
+                finished(null, stat);
+              });
+            },
+            function(err, sourceFileStats) {
+              if (err) return callback(err);
+
+              sourceFiles.forEach(function(sourceFile, index) {
+                var sourceFileStat = sourceFileStats[index];
+
+                // Ignore updating artifacts if source file has been removed.
+                if (sourceFileStat == null) {
+                  return;
+                }
+
+                var artifactsUpdatedTime =
+                  sourceFilesArtifactsUpdatedTimes[sourceFile] || 0;
+                var sourceFileUpdatedTime = (
+                  sourceFileStat.mtime || sourceFileStat.ctime
+                ).getTime();
+
+                if (sourceFileUpdatedTime > artifactsUpdatedTime) {
+                  updatedFiles.push(sourceFile);
+                }
+              });
+
+              c();
+            }
+          );
+        }
+      ],
+      function(err) {
+        callback(err, updatedFiles);
       }
-    ], function(err) {
-      callback(err, updatedFiles);
-    });
+    );
   },
 
   required_sources: function(options, callback) {
-    var self = this;
+    let self = this;
 
-    expect.options(options, [
-      "paths",
-      "base_path",
-      "resolver"
-    ]);
+    expect.options(options, ["paths", "base_path", "resolver"]);
 
-    var paths = this.convert_to_absolute_paths(options.paths, options.base_path);
+    let paths = this.convert_to_absolute_paths(
+      options.paths,
+      options.base_path
+    );
 
     function findRequiredSources(dependsGraph, done) {
-      var required = {};
+      let required = {};
 
       function hasBeenTraversed(import_path) {
         return required[import_path] != null;
@@ -234,7 +257,10 @@ module.exports = {
       // Include paths for Solidity .sols, specified in options.
       allPaths = allPaths.concat(paths);
 
-      self.dependency_graph(allPaths, options.resolver, function(err, dependsGraph) {
+      self.dependency_graph(allPaths, options.resolver, function(
+        err,
+        dependsGraph
+      ) {
         if (err) return callback(err);
 
         findRequiredSources(dependsGraph, callback);
@@ -275,65 +301,82 @@ module.exports = {
       return [p, null];
     });
 
-    async.whilst(function() {
-      return paths.length > 0;
-    }, function(finished) {
-      var current = paths.shift();
-      var import_path = current[0];
-      var imported_from = current[1];
+    async.whilst(
+      function() {
+        return paths.length > 0;
+      },
+      function(finished) {
+        var current = paths.shift();
+        var import_path = current[0];
+        var imported_from = current[1];
 
-      if (dependsGraph.hasNode(import_path) && imports_cache[import_path] != null) {
-        return finished();
-      }
-
-      resolver.resolve(import_path, imported_from, function(err, resolved_body, resolved_path, source) {
-        if (err) return finished(err);
-
-        if (dependsGraph.hasNode(resolved_path) && imports_cache[resolved_path] != null) {
+        if (
+          dependsGraph.hasNode(import_path) &&
+          imports_cache[import_path] != null
+        ) {
           return finished();
         }
 
-        // Add the contract to the depends graph.
-        dependsGraph.setNode(resolved_path, resolved_body);
+        resolver.resolve(import_path, imported_from, function(
+          err,
+          resolved_body,
+          resolved_path,
+          source
+        ) {
+          if (err) return finished(err);
 
-        var imports;
-
-        try {
-          imports = Parser.parseImports(resolved_body, resolver.options);
-        } catch (e) {
-          e.message = "Error parsing " + import_path + ": " + e.message;
-          return finished(e);
-        }
-
-        // Convert explicitly relative dependencies of modules
-        // back into module paths. We also use this loop to update
-        // the graph edges.
-        imports = imports.map(function(dependency_path) {
-          // Convert explicitly relative paths
-          if (self.isExplicitlyRelative(dependency_path)) {
-            dependency_path = source.resolve_dependency_path(import_path, dependency_path);
+          if (
+            dependsGraph.hasNode(resolved_path) &&
+            imports_cache[resolved_path] != null
+          ) {
+            return finished();
           }
 
-          // Update graph edges
-          if (!dependsGraph.hasEdge(import_path, dependency_path)) {
-            dependsGraph.setEdge(import_path, dependency_path);
+          // Add the contract to the depends graph.
+          dependsGraph.setNode(resolved_path, resolved_body);
+
+          var imports;
+
+          try {
+            imports = Parser.parseImports(resolved_body, resolver.options);
+          } catch (e) {
+            e.message = "Error parsing " + import_path + ": " + e.message;
+            return finished(e);
           }
 
-          // Return an array that denotes a new import and the path it was imported from.
-          return [dependency_path, import_path];
+          // Convert explicitly relative dependencies of modules
+          // back into module paths. We also use this loop to update
+          // the graph edges.
+          imports = imports.map(function(dependency_path) {
+            // Convert explicitly relative paths
+            if (self.isExplicitlyRelative(dependency_path)) {
+              dependency_path = source.resolve_dependency_path(
+                import_path,
+                dependency_path
+              );
+            }
+
+            // Update graph edges
+            if (!dependsGraph.hasEdge(import_path, dependency_path)) {
+              dependsGraph.setEdge(import_path, dependency_path);
+            }
+
+            // Return an array that denotes a new import and the path it was imported from.
+            return [dependency_path, import_path];
+          });
+
+          imports_cache[import_path] = imports;
+
+          Array.prototype.push.apply(paths, imports);
+
+          finished();
         });
-
-        imports_cache[import_path] = imports;
-
-        Array.prototype.push.apply(paths, imports);
-
-        finished();
-      });
-    },
-    function(err) {
-      if (err) return callback(err);
-      callback(null, dependsGraph)
-    });
+      },
+      function(err) {
+        if (err) return callback(err);
+        callback(null, dependsGraph);
+      }
+    );
   },
 
   // Parse all source files in the directory and output the names of contracts and their source paths
@@ -377,17 +420,19 @@ module.exports = {
         });
       });
 
-      Promise.all(promises).then(function(objects) {
-        var contract_source_paths = {};
+      Promise.all(promises)
+        .then(function(objects) {
+          var contract_source_paths = {};
 
-        objects.forEach(function(object) {
-          Object.keys(object).forEach(function(contract_name) {
-            contract_source_paths[contract_name] = object[contract_name];
+          objects.forEach(function(object) {
+            Object.keys(object).forEach(function(contract_name) {
+              contract_source_paths[contract_name] = object[contract_name];
+            });
           });
-        });
 
-        callback(null, contract_source_paths);
-      }).catch(callback);
+          callback(null, contract_source_paths);
+        })
+        .catch(callback);
     });
   }
 };

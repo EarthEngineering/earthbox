@@ -1,14 +1,14 @@
-var command = {
+let command = {
   command: "init",
   description: "Initialize new and empty earthBox project",
   builder: {},
   run: function(options, done) {
     process.env.CURRENT = "init";
-    var Config = require("../../components/Config");
-    var OS = require("os");
-    var UnboxCommand = require("./unbox");
+    let Config = require("../../components/Config");
+    let OS = require("os");
+    let UnboxCommand = require("./unbox");
 
-    var config = Config.default().with({
+    let config = Config.default().with({
       logger: console
     });
 
@@ -25,8 +25,8 @@ var command = {
       process.exit(1);
     }
 
-    // defer to `truffle unbox` command with "bare" box as arg
-    var url = "https://github.com/earthengineering/bare-box.git";
+    // defer to `earth unbox` command with "bare" box as arg
+    let url = "https://github.com/earthengineering/bare-box.git";
     options._ = [url];
 
     UnboxCommand.run(options, done);

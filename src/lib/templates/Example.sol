@@ -1,7 +1,7 @@
-pragma solidity ^0.4.22;
+pragma solidity ^0.5.9;
 
 
 contract Example {
-  constructor() {
+  constructor() public {
   }
 }

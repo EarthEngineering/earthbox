@@ -1,9 +1,9 @@
-var unbox = require('./unbox');
+let unbox = require("./unbox");
 
 module.exports = {
   downloadBox: function(url, destination) {
-    var tmpDir;
-    var tmpCleanup;
+    let tmpDir;
+    let tmpCleanup;
 
     return Promise.resolve()
       .then(function() {
@@ -14,7 +14,8 @@ module.exports = {
       })
       .then(function() {
         return unbox.setupTempDirectory();
-      }).then(function(dir, func) {
+      })
+      .then(function(dir, func) {
         // save tmpDir result
         tmpDir = dir;
         tmpCleanup = func;
@@ -29,11 +30,11 @@ module.exports = {
   },
 
   unpackBox: function(destination) {
-    var boxConfig;
+    let boxConfig;
 
     return Promise.resolve()
       .then(function() {
-        return unbox.readBoxConfig(destination)
+        return unbox.readBoxConfig(destination);
       })
       .then(function(cfg) {
         boxConfig = cfg;
@@ -49,10 +50,10 @@ module.exports = {
   setupBox: function(boxConfig, destination) {
     return Promise.resolve()
       .then(function() {
-        return unbox.installBoxDependencies(boxConfig, destination)
+        return unbox.installBoxDependencies(boxConfig, destination);
       })
       .then(function() {
         return boxConfig;
       });
   }
-}
+};

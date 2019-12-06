@@ -1,7 +1,7 @@
-var path = require("path");
-var fs = require("fs-extra");
-var homedir = require("homedir");
-var req = require("superagent");
+let path = require("path");
+let fs = require("fs-extra");
+let homedir = require("homedir");
+let req = require("superagent");
 
 async function downloader(compilerVersion) {
   let dir = path.join(homedir(), ".earthbox", "solc");

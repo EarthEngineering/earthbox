@@ -2,7 +2,7 @@
   "id": "contract-object.spec.json",
   "$schema": "http://json-schema.org/schema#",
   "title": "Contract Object",
-  "description": "Describes a contract consumable by Truffle, possibly including deployed instances on networks",
+  "description": "Describes a contract consumable by EARTH , possibly including deployed instances on networks",
 
   "type": "object",
   "properties": {
@@ -17,26 +17,34 @@
     },
     "abi": {
       "allOf": [
-        { "$ref": "abi.spec.json#"},
-        { "description": "Interface description returned by compiler for source" }
+        { "$ref": "abi.spec.json#" },
+        {
+          "description": "Interface description returned by compiler for source"
+        }
       ]
     },
     "bytecode": {
       "allOf": [
         { "$ref": "#/definitions/Bytecode" },
-        { "description": "Bytecode sent as contract-creation transaction data, with unresolved link references" }
+        {
+          "description": "Bytecode sent as contract-creation transaction data, with unresolved link references"
+        }
       ]
     },
     "deployedBytecode": {
       "allOf": [
         { "$ref": "#/definitions/Bytecode" },
-        { "description": "On-chain deployed contract bytecode, with unresolved link references" }
+        {
+          "description": "On-chain deployed contract bytecode, with unresolved link references"
+        }
       ]
     },
     "sourceMap": {
       "allOf": [
         { "$ref": "#/definitions/SourceMap" },
-        { "description": "Source mapping for contract-creation transaction data bytecode" }
+        {
+          "description": "Source mapping for contract-creation transaction data bytecode"
+        }
       ]
     },
     "deployedSourceMap": {
@@ -52,13 +60,13 @@
     "compiler": {
       "type": "object",
       "properties": {
-        "name": {"type": "string"},
-        "version": {"type": "string"}
+        "name": { "type": "string" },
+        "version": { "type": "string" }
       }
     },
     "networks": {
       "patternProperties": {
-        "^[a-zA-Z0-9]+$": { "$ref": "network-object.spec.json#"}
+        "^[a-zA-Z0-9]+$": { "$ref": "network-object.spec.json#" }
       },
       "additionalProperties": false
     },
@@ -68,16 +76,16 @@
       "format": "date-time"
     }
   },
-  "required": [
-    "abi"
-  ],
+  "required": ["abi"],
   "patternProperties": {
-    "^x-": { "anyOf": [
-      { "type": "string" },
-      { "type": "number" },
-      { "type": "object" },
-      { "type": "array" }
-    ]}
+    "^x-": {
+      "anyOf": [
+        { "type": "string" },
+        { "type": "number" },
+        { "type": "object" },
+        { "type": "array" }
+      ]
+    }
   },
   "additionalProperties": false,
 

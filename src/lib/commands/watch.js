@@ -1,27 +1,27 @@
-var command = {
+let command = {
   command: "watch",
   description:
     "Watch filesystem for changes and rebuild the project automatically",
   builder: {},
   run: function(options, done) {
     process.env.CURRENT = "watch";
-    var Build = require("../build");
-    var Config = require("../../components/Config");
-    var chokidar = require("chokidar");
-    var path = require("path");
-    var colors = require("colors");
-    var Contracts = require("../../components/WorkflowCompile");
-    var TruffleError = require("@truffle/error");
+    let Build = require("../build");
+    let Config = require("../../components/Config");
+    let chokidar = require("chokidar");
+    let path = require("path");
+    let colors = require("colors");
+    let Contracts = require("../../components/WorkflowCompile");
+    let TruffleError = require("@truffle/error");
 
-    var config = Config.detect(options);
+    let config = Config.detect(options);
 
-    var printSuccess = function() {
+    let printSuccess = function() {
       config.logger.log(
         colors.green("Completed without errors on " + new Date().toString())
       );
     };
 
-    var printFailure = function(err) {
+    let printFailure = function(err) {
       if (err instanceof TruffleError) {
         console.log(err.message);
       } else {
@@ -30,11 +30,11 @@ var command = {
       }
     };
 
-    var working = false;
-    var needs_rebuild = true;
-    var needs_recompile = true;
+    let working = false;
+    let needs_rebuild = true;
+    let needs_recompile = true;
 
-    var watchPaths = [
+    let watchPaths = [
       path.join(config.working_directory, "app/**/*"),
       path.join(config.contracts_build_directory, "/**/*"),
       path.join(config.contracts_directory, "/**/*"),
@@ -50,7 +50,7 @@ var command = {
       })
       .on("all", function(event, filePath) {
         // On changed/added/deleted
-        var display_path = path.join(
+        let display_path = path.join(
           "./",
           filePath.replace(config.working_directory, "")
         );
@@ -67,7 +67,7 @@ var command = {
         }
       });
 
-    var check_rebuild = function() {
+    let check_rebuild = function() {
       if (working) {
         setTimeout(check_rebuild, 200);
         return;

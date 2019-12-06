@@ -1,15 +1,15 @@
-var async = require("async");
-var fs = require("fs");
-var mkdirp = require("mkdirp");
-var path = require("path");
-var Config = require("./Config");
-var compile = require("./Compile");
-var expect = require("@truffle/expect");
-var _ = require("lodash");
-var Resolver = require("./Resolver");
-var Artifactor = require("./Artifactor");
-var OS = require("os");
-var EarthWrap = require("./EarthWrap");
+let async = require("async");
+let fs = require("fs");
+let mkdirp = require("mkdirp");
+let path = require("path");
+let Config = require("./Config");
+let compile = require("./Compile");
+let expect = require("@truffle/expect");
+let _ = require("lodash");
+let Resolver = require("./Resolver");
+let Artifactor = require("./Artifactor");
+let OS = require("os");
+let EarthWrap = require("./EarthWrap");
 
 async function getCompilerVersion(options) {
   var config = Config.detect(options);
@@ -31,7 +31,7 @@ async function getCompilerVersion(options) {
   }
 }
 
-var Contracts = {
+let Contracts = {
   // contracts_directory: String. Directory where .sol files can be found.
   // contracts_build_directory: String. Directory where .sol.js files can be found and written to.
   // all: Boolean. Compile all sources found. Defaults to true. If false, will compare sources against built files
@@ -40,14 +40,14 @@ var Contracts = {
   // quiet: Boolean. Suppress output. Defaults to false.
   // strict: Boolean. Return compiler warnings as errors. Defaults to false.
   compile: function(options, callback) {
-    var self = this;
+    let self = this;
 
     expect.options(options, ["contracts_build_directory"]);
 
     expect.one(options, ["contracts_directory", "files"]);
 
     // Use a config object to ensure we get the default sources.
-    var config = Config.default().merge(options);
+    let config = Config.default().merge(options);
 
     if (!config.resolver) {
       config.resolver = new Resolver(config);
@@ -86,7 +86,7 @@ var Contracts = {
   },
 
   write_contracts: function(contracts, options, callback) {
-    var logger = options.logger || console;
+    let logger = options.logger || console;
 
     mkdirp(options.contracts_build_directory, function(err, result) {
       if (err != null) {
@@ -106,7 +106,7 @@ var Contracts = {
         );
       }
 
-      var extra_opts = {
+      let extra_opts = {
         network_id: options.network_id
       };
 

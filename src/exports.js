@@ -1,4 +1,4 @@
-var pkg = require("../package.json");
+let pkg = require("../package.json");
 
 module.exports = {
   build: require("./lib/build"),

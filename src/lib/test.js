@@ -1,27 +1,27 @@
-var Mocha = require("mocha");
-var chai = require("chai");
-var path = require("path");
-var fs = require("fs");
-var Config = require("../components/Config");
-var Contracts = require("../components/WorkflowCompile");
-var Resolver = require("../components/Resolver");
-var TestRunner = require("./testing/testrunner");
-var TestResolver = require("./testing/testresolver");
-var TestSource = require("./testing/testsource");
-// var SolidityTest = require("./testing/soliditytest");
-var expect = require("@truffle/expect");
-var find_contracts = require("@truffle/contract-sources");
-var Migrate = require("../components/Migrate");
-var Profiler = require("../components/Compile/profiler");
-var async = require("async");
-var originalrequire = require("original-require");
-var EarthWrap = require("../components/EarthWrap");
+let Mocha = require("mocha");
+let chai = require("chai");
+let path = require("path");
+let fs = require("fs");
+let Config = require("../components/Config");
+let Contracts = require("../components/WorkflowCompile");
+let Resolver = require("../components/Resolver");
+let TestRunner = require("./testing/testrunner");
+let TestResolver = require("./testing/testresolver");
+let TestSource = require("./testing/testsource");
+// let SolidityTest = require("./testing/soliditytest");
+let expect = require("@truffle/expect");
+let find_contracts = require("@truffle/contract-sources");
+let Migrate = require("../components/Migrate");
+let Profiler = require("../components/Compile/profiler");
+let async = require("async");
+let originalrequire = require("original-require");
+let EarthWrap = require("../components/EarthWrap");
 
 chai.use(require("./assertions"));
 
-var Test = {
+let Test = {
   run: function(options, callback) {
-    var self = this;
+    let self = this;
 
     expect.options(options, [
       "contracts_directory",
@@ -33,27 +33,27 @@ var Test = {
       "provider"
     ]);
 
-    var config = Config.default().merge(options);
+    let config = Config.default().merge(options);
 
     config.test_files = config.test_files.map(function(test_file) {
       return path.resolve(test_file);
     });
 
     // Output looks like this during tests: https://gist.github.com/tcoulter/1988349d1ec65ce6b958
-    var warn = config.logger.warn;
+    let warn = config.logger.warn;
     config.logger.warn = function(message) {
       if (message !== "cannot find event for log" && warn) {
         warn.apply(console, arguments);
       }
     };
 
-    var mocha = this.createMocha(config);
+    let mocha = this.createMocha(config);
 
-    var js_tests = config.test_files.filter(function(file) {
+    let js_tests = config.test_files.filter(function(file) {
       return path.extname(file) !== ".sol";
     });
 
-    var sol_tests = config.test_files.filter(function(file) {
+    let sol_tests = config.test_files.filter(function(file) {
       return path.extname(file) === ".sol";
     });
 
@@ -68,13 +68,13 @@ var Test = {
       mocha.addFile(file);
     });
 
-    var dependency_paths = [];
-    var testContracts = [];
-    var accounts = [];
-    var runner;
-    var test_resolver;
+    let dependency_paths = [];
+    let testContracts = [];
+    let accounts = [];
+    let runner;
+    let test_resolver;
 
-    var earthWrap = EarthWrap();
+    let earthWrap = EarthWrap();
 
     earthWrap
       ._getAccounts()
@@ -89,7 +89,7 @@ var Test = {
           config.resolver = new Resolver(config);
         }
 
-        var test_source = new TestSource(config);
+        let test_source = new TestSource(config);
         test_resolver = new TestResolver(
           config.resolver,
           test_source,
@@ -107,7 +107,7 @@ var Test = {
         dependency_paths = paths;
 
         testContracts = sol_tests.map(function(test_file_path) {
-          var built_name = "./" + path.basename(test_file_path);
+          let built_name = "./" + path.basename(test_file_path);
           return test_resolver.require(built_name);
         });
 
@@ -141,7 +141,7 @@ var Test = {
 
   createMocha: function(config) {
     // Allow people to specify config.mocha in their config.
-    var mochaConfig = config.mocha || {};
+    let mochaConfig = config.mocha || {};
 
     // If the command line overrides color usage, use that.
     if (config.colors != null) {
@@ -153,7 +153,7 @@ var Test = {
       mochaConfig.useColors = true;
     }
 
-    var mocha = new Mocha(mochaConfig);
+    let mocha = new Mocha(mochaConfig);
 
     return mocha;
   },
@@ -227,7 +227,7 @@ var Test = {
         }
       };
 
-      var template = function(tests) {
+      let template = function(tests) {
         this.timeout(runner.TEST_TIMEOUT);
 
         before("prepare suite", function(done) {

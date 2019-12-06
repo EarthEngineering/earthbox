@@ -1,27 +1,27 @@
 require("source-map-support/register");
 
-var Config = require("./components/Config");
-var Command = require("./lib/command");
-var TaskError = require("./lib/errors/taskerror");
-var TruffleError = require("@truffle/error");
-var version = require("./lib/version");
-var OS = require("os");
-var downloader = require("./downloader");
+// let Config = require("./components/Config");
+let Command = require("./lib/command");
+let TaskError = require("./lib/errors/taskerror");
+let TruffleError = require("@truffle/error");
+let version = require("./lib/version");
+let OS = require("os");
+let downloader = require("./downloader");
 
-var command = new Command(require("./lib/commands"));
+let command = new Command(require("./lib/commands"));
 
-var options = {
+let options = {
   logger: console
 };
 
-var commands = process.argv.slice(2);
+let commands = process.argv.slice(2);
 
 if (commands[0] === "--download-compiler" && commands[1]) {
   downloader(commands[1]);
 } else {
-  var command = new Command(require("./lib/commands"));
+  let command = new Command(require("./lib/commands"));
 
-  var options = {
+  let options = {
     logger: console
   };
 
@@ -54,7 +54,7 @@ if (commands[0] === "--download-compiler" && commands[1]) {
     }
 
     // Don't exit if no error; if something is keeping the process open,
-    // like `truffle console`, then let it.
+    // like `earthbox console`, then let it.
 
     // Clear any polling or open sockets - `provider-engine` in HDWallet
     // and `web3 1.0 confirmations` both leave interval timers etc wide open.

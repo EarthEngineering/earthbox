@@ -1,24 +1,33 @@
-var http = require('http');
-var finalhandler = require('finalhandler');
-var serveStatic = require('serve-static');
-var path = require("path");
+let http = require("http");
+let finalhandler = require("finalhandler");
+let serveStatic = require("serve-static");
+let path = require("path");
 
-var Serve = {
+let Serve = {
   start: function(options, done) {
-    var serve = serveStatic(options.build_directory);
+    let serve = serveStatic(options.build_directory);
 
-    var server = http.createServer(function(req, res) {
-      var done = finalhandler(req, res);
+    let server = http.createServer(function(req, res) {
+      let done = finalhandler(req, res);
       serve(req, res, done);
     });
 
-    var port = options.port || options.p || 8080;
+    let port = options.port || options.p || 8080;
 
     server.listen(port);
 
-    var display_directory = "." + path.sep + path.relative(options.working_directory, options.build_directory);
+    let display_directory =
+      "." +
+      path.sep +
+      path.relative(options.working_directory, options.build_directory);
 
-    options.logger.log("Serving static assets in " + display_directory + " on port " + port + "...");
+    options.logger.log(
+      "Serving static assets in " +
+        display_directory +
+        " on port " +
+        port +
+        "..."
+    );
     done();
   }
 };

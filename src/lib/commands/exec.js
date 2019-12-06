@@ -1,4 +1,4 @@
-var command = {
+let command = {
   command: "exec",
   description: "Execute a JS module within this earthBox environment",
   builder: {
@@ -16,17 +16,17 @@ var command = {
   },
   run: function(options, done) {
     process.env.CURRENT = "exec";
-    var Config = require("../../components/Config");
-    var Contracts = require("../../components/WorkflowCompile");
-    var ConfigurationError = require("../errors/configurationerror");
-    var Require = require("@truffle/expect");
-    var Environment = require("../environment");
-    var path = require("path");
-    var OS = require("os");
+    let Config = require("../../components/Config");
+    let Contracts = require("../../components/WorkflowCompile");
+    let ConfigurationError = require("../errors/configurationerror");
+    let Require = require("@truffle/expect");
+    let Environment = require("../environment");
+    let path = require("path");
+    let OS = require("os");
 
-    var config = Config.detect(options);
+    let config = Config.detect(options);
 
-    var file = options.file;
+    let file = options.file;
 
     if (file == null && options._.length > 0) {
       file = options._[0];

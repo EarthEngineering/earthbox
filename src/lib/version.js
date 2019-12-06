@@ -1,7 +1,7 @@
-// var pkg = require("../../package.json");
-// var solcpkg = require("earth-solc/package.json");
+// let pkg = require("../../package.json");
+// let solcpkg = require("earth-solc/package.json");
 
-var bundle = require("../../package.json");
+let bundle = require("../../package.json");
 
 module.exports = {
   // src: pkg.version,

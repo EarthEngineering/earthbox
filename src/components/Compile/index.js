@@ -1,13 +1,13 @@
 var Profiler = require("./profiler");
 var OS = require("os");
 var path = require("path");
-var fs = require("fs");
-var async = require("async");
+// var fs = require("fs");
+// var async = require("async");
 var CompileError = require("./compileerror");
 var expect = require("@truffle/expect");
 var find_contracts = require("@truffle/contract-sources");
 var Config = require("../Config");
-var debug = require("debug")("compile");
+// var debug = require("debug")("compile");
 
 // Most basic of the compile commands. Takes a hash of sources, where
 // the keys are file or module paths and the values are the bodies of
