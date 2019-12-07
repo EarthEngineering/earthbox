@@ -1,13 +1,11 @@
-# EarthBox
+# EarthCli
 
 Simple development framework for earthweb  
-**EarthBox is a fork of [Truffle](https://www.trufflesuite.com/truffle) [code](https://github.com/trufflesuite/truffle)**
-
-[EarthBox Documentation](https://developer.earth.engineering/earthbox)
+**EarthCli is a fork of [Truffle](https://www.trufflesuite.com/truffle) [code](https://github.com/trufflesuite/truffle)**
 
 ## Installation
 
-`npm install -g earthbox`
+`npm install -g earthcli`
 
 ## OS requirement
 
@@ -16,16 +14,16 @@ Simple development framework for earthweb
 
 ## Features
 
-Initialize a Customer Earth-Box Project<br>
-`earthbox init`
+Initialize a Customer EarthCli Project<br>
+`earthcli init`
 <br>
 
 Download a dApp, ex: metacoin-box<br>
-`earthbox unbox metacoin`
+`earthcli unbox metacoin`
 <br>
 
 Contract Compiler<br>
-`earthbox compile`
+`earthcli compile`
 
 <br>
 To compile for all contracts, select --compile-all.
@@ -37,13 +35,13 @@ Optionally, you can select: <br>
 
 ## Configuration
 
-To use EarthBox, your dApp has to have a file `EarthBox.js` in the source root. This special files, tells EarthBox how to connect to nodes and event server, and passes some special parameters, like the default private key. This is an example of `EarthBox.js`:
+To use EarthCli, your dApp has to have a file `earthcli.js` in the source root. This special files, tells EarthCli how to connect to nodes and event server, and passes some special parameters, like the default private key. This is an example of `earthcli.js`:
 
 ```
 module.exports = {
   networks: {
     development: {
-// For earthtools/quickstart docker image
+// For earthengineering/quickstart docker image
       privateKey: 'da146374a75310b9666e834ee4ad0866d6f4035967bfc76217c5a495fff9f0d0',
       userFeePercentage: 30, // or consume_user_resource_percent
       feeLimit: 100000000, // or fee_limit
@@ -69,7 +67,7 @@ module.exports = {
 };
 ```
 
-Starting from EarthBox 2.1.9, if you are connecting to the same host for full and solidity nodes, and event server, you can set just `fullHost`:
+Starting from EarthCli 2.1.9, if you are connecting to the same host for full and solidity nodes, and event server, you can set just `fullHost`:
 
 ```
 module.exports = {
@@ -99,17 +97,17 @@ Notice that the example above uses Earth Quickstart >= 1.1.16, which exposes a m
 
 ## Contract Migration<br>
 
-`earthbox migrate`
+`earthcli migrate`
 <br>
 
-This command will invoke all migration scripts within the migrations directory. If your previous migration was successful, `earthbox migrate` will invoke a newly created migration. If there is no new migration script, this command will have no operational effect. Instead, you can use the option `--reset` to restart the migration script.<br>
+This command will invoke all migration scripts within the migrations directory. If your previous migration was successful, `earthcli migrate` will invoke a newly created migration. If there is no new migration script, this command will have no operational effect. Instead, you can use the option `--reset` to restart the migration script.<br>
 
-`earthbox migrate --reset`
+`earthcli migrate --reset`
 <br>
 
 ## Parameters by contract (introduced in v2.2.2)
 
-It is very important to set the deploying parameters for any contract. In EarthBox 2.2.2+ you can do it modifying the file
+It is very important to set the deploying parameters for any contract. In EarthCli 2.2.2+ you can do it modifying the file
 
 ```
 migrations/2_deploy_contracts.js
@@ -136,12 +134,12 @@ module.exports = function(deployer) {
 
 This will use the default network to start a console. It will automatically connect to a TVM client. You can use `--network` to change this. <br>
 
-`earthbox console`<br>
+`earthcli console`<br>
 
-The console supports the `earthbox` command. For example, you can invoke `migrate --reset` in the console. The result is the same as invoking `earthbox migrate --reset` in the command.
+The console supports the `earthcli` command. For example, you can invoke `migrate --reset` in the console. The result is the same as invoking `earthcli migrate --reset` in the command.
 <br>
 
-## Extra Features in EarthBox console:<br>
+## Extra Features in EarthCli console:<br>
 
 1. All the compiled contracts can be used, just like in development & test, front-end code, or during script migration. <br>
 
@@ -153,14 +151,14 @@ The console supports the `earthbox` command. For example, you can invoke `migrat
 
 To carry out the test, run the following command:<br>
 
-`earthbox test`<br>
+`earthcli test`<br>
 
 You can also run the test for a specific file：<br>
 
-`earthbox test ./path/to/test/file.js`<br>
+`earthcli test ./path/to/test/file.js`<br>
 
-Testing in EarthBox is a bit different than in Truffle.
-Let's say we want to test the contract Metacoin (from the Metacoin Box that you can download with `earthbox unbox metacoin`):
+Testing in EarthCli is a bit different than in Truffle.
+Let's say we want to test the contract Metacoin (from the Metacoin Box that you can download with `earthcli unbox metacoin`):
 
 ```
 contract MetaCoin {
@@ -207,7 +205,7 @@ contract('MetaCoin', function(accounts) {
   // ...
 ```
 
-Starting from version 2.0.5, in EarthBox artifacts () the following commands are equivalent:
+The following commands are equivalent:
 
 ```
 instance.call('getBalance', accounts[0]);
@@ -234,7 +232,7 @@ instance.sendCoin([address, amount], {from: account[1]});
 2. Clone your forked repo recursively, to include submodules, for example:
 
 ```
-git clone --recurse-submodules -j8 git@github.com:earthengineering/EarthBox.git
+git clone --recurse-submodules -j8 git@github.com:earthengineering/earthcli.git
 ```
 
 3. If you use nvm for Node, please install Node 8, and install lerna globally:
@@ -251,15 +249,15 @@ npm i -g lerna
 lerna bootstrap
 ```
 
-5. During the development, for better debugging, you can run the unbuilt version of EarthBox, for example
+5. During the development, for better debugging, you can run the unbuilt version of EarthCli, for example
 
 ```
-./EarthBox.dev migrate --reset
+./earthcli.dev migrate --reset
 ```
 
 ## Solc versions
 
-EarthBox does not supports all the Solidity compilers.  
+EarthCli does not supports all the Solidity compilers.  
 Supported versions:
 
 ```

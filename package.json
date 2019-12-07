@@ -1,8 +1,8 @@
 {
-  "name": "earthbox",
-  "namespace": "earthengineering",
-  "version": "0.2.2",
-  "description": "EarthBox - Simple development framework for earthweb",
+  "name": "earthcli",
+  "namespace": "EarthEngineering",
+  "version": "0.2.5",
+  "description": "EarthCli - Development framework for EarthWeb",
   "dependencies": {
     "@truffle/contract-sources": "^0.1.6",
     "@truffle/error": "0.0.7",
@@ -24,6 +24,7 @@
     "ethpm": "0.0.16",
     "ethpm-registry": "0.1.0-next.3",
     "finalhandler": "^1.1.2",
+    "find-up": "^4.1.0",
     "fs-extra": "^8.1.0",
     "graphlib": "^2.1.7",
     "homedir": "^0.6.0",
@@ -63,7 +64,7 @@
     "truffle-blockchain-utils": "^0.0.5"
   },
   "bin": {
-    "earthbox": "build/earthbox.js"
+    "earthcli": "build/earthcli.js"
   },
   "scripts": {
     "test": "echo \"Error: tests will be fixed soon in a new release\" && exit 1",
@@ -72,11 +73,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/earthengineering/earthbox.git"
+    "url": "git+https://github.com/earthengineering/earthcli.git"
   },
-  "homepage": "https://github.com/earthengineering/earthbox/",
+  "homepage": "https://github.com/earthengineering/earthcli/",
   "bugs": {
-    "url": "https://github.com/earthengineering/earthbox/issues"
+    "url": "https://github.com/earthengineering/earthcli/issues"
   },
   "originalAuthor": "consensys.net",
   "author": "earth.engineering",

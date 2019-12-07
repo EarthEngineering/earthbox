@@ -36,7 +36,7 @@ function getWrapper(options = {}) {
         compilerVersion = version;
       } else {
         console.error(`Error:
-EarthBox supports only the following versions:
+EarthCli supports only the following versions:
 ${supportedVersions.join(" - ")}
 `);
         process.exit();

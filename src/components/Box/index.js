@@ -42,7 +42,7 @@ var Box = {
       self
         .unbox("https://github.com/trufflesuite/truffle-init-" + name, dir)
         .then(function() {
-          var config = Config.load(path.join(dir, "earthbox.js"), {});
+          var config = Config.load(path.join(dir, "earthcli.js"), {});
           callback(null, config);
         })
         .catch(callback);
