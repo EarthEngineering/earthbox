@@ -38,8 +38,8 @@ let command = {
       path.join(config.working_directory, "app/**/*"),
       path.join(config.contracts_build_directory, "/**/*"),
       path.join(config.contracts_directory, "/**/*"),
-      path.join(config.working_directory, "earthbox-config.js"),
-      path.join(config.working_directory, "earthbox.js")
+      path.join(config.working_directory, "earthcli-config.js"),
+      path.join(config.working_directory, "earthcli.js")
     ];
 
     chokidar

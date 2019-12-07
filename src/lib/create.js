@@ -18,7 +18,7 @@ let templates = {
 };
 
 let processFile = function(file_path, processfn, callback) {
-  let stat = fs.statSync(file_path);
+  // let stat = fs.statSync(file_path);
 
   fs.readFile(file_path, { encoding: "utf8" }, function(err, data) {
     if (err != null) {

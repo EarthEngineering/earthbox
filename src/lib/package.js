@@ -1,13 +1,13 @@
 let expect = require("@truffle/expect");
 let TruffleError = require("@truffle/error");
-let Provider = require("../components/Provider");
-let Profiler = require("../components/Compile/profiler");
+// let Provider = require("../components/Provider");
+// let Profiler = require("../components/Compile/profiler");
 let Networks = require("./networks");
 let EthPM = require("ethpm");
 let EthPMRegistry = require("ethpm-registry");
 let Web3 = require("web3-mock");
 let async = require("async");
-let dir = require("node-dir");
+// let dir = require("node-dir");
 let path = require("path");
 let fs = require("fs");
 let OS = require("os");

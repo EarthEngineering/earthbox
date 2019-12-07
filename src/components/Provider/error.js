@@ -13,7 +13,7 @@ function ProviderError(message, error) {
       "    - is running\n" +
       '    - is accepting RPC connections (i.e., "--rpc" option is used in geth)\n' +
       "    - is accessible over the network\n" +
-      "    - is properly configured in your earthbox configuration file (earthbox.js)\n";
+      "    - is properly configured in your earthbox configuration file (earthcli.js)\n";
   }
   ProviderError.super_.call(this, message);
   this.message = message;

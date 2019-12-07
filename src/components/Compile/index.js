@@ -325,7 +325,7 @@ function orderABI(contract) {
 // quiet: Boolean. Suppress output. Defaults to false.
 // strict: Boolean. Return compiler warnings as errors. Defaults to false.
 compile.all = function(options, callback) {
-  var self = this;
+  // var self = this;
   find_contracts(options.contracts_directory, function(err, files) {
     options.paths = files;
     compile.with_dependencies(options, callback);
@@ -339,7 +339,7 @@ compile.all = function(options, callback) {
 // quiet: Boolean. Suppress output. Defaults to false.
 // strict: Boolean. Return compiler warnings as errors. Defaults to false.
 compile.necessary = function(options, callback) {
-  var self = this;
+  // var self = this;
   options.logger = options.logger || console;
 
   Profiler.updated(options, function(err, updated) {
@@ -367,7 +367,7 @@ compile.with_dependencies = function(options, callback) {
 
   var config = Config.default().merge(options);
 
-  var self = this;
+  // var self = this;
   Profiler.required_sources(
     config.with({
       paths: options.paths,

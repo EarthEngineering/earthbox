@@ -1,7 +1,7 @@
 let Mocha = require("mocha");
 let chai = require("chai");
 let path = require("path");
-let fs = require("fs");
+// let fs = require("fs");
 let Config = require("../components/Config");
 let Contracts = require("../components/WorkflowCompile");
 let Resolver = require("../components/Resolver");
@@ -10,10 +10,10 @@ let TestResolver = require("./testing/testresolver");
 let TestSource = require("./testing/testsource");
 // let SolidityTest = require("./testing/soliditytest");
 let expect = require("@truffle/expect");
-let find_contracts = require("@truffle/contract-sources");
+// let find_contracts = require("@truffle/contract-sources");
 let Migrate = require("../components/Migrate");
 let Profiler = require("../components/Compile/profiler");
-let async = require("async");
+// let async = require("async");
 let originalrequire = require("original-require");
 let EarthWrap = require("../components/EarthWrap");
 

@@ -31,7 +31,7 @@ function verifyURL(url) {
     let configURL = parseURL(
       vcsurl(url)
         .replace("github.com", "raw.githubusercontent.com")
-        .replace(/#.*/, "") + "/master/earthbox.js"
+        .replace(/#.*/, "") + "/master/earthcli.js"
     );
 
     let options = {
@@ -107,8 +107,8 @@ function copyTempIntoDestination(tmpDir, destination) {
 
 function readBoxConfig(destination) {
   let possibleConfigs = [
-    path.join(destination, "earthbox.json"),
-    path.join(destination, "earthbox-init.json")
+    path.join(destination, "earthcli.json"),
+    path.join(destination, "earthcli-init.json")
   ];
 
   let configPath = possibleConfigs.reduce(function(path, alt) {
@@ -122,8 +122,8 @@ function cleanupUnpack(boxConfig, destination) {
   let needingRemoval = boxConfig.ignore || [];
 
   // remove box config file
-  needingRemoval.push("earthbox.json");
-  needingRemoval.push("earthbox-init.json");
+  needingRemoval.push("earthcli.json");
+  needingRemoval.push("earthcli-init.json");
 
   let promises = needingRemoval
     .map(function(file_path) {

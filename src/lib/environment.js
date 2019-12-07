@@ -3,8 +3,8 @@ let expect = require("@truffle/expect");
 let Resolver = require("../components/Resolver");
 let Artifactor = require("../components/Artifactor");
 // let TestRPC = require("ganache-cli");
-let spawn = require("child_process").spawn;
-let path = require("path");
+// let spawn = require("child_process").spawn;
+// let path = require("path");
 let EarthWrap = require("../components/EarthWrap");
 
 let Environment = {
@@ -89,7 +89,7 @@ let Environment = {
     expect.options(config, ["from"]);
 
     let upstreamNetwork = config.network;
-    let upstreamConfig = config.networks[upstreamNetwork];
+    // let upstreamConfig = config.networks[upstreamNetwork];
     let forkedNetwork = config.network + "-fork";
 
     config.networks[forkedNetwork] = {
