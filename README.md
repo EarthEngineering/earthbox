@@ -19,7 +19,7 @@ Initialize a Customer EarthCli Project<br>
 <br>
 
 Download a dApp, ex: metacoin-box<br>
-`earthcli unbox metacoin`
+`earthcli unbox coin-box`
 <br>
 
 Contract Compiler<br>

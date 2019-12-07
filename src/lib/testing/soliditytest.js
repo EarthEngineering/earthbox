@@ -8,7 +8,7 @@
 // var series = require("async").series;
 // var path = require("path");
 // var SolidityCoder = require("web3/lib/solidity/coder.js");
-// var TronWrap = require("../../components/TronWrap");
+// var EarthWrap = require("../../components/EarthWrap");
 //
 // var SolidityTest = {
 //   define: function(abstraction, dependency_paths, runner, mocha) {
@@ -36,7 +36,7 @@
 //       if (result.logs && result.logs.length) return result.logs;
 //
 //       var logs = [];
-//       var signature = TronWrap().sha3('TestEvent(bool,string)');
+//       var signature = EarthWrap().sha3('TestEvent(bool,string)');
 //
 //       result.receipt && result.receipt.logs.forEach(function(log) {
 //         if (log.topics.length === 2 && log.topics[0] === signature){

@@ -2,7 +2,7 @@ let ReplManager = require("./repl");
 let Command = require("./command");
 let provision = require("../components/Provisioner");
 let contract = require("../components/Contract");
-let TronWrap = require("../components/EarthWrap");
+let EarthWrap = require("../components/EarthWrap");
 let vm = require("vm");
 let expect = require("@truffle/expect");
 let _ = require("lodash");
@@ -44,7 +44,7 @@ function Console(tasks, options) {
   }
 
   try {
-    this.earthWrap = TronWrap(options.networks[options.network], {
+    this.earthWrap = EarthWrap(options.networks[options.network], {
       verify: true,
       log: options.log
     });

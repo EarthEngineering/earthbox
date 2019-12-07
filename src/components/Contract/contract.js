@@ -1,5 +1,5 @@
 var ethJSABI = require("ethjs-abi");
-var TronWrap = require("../EarthWrap");
+var EarthWrap = require("../EarthWrap");
 var { constants } = require("../EarthWrap");
 var BigNumber = require("bignumber.js");
 var StatusError = require("./statuserror.js");
@@ -280,7 +280,7 @@ var contract = (function(module) {
           regex,
           library_address.replace("0x", "").replace("41", "")
         );
-        // var address = TronWrap.address2HexString(library_address);
+        // var address = EarthWrap.address2HexString(library_address);
         // bytecode = bytecode.replace(eval('/'+library_address+"/ig"),address.replace("41", ""));
       });
 
@@ -323,7 +323,7 @@ var contract = (function(module) {
   Contract._static_methods = {
     initEarthWeb: function(options) {
       if (!earthWrap) {
-        earthWrap = TronWrap(options);
+        earthWrap = EarthWrap(options);
       }
     },
 
@@ -562,7 +562,7 @@ var contract = (function(module) {
             self.contractName + " has not been deployed to detected network"
           );
         }
-        TronWrap()
+        EarthWrap()
           .trx.getContract(self.address)
           .then(res => {
             const abi = res.abi && res.abi.entrys ? res.abi.entrys : [];
@@ -927,7 +927,7 @@ var contract = (function(module) {
 
         signature += ")";
 
-        var topic = TronWrap().sha3(signature);
+        var topic = EarthWrap().sha3(signature);
 
         events[topic] = item;
       });
