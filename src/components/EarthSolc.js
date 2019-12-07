@@ -1,16 +1,16 @@
-var wrapper = require("solc/wrapper");
-var { name } = require("../../package");
-var path = require("path");
-var fs = require("fs-extra");
-var homedir = require("homedir");
+const wrapper = require("solc/wrapper");
+let { name } = require("../../package");
+const path = require("path");
+const fs = require("fs-extra");
+const homedir = require("homedir");
 const { execSync } = require("child_process");
 
-var supportedVersions = ["0.4.24", "0.4.25", "0.5.4", "0.5.8"];
+const supportedVersions = ["0.4.24", "0.4.25", "0.5.4", "0.5.8"];
 
 function getWrapper(options = {}) {
   try {
     const params = options.networkInfo.parameters;
-    for (let p of params) {
+    for (const p of params) {
       if (p.key === "getAllowTvmSolidity059") {
         if (p.value) {
           supportedVersions.push("0.5.9");
@@ -21,7 +21,7 @@ function getWrapper(options = {}) {
   } catch (e) {}
 
   let compilerVersion = "0.5.4";
-  let solcDir = path.join(homedir(), ".earthcli", "solc");
+  const solcDir = path.join(homedir(), ".earthcli", "solc");
 
   if (options.networks) {
     if (options.networks.useZeroFourCompiler) {
@@ -31,7 +31,7 @@ function getWrapper(options = {}) {
     }
 
     try {
-      let version = options.networks.compilers.solc.version;
+      const version = options.networks.compilers.solc.version;
       if (supportedVersions.includes(version)) {
         compilerVersion = version;
       } else {
@@ -39,20 +39,23 @@ function getWrapper(options = {}) {
 EarthCli supports only the following versions:
 ${supportedVersions.join(" - ")}
 `);
-        process.exit();
+        // process.exit();
       }
     } catch (e) {}
   }
 
-  let soljsonPath = path.join(solcDir, `soljson_v${compilerVersion}.js`);
+  const soljsonPath = path.join(solcDir, `soljson_v${compilerVersion}.js`);
 
+  console.log(soljsonPath);
   if (!fs.existsSync(soljsonPath)) {
+    console.log("FOOOOO", process.env);
     if (process.env.EARTHCLI_NAME) {
+      console.log("FOOOOO");
       name = process.env.EARTHCLI_NAME;
     }
     execSync(`${name} --download-compiler ${compilerVersion}`).toString();
   }
-  let soljson = eval("require")(soljsonPath);
+  const soljson = eval("require")(soljsonPath);
   return wrapper(soljson);
 }
 

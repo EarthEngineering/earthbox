@@ -10,7 +10,9 @@ async function downloader(compilerVersion) {
   await fs.ensureDir(path.join(dir));
 
   const res = await req
-    .get(`https://github.com/earth-solc-bin/bin/soljson_v${compilerVersion}.js`)
+    .get(
+      `https://github.com/earthengineering/earth-solc-bin/bin/soljson_v${compilerVersion}.js`
+    )
     .responseType("blob");
 
   if (res && res.body) {
