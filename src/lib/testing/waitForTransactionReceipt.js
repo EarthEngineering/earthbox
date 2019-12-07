@@ -6,7 +6,7 @@ let waitForTransactionReceipt = earthWeb => (
   interval = 500
 ) => {
   const transactionReceiptAsync = (resolve, reject) => {
-    earthWeb.trx.getTransactionInfo(txHash, (error, receipt) => {
+    earthWeb.earth.getTransactionInfo(txHash, (error, receipt) => {
       if (error) {
         reject(error);
       } else if (!receipt || JSON.stringify(receipt) === "{}") {

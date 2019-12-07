@@ -118,8 +118,8 @@ function init(options, extraOptions) {
     };
     try {
       let res = await Promise.all([
-        earthWrap.trx.getChainParameters(),
-        earthWrap.trx.getNodeInfo()
+        earthWrap.earth.getChainParameters(),
+        earthWrap.earth.getNodeInfo()
       ]);
       info.parameters = res[0] || {};
       info.nodeinfo = res[1] || {};
@@ -181,7 +181,7 @@ function init(options, extraOptions) {
   };
 
   earthWrap._getContract = async function(address, callback) {
-    const contractInstance = await earthWrap.trx.getContract(address || "");
+    const contractInstance = await earthWrap.earth.getContract(address || "");
     if (contractInstance) {
       callback && callback(null, contractInstance.contract_address);
     } else {
@@ -241,8 +241,10 @@ function init(options, extraOptions) {
         options,
         address
       );
-      signedTransaction = await earthWrap.trx.sign(transaction, privateKey);
-      const result = await earthWrap.trx.sendRawTransaction(signedTransaction);
+      signedTransaction = await earthWrap.earth.sign(transaction, privateKey);
+      const result = await earthWrap.earth.sendRawTransaction(
+        signedTransaction
+      );
 
       if (!result || typeof result !== "object") {
         return Promise.reject(
@@ -269,7 +271,7 @@ function init(options, extraOptions) {
       for (let i = 0; i < 10; i++) {
         try {
           dlog("Requesting contract");
-          contract = await earthWrap.trx.getContract(
+          contract = await earthWrap.earth.getContract(
             signedTransaction.contract_address
           );
           dlog("Contract requested");

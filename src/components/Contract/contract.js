@@ -563,7 +563,7 @@ var contract = (function(module) {
           );
         }
         EarthWrap()
-          .trx.getContract(self.address)
+          .earth.getContract(self.address)
           .then(res => {
             const abi = res.abi && res.abi.entrys ? res.abi.entrys : [];
             for (var i = 0; i < abi.length; i++) {
