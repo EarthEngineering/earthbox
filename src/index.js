@@ -30,12 +30,12 @@ if (commands[0] === "--download-compiler" && commands[1]) {
       if (err instanceof TaskError) {
         command.args
           .usage(
-            "Earthbox v" +
+            "Earthcli v" +
               (version.bundle || version.core) +
               " - a development framework for earthweb" +
               OS.EOL +
               OS.EOL +
-              "Usage: earthbox <command> [options]"
+              "Usage: earthcli <command> [options]"
           )
           .epilog("See more at https://www.earth.engineering")
           .showHelp();
@@ -54,7 +54,7 @@ if (commands[0] === "--download-compiler" && commands[1]) {
     }
 
     // Don't exit if no error; if something is keeping the process open,
-    // like `earthbox console`, then let it.
+    // like `earthcli console`, then let it.
 
     // Clear any polling or open sockets - `provider-engine` in HDWallet
     // and `web3 1.0 confirmations` both leave interval timers etc wide open.

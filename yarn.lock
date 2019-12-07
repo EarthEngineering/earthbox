@@ -2150,10 +2150,10 @@ duplexify@^3.2.0:
     readable-stream "^2.0.0"
     stream-shift "^1.0.0"
 
-earthweb@0.1.1:
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/earthweb/-/earthweb-0.1.1.tgz#fcf7d88da456a096476506464c0f4468f5b94cab"
-  integrity sha512-oDKmWZNBH/JEco/3EET1lvT99yNsEHOZSmid+m5CAon0CernmbgY3uuaELy3l0UYSx8AXijY6IOo+0OQTqcung==
+earthweb@0.1.19:
+  version "0.1.19"
+  resolved "https://registry.yarnpkg.com/earthweb/-/earthweb-0.1.19.tgz#2c8cf586ae2dd00b9e03f31c1127fe75987dc36a"
+  integrity sha512-LQYI/X2MKqFA82DbZI9jQ8uXN8EcaEHSQzXhf74WmwWxNLtJGq0o7Ovl6RP3B+4sGnmD8SrkK7ZcaXZiYh6wPA==
   dependencies:
     "@babel/runtime" "^7.0.0"
     axios "^0.19.0"

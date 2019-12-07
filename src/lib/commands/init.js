@@ -14,13 +14,13 @@ let command = {
 
     if (options._ && options._.length > 0) {
       config.logger.log(
-        "Error: `earthbox init` no longer accepts a project template name as an argument."
+        "Error: `earthcli init` no longer accepts a project template name as an argument."
       );
       config.logger.log();
       config.logger.log(
-        " - For an empty project, use `earthbox init` with no arguments" +
+        " - For an empty project, use `earthcli init` with no arguments" +
           OS.EOL +
-          " - Or, browse the earthbox Boxes at <http://earthboxframework.com/boxes>!"
+          " - Or, browse the earthcli Boxes at <http://earthboxframework.com/boxes>!"
       );
       process.exit(1);
     }

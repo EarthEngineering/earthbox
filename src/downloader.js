@@ -4,7 +4,7 @@ let homedir = require("homedir");
 let req = require("superagent");
 
 async function downloader(compilerVersion) {
-  let dir = path.join(homedir(), ".earthbox", "solc");
+  let dir = path.join(homedir(), ".earthcli", "solc");
   let soljsonPath = path.join(dir, `soljson_v${compilerVersion}.js`);
 
   await fs.ensureDir(path.join(dir));

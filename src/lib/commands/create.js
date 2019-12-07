@@ -34,7 +34,7 @@ let command = {
     if (type == null) {
       return done(
         new ConfigurationError(
-          "Please specify the type of item to create. Example: earthbox create contract MyContract"
+          "Please specify the type of item to create. Example: earthcli create contract MyContract"
         )
       );
     }
@@ -42,7 +42,7 @@ let command = {
     if (name == null) {
       return done(
         new ConfigurationError(
-          "Please specify the name of item to create. Example: earthbox create contract MyContract"
+          "Please specify the name of item to create. Example: earthcli create contract MyContract"
         )
       );
     }

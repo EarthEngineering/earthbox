@@ -16,7 +16,7 @@ function checkDestination(destination) {
     if (contents.length) {
       let err =
         "Something already exists at the destination. " +
-        "`earthbox init` and `earthbox unbox` must be executed in an empty folder. " +
+        "`earthcli init` and `earthcli unbox` must be executed in an empty folder. " +
         "Stopping to prevent overwriting data.";
 
       throw new Error(err);
@@ -52,9 +52,9 @@ function verifyURL(url) {
       } else if (r.statusCode == 404) {
         return reject(
           new Error(
-            "earthbox Box at URL " +
+            "earthcli Box at URL " +
               url +
-              " doesn't exist. If you believe this is an error, please contact earthbox support."
+              " doesn't exist. If you believe this is an error, please contact earthcli support."
           )
         );
       } else if (r.statusCode != 200) {

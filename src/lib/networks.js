@@ -134,7 +134,7 @@ let Networks = {
 
         config.logger.log(
           OS.EOL +
-            "Closely inspect the deployed networks below, and use `earthbox networks --clean` to remove any networks that don't match your configuration. You should not use the wildcard configuration ('*') for staging and production networks for which you intend to deploy your application."
+            "Closely inspect the deployed networks below, and use `earthcli networks --clean` to remove any networks that don't match your configuration. You should not use the wildcard configuration ('*') for staging and production networks for which you intend to deploy your application."
         );
       }
 

@@ -1,7 +1,7 @@
 {
   "name": "earthcli",
   "namespace": "EarthEngineering",
-  "version": "0.2.7",
+  "version": "0.2.8",
   "description": "EarthCli - Development framework for EarthWeb",
   "dependencies": {
     "@truffle/contract-sources": "^0.1.6",
@@ -42,7 +42,7 @@
     "spawn-args": "^0.1.0",
     "superagent": "^5.1.0",
     "temp": "^0.8.3",
-    "earthweb": "0.1.1",
+    "earthweb": "0.1.19",
     "truffle-init": "^1.0.7",
     "web3-mock": "1.0.1",
     "yargs": "^8.0.2"

@@ -115,7 +115,7 @@ let Package = {
     if (!ropsten) {
       return callback(
         new TruffleError(
-          "You need to have a `ropsten` network configured in order to publish to the earthbox Package Registry. See the following link for an example configuration:" +
+          "You need to have a `ropsten` network configured in order to publish to the earthcli Package Registry. See the following link for an example configuration:" +
             OS.EOL +
             OS.EOL +
             "    http://earthboxframework.com/tutorials/using-infura-custom-provider" +
@@ -238,7 +238,7 @@ let Package = {
           "Could not locate any publishable artifacts in " +
           options.contracts_build_directory +
           ". " +
-          "Run `earthbox compile` before publishing.";
+          "Run `earthcli compile` before publishing.";
 
         return callback(new Error(msg));
       }

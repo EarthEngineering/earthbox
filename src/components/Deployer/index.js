@@ -57,7 +57,7 @@ Deployer.prototype.new = function() {
 
 Deployer.prototype.exec = function(file) {
   throw new Error(
-    "deployer.exec() has been deprecated; please seen the earthbox-require package for integration."
+    "deployer.exec() has been deprecated; please seen the earthcli-require package for integration."
   );
 };
 

@@ -21,7 +21,7 @@ function getWrapper(options = {}) {
   } catch (e) {}
 
   let compilerVersion = "0.5.4";
-  let solcDir = path.join(homedir(), ".earthbox", "solc");
+  let solcDir = path.join(homedir(), ".earthcli", "solc");
 
   if (options.networks) {
     if (options.networks.useZeroFourCompiler) {
