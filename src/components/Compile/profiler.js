@@ -201,8 +201,6 @@ module.exports = {
       }
 
       function include(import_path) {
-        //console.log("Including: " + file)
-
         required[import_path] = dependsGraph.node(import_path);
       }
 
@@ -214,9 +212,6 @@ module.exports = {
         include(import_path);
 
         var dependencies = dependsGraph.successors(import_path);
-
-        // console.log("At: " + import_path);
-        // console.log("   Dependencies: ", dependencies);
 
         if (dependencies.length > 0) {
           dependencies.forEach(walk_down);
@@ -230,10 +225,6 @@ module.exports = {
 
         var ancestors = dependsGraph.predecessors(import_path);
         var dependencies = dependsGraph.successors(import_path);
-
-        // console.log("At: " + import_path);
-        // console.log("   Ancestors: ", ancestors);
-        // console.log("   Dependencies: ", dependencies);
 
         include(import_path);
 

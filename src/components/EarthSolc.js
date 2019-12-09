@@ -47,8 +47,8 @@ ${supportedVersions.join(" - ")}
   let soljsonPath = path.join(solcDir, `soljson_v${compilerVersion}.js`);
 
   if (!fs.existsSync(soljsonPath)) {
-    if (process.env.EARTHBOX_NAME) {
-      name = process.env.EARTHBOX_NAME;
+    if (process.env.EARTHCLI_NAME) {
+      name = process.env.EARTHCLI_NAME;
     }
     execSync(`${name} --download-compiler ${compilerVersion}`).toString();
   }

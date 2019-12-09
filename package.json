@@ -1,7 +1,7 @@
 {
   "name": "earthcli",
   "namespace": "EarthEngineering",
-  "version": "0.2.9",
+  "version": "0.3.0",
   "description": "EarthCli - Development framework for EarthWeb",
   "dependencies": {
     "@truffle/contract-sources": "^0.1.6",
@@ -52,7 +52,6 @@
     "@babel/core": "^7.6.4",
     "@babel/preset-env": "^7.6.3",
     "electron": "^6.0.12",
-    "glob": "^7.1.2",
     "js-scrypt": "^0.2.0",
     "meta-npm": "^0.0.22",
     "meta-pkgs": "^0.2.0",

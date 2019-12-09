@@ -123,9 +123,7 @@ function init(options, extraOptions) {
       ]);
       info.parameters = res[0] || {};
       info.nodeinfo = res[1] || {};
-    } catch (err) {
-      // console.log('Error', err)
-    }
+    } catch (err) {}
     return Promise.resolve(info);
   };
 

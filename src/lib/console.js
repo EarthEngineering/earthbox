@@ -168,10 +168,8 @@ Console.prototype.interpret = function(cmd, context, filename, callback) {
       if (err) {
         // Perform error handling ourselves.
         if (err instanceof TruffleError) {
-          console.log(err.message);
         } else {
           // Bubble up all other unexpected errors.
-          console.log(err.stack || err.toString());
         }
         return callback();
       }

@@ -490,8 +490,6 @@ var contract = (function(module) {
                   )
                 );
               }
-              // for (let prop in contract) console.log(1, prop)
-              // for (let prop in instance) console.log(1, prop)
 
               accept(instance);
             });

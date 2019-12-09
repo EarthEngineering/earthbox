@@ -1,6 +1,6 @@
 require("source-map-support/register");
 
-// let Config = require("./components/Config");
+let Config = require("./components/Config");
 let Command = require("./lib/command");
 let TaskError = require("./lib/errors/taskerror");
 let TruffleError = require("@truffle/error");
@@ -30,7 +30,7 @@ if (commands[0] === "--download-compiler" && commands[1]) {
       if (err instanceof TaskError) {
         command.args
           .usage(
-            "Earthcli v" +
+            "EarthCli v" +
               (version.bundle || version.core) +
               " - a development framework for earthweb" +
               OS.EOL +
