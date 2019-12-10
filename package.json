@@ -1,7 +1,7 @@
 {
   "name": "earthcli",
   "namespace": "EarthEngineering",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "EarthCli - Development framework for EARTH",
   "dependencies": {
     "@truffle/contract-sources": "^0.1.6",

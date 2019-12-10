@@ -13,24 +13,20 @@ Development framework for [EARTH](https://www.earth.engineering). Everything nee
 
 ## Features
 
-Initialize a Customer EarthCli Project<br>
+Initialize a Customer EarthCli Project
 `earthcli init`
-<br>
 
-Download a dApp, ex: metacoin-box<br>
+Download a dApp, ex: coin-box
 `earthcli unbox coin-box`
-<br>
 
-Contract Compiler<br>
+Contract Compiler
 `earthcli compile`
 
-<br>
 To compile for all contracts, select --compile-all.
 
-Optionally, you can select: <br>
---compile-all: Force compile all contracts. <br>
---network save results to a specific host network<br>
-<br>
+Optionally, you can select:
+--compile-all: Force compile all contracts.
+--network save results to a specific host network
 
 ## Configuration
 
@@ -94,19 +90,17 @@ module.exports = {
 
 Notice that the example above uses Earth Quickstart >= 1.1.16, which exposes a mononode on port 9090.
 
-## Contract Migration<br>
+## Contract Migration
 
 `earthcli migrate`
-<br>
 
-This command will invoke all migration scripts within the migrations directory. If your previous migration was successful, `earthcli migrate` will invoke a newly created migration. If there is no new migration script, this command will have no operational effect. Instead, you can use the option `--reset` to restart the migration script.<br>
+This command will invoke all migration scripts within the migrations directory. If your previous migration was successful, `earthcli migrate` will invoke a newly created migration. If there is no new migration script, this command will have no operational effect. Instead, you can use the option `--reset` to restart the migration script.
 
 `earthcli migrate --reset`
-<br>
 
-## Parameters by contract (introduced in v2.2.2)
+## Parameters by contract
 
-It is very important to set the deploying parameters for any contract. In EarthCli 2.2.2+ you can do it modifying the file
+It is very important to set the deploying parameters for any contract.
 
 ```
 migrations/2_deploy_contracts.js
@@ -129,35 +123,34 @@ module.exports = function(deployer) {
 };
 ```
 
-## Start Console<br>
+## Start Console
 
-This will use the default network to start a console. It will automatically connect to a TVM client. You can use `--network` to change this. <br>
+This will use the default network to start a console. It will automatically connect to a TVM client. You can use `--network` to change this.
 
-`earthcli console`<br>
+`earthcli console`
 
 The console supports the `earthcli` command. For example, you can invoke `migrate --reset` in the console. The result is the same as invoking `earthcli migrate --reset` in the command.
-<br>
 
-## Extra Features in EarthCli console:<br>
+## Extra Features in EarthCli console:
 
-1. All the compiled contracts can be used, just like in development & test, front-end code, or during script migration. <br>
+1. All the compiled contracts can be used, just like in development & test, front-end code, or during script migration.
 
-2. After each command, your contract will be re-loaded. After invoking the `migrate --reset` command, you can immediately use the new address and binary.<br>
+2. After each command, your contract will be re-loaded. After invoking the `migrate --reset` command, you can immediately use the new address and binary.
 
-3. Every returned command's promise will automatically be logged. There is no need to use `then()`, which simplifies the command.<br>
+3. Every returned command's promise will automatically be logged. There is no need to use `then()`, which simplifies the command.
 
-## Testing<br>
+## Testing
 
-To carry out the test, run the following command:<br>
+To carry out the test, run the following command:
 
-`earthcli test`<br>
+`earthcli test`
 
-You can also run the test for a specific file：<br>
+You can also run the test for a specific file：
 
-`earthcli test ./path/to/test/file.js`<br>
+`earthcli test ./path/to/test/file.js`
 
 Testing in EarthCli is a bit different than in Truffle.
-Let's say we want to test the contract Metacoin (from the Metacoin Box that you can download with `earthcli unbox metacoin`):
+Let's say we want to test the contract Metacoin (from the Metacoin Box that you can download with `earthcli unbox coin-box`):
 
 ```
 contract MetaCoin {
@@ -188,7 +181,7 @@ contract MetaCoin {
 }
 ```
 
-Now, take a look at the first test in `test/metacoin.js`:
+Now, take a look at the first test in `test/coin-box.js`:
 
 ```
 var MetaCoin = artifacts.require("./MetaCoin.sol");
