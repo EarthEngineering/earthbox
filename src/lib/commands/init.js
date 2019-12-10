@@ -1,6 +1,6 @@
 let command = {
   command: "init",
-  description: "Initialize new and empty earthBox project",
+  description: "Initialize new and empty earthcli project",
   builder: {},
   run: function(options, done) {
     process.env.CURRENT = "init";
@@ -20,7 +20,7 @@ let command = {
       config.logger.log(
         " - For an empty project, use `earthcli init` with no arguments" +
           OS.EOL +
-          " - Or, browse the earthcli Boxes at <http://earthboxframework.com/boxes>!"
+          " - Or, browse the earthcli Boxes at <https://www.earth.engineering>!"
       );
       process.exit(1);
     }

@@ -1,11 +1,10 @@
 # EarthCli
 
-Simple development framework for earthweb  
-**EarthCli is a fork of [Truffle](https://www.trufflesuite.com/truffle) [code](https://github.com/trufflesuite/truffle)**
+Development framework for [EARTH](https://www.earth.engineering). Everything needed to write, compile and deploy smart contracts and tokens. Also includes network management, a full testing framework, configurable build & asset pipeline and more.
 
 ## Installation
 
-`npm install -g earthcli`
+`npm install earthcli -g`
 
 ## OS requirement
 
