@@ -53,41 +53,6 @@ var command = {
       logErrorAndExit(console, err.message);
     }
 
-    //
-    // function setupDryRunEnvironmentThenRunMigrations(callback) {
-    //   Environment.fork(config, function(err) {
-    //     if (err) return callback(err);
-    //
-    //     // Copy artifacts to a temporary directory
-    //     temp.mkdir('migrate-dry-run-', function(err, temporaryDirectory) {
-    //       if (err) return callback(err);
-    //
-    //       function cleanup() {
-    //         var args = arguments;
-    //         // Ensure directory cleanup.
-    //         temp.cleanup(function(err) {
-    //           // Ignore cleanup errors.
-    //           callback.apply(null, args);
-    //         });
-    //       };
-    //
-    //       copy(config.contracts_build_directory, temporaryDirectory, function(err) {
-    //         if (err) return callback(err);
-    //
-    //         config.contracts_build_directory = temporaryDirectory;
-    //
-    //         // Note: Create a new artifactor and resolver with the updated config.
-    //         // This is because the contracts_build_directory changed.
-    //         // Ideally we could architect them to be reactive of the config changes.
-    //         config.artifactor = new Artifactor(temporaryDirectory);
-    //         config.resolver = new Resolver(config);
-    //
-    //         runMigrations(cleanup);
-    //       });
-    //     });
-    //   });
-    // }
-
     function runMigrations(callback) {
       if (options.f) {
         Migrate.runFrom(options.f, config, done);
@@ -120,11 +85,8 @@ var command = {
 
         config.logger.log(networkMessage + "." + OS.EOL);
 
-        // if (dryRun) {
-        //   setupDryRunEnvironmentThenRunMigrations(done);
-        // } else {
+        console.log("HHHHHEEEEERRRREEEEE");
         runMigrations(done);
-        // }
       });
     });
   }

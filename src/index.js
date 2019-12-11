@@ -19,12 +19,6 @@ var commands = process.argv.slice(2);
 if (commands[0] === "--download-compiler" && commands[1]) {
   downloader(commands[1]);
 } else {
-  var command = new Command(require("./lib/commands"));
-
-  var options = {
-    logger: console
-  };
-
   command.run(process.argv.slice(2), options, function(err) {
     if (err) {
       if (err instanceof TaskError) {
@@ -54,7 +48,7 @@ if (commands[0] === "--download-compiler" && commands[1]) {
     }
 
     // Don't exit if no error; if something is keeping the process open,
-    // like `earthcli console`, then var  it.
+    // like `earthcli console`, then let it.
 
     // Clear any polling or open sockets - `provider-engine` in HDWallet
     // and `web3 1.0 confirmations` both leave interval timers etc wide open.

@@ -239,10 +239,8 @@ function init(options, extraOptions) {
         options,
         address
       );
-      signedTransaction = await earthWrap.earth.sign(transaction, privateKey);
-      const result = await earthWrap.earth.sendRawTransaction(
-        signedTransaction
-      );
+      signedTransaction = await earthWrap.trx.sign(transaction, privateKey);
+      const result = await earthWrap.trx.sendRawTransaction(signedTransaction);
 
       if (!result || typeof result !== "object") {
         return Promise.reject(

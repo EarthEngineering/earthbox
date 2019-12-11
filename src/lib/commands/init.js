@@ -13,19 +13,15 @@ var command = {
     });
 
     if (options._ && options._.length > 0) {
-      config.logger.log(
-        "Error: `earthcli init` no longer accepts a project template name as an argument."
-      );
+      config.logger.log("Error: `earthcli init` doesn't accept any arguments.");
       config.logger.log();
       config.logger.log(
-        " - For an empty project, use `earthcli init` with no arguments" +
-          OS.EOL +
-          " - Or, browse the earthcli Boxes at <https://www.earth.engineering>!"
+        "To unbox browse the earthcli boxes at <https://www.earth.engineering/boxes>!"
       );
       process.exit(1);
     }
 
-    // defer to `earth unbox` command with "bare" box as arg
+    // defer to `earthcli unbox` command with "bare" box as arg
     var url = "https://github.com/earthengineering/bare-box.git";
     options._ = [url];
 
