@@ -1,14 +1,14 @@
-let colors = require("colors");
-let TruffleError = require("@truffle/error");
-let inherits = require("util").inherits;
+var colors = require("colors");
+var TruffleError = require("@truffle/error");
+var inherits = require("util").inherits;
 
 inherits(CompileError, TruffleError);
 
 function CompileError(message) {
   // Note we trim() because solc likes to add extra whitespace.
-  let fancy_message =
+  var fancy_message =
     message.trim() + "\n" + colors.red("Compilation failed. See above.");
-  let normal_message = message.trim();
+  var normal_message = message.trim();
 
   if (
     /0\.5\.4/.test(normal_message) &&

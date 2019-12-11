@@ -1,8 +1,8 @@
-let cpr = require("cpr");
-let fs = require("fs");
-let _ = require("lodash");
+var cpr = require("cpr");
+var fs = require("fs");
+var _ = require("lodash");
 
-let cpr_options = {
+var cpr_options = {
   deleteFirst: false,
   overwrite: false,
   confirm: true
@@ -12,21 +12,21 @@ let cpr_options = {
 // won't override individual files. If a file exists, it will
 // simply move onto the next file.
 
-let copy = function(from, to, extra_options, callback) {
+var copy = function(from, to, extra_options, callback) {
   if (typeof extra_options == "function") {
     callback = extra_options;
     extra_options = {};
   }
 
-  let options = _.merge(_.clone(cpr_options), extra_options);
+  var options = _.merge(_.clone(cpr_options), extra_options);
 
   cpr(from, to, options, function(err, files) {
-    let new_files = [];
+    var new_files = [];
 
     // Remove placeholders. Placeholders allow us to copy "empty" directories,
     // but lets NPM and git not ignore them.
     files = files || [];
-    for (let file of files) {
+    for (var file of files) {
       if (file.match(/.*PLACEHOLDER.*/) != null) {
         fs.unlinkSync(file);
         continue;
@@ -39,8 +39,8 @@ let copy = function(from, to, extra_options, callback) {
 };
 
 copy.file = function(from, to, callback) {
-  let readStream = fs.createReadStream(from, "utf8");
-  let writeStream = fs.createWriteStream(to, "utf8");
+  var readStream = fs.createReadStream(from, "utf8");
+  var writeStream = fs.createWriteStream(to, "utf8");
 
   readStream.on("error", function(err) {
     callback(err);

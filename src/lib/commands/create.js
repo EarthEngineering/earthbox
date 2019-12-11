@@ -1,4 +1,4 @@
-let command = {
+var command = {
   command: "create",
   description: "Helper to create new contracts, migrations and tests",
   builder: {
@@ -13,19 +13,19 @@ let command = {
   },
   run: function(options, done) {
     process.env.CURRENT = "create";
-    let Config = require("../../components/Config");
-    let ConfigurationError = require("../errors/configurationerror");
-    let create = require("../create");
+    var Config = require("../../components/Config");
+    var ConfigurationError = require("../errors/configurationerror");
+    var create = require("../create");
 
-    let config = Config.detect(options);
+    var config = Config.detect(options);
 
-    let type = config.type;
+    var type = config.type;
 
     if (type == null && config._.length > 0) {
       type = config._[0];
     }
 
-    let name = config.name;
+    var name = config.name;
 
     if (name == null && config._.length > 1) {
       name = config._[1];
@@ -57,12 +57,12 @@ let command = {
       );
     }
 
-    let fn = create[type];
+    var fn = create[type];
 
     if (fn == null)
       return done(new ConfigurationError("Cannot find creation type: " + type));
 
-    let destinations = {
+    var destinations = {
       contract: config.contracts_directory,
       migration: config.migrations_directory,
       test: config.test_directory

@@ -1,11 +1,11 @@
-let TaskError = require("./errors/taskerror");
-let yargs = require("yargs/yargs");
-let _ = require("lodash");
+var TaskError = require("./errors/taskerror");
+var yargs = require("yargs/yargs");
+var _ = require("lodash");
 
 function Command(commands) {
   this.commands = commands;
 
-  let args = yargs();
+  var args = yargs();
 
   Object.keys(this.commands).forEach(function(command) {
     args = args.command(commands[command]);
@@ -15,28 +15,28 @@ function Command(commands) {
 }
 
 Command.prototype.getCommand = function(str, noAliases) {
-  let argv = this.args.parse(str);
+  var argv = this.args.parse(str);
 
   if (argv._.length == 0) {
     return null;
   }
 
-  let input = argv._[0];
-  let chosenCommand = null;
+  var input = argv._[0];
+  var chosenCommand = null;
 
   // If the command wasn't specified directly, go through a process
   // for inferring the command.
   if (this.commands[input]) {
     chosenCommand = input;
   } else if (noAliases !== true) {
-    let currentLength = 1;
-    let availableCommandNames = Object.keys(this.commands);
+    var currentLength = 1;
+    var availableCommandNames = Object.keys(this.commands);
 
     // Loop through each letter of the input until we find a command
     // that uniquely matches.
     while (currentLength <= input.length) {
       // Gather all possible commands that match with the current length
-      let possibleCommands = availableCommandNames.filter(function(
+      var possibleCommands = availableCommandNames.filter(function(
         possibleCommand
       ) {
         return (
@@ -59,7 +59,7 @@ Command.prototype.getCommand = function(str, noAliases) {
     return null;
   }
 
-  let command = this.commands[chosenCommand];
+  var command = this.commands[chosenCommand];
 
   return {
     name: chosenCommand,
@@ -74,7 +74,7 @@ Command.prototype.run = function(command, options, callback) {
     options = {};
   }
 
-  let result = this.getCommand(
+  var result = this.getCommand(
     command,
     typeof options.noAliases === "boolean" ? options.noAliases : true
   );
@@ -83,7 +83,7 @@ Command.prototype.run = function(command, options, callback) {
     return callback(new TaskError("Cannot find command: " + command));
   }
 
-  let argv = result.argv;
+  var argv = result.argv;
 
   // Remove the task name itself.
   if (argv._) {
@@ -94,7 +94,7 @@ Command.prototype.run = function(command, options, callback) {
   delete argv["$0"];
 
   // Some options might throw if options is a Config object. If so, let's ignore those options.
-  let clone = {};
+  var clone = {};
   Object.keys(options).forEach(function(key) {
     try {
       clone[key] = options[key];

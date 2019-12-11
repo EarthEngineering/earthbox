@@ -1,16 +1,16 @@
-let Config = require("../../components/Config");
-let Migrate = require("../../components/Migrate");
-let TestResolver = require("./testresolver");
-let TestSource = require("./testsource");
-let expect = require("@truffle/expect");
-let contract = require("../../components/Contract");
-let path = require("path");
-let _ = require("lodash");
-let async = require("async");
-let fs = require("fs");
-let EarthWrap = require("../../components/EarthWrap");
-let EarthWeb = require("earthweb");
-let waitForTransactionReceipt = require("./waitForTransactionReceipt");
+var Config = require("../../components/Config");
+var Migrate = require("../../components/Migrate");
+var TestResolver = require("./testresolver");
+var TestSource = require("./testsource");
+var expect = require("@truffle/expect");
+var contract = require("../../components/Contract");
+var path = require("path");
+var _ = require("lodash");
+var async = require("async");
+var fs = require("fs");
+var EarthWrap = require("../../components/EarthWrap");
+var EarthWeb = require("earthweb");
+var waitForTransactionReceipt = require("./waitForTransactionReceipt");
 
 function TestRunner(options) {
   options = options || {};
@@ -50,16 +50,16 @@ function TestRunner(options) {
 }
 
 TestRunner.prototype.initialize = function(callback) {
-  let self = this;
+  var self = this;
 
-  let test_source = new TestSource(self.config);
+  var test_source = new TestSource(self.config);
   this.config.resolver = new TestResolver(
     self.initial_resolver,
     test_source,
     self.config.contracts_build_directory
   );
 
-  let afterStateReset = function(err) {
+  var afterStateReset = function(err) {
     if (err) return callback(err);
 
     fs.readdir(self.config.contracts_build_directory, function(err, files) {
@@ -81,12 +81,12 @@ TestRunner.prototype.initialize = function(callback) {
         function(err, data) {
           if (err) return callback(err);
 
-          let contracts = data.map(JSON.parse).map(contract);
-          let abis = _.flatMap(contracts, "abi");
+          var contracts = data.map(JSON.parse).map(contract);
+          var abis = _.flatMap(contracts, "abi");
 
           abis.map(function(abi) {
             if (/event/i.test(abi.type)) {
-              let signature =
+              var signature =
                 abi.name + "(" + _.map(abi.inputs, "type").join(",") + ")";
               self.known_events[self.earthwrapwrap.sha3(signature)] = {
                 signature: signature,
@@ -113,17 +113,17 @@ TestRunner.prototype.deploy = function(callback) {
 };
 
 TestRunner.prototype.resetState = function(callback) {
-  let self = this;
+  var self = this;
   this.deploy(callback);
 };
 
 TestRunner.prototype.startTest = function(mocha, callback) {
-  let self = this;
+  var self = this;
   callback();
 };
 
 TestRunner.prototype.endTest = function(mocha, callback) {
-  let self = this;
+  var self = this;
 
   if (mocha.currentTest.state != "failed") {
     return callback();
@@ -142,7 +142,7 @@ TestRunner.prototype.endTest = function(mocha, callback) {
   });
 
 TestRunner.prototype.rpc = function(method, arg, cb) {
-  let req = {
+  var req = {
     jsonrpc: "2.0",
     method: method,
     id: new Date().getTime()
@@ -153,7 +153,7 @@ TestRunner.prototype.rpc = function(method, arg, cb) {
     cb = arg;
   }
 
-  let intermediary = function(err, result) {
+  var intermediary = function(err, result) {
     if (err != null) {
       cb(err);
       return;

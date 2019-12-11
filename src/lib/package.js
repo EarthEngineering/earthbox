@@ -1,18 +1,18 @@
-let expect = require("@truffle/expect");
-let TruffleError = require("@truffle/error");
-// let Provider = require("../components/Provider");
-// let Profiler = require("../components/Compile/profiler");
-let Networks = require("./networks");
-let EthPM = require("ethpm");
-let EthPMRegistry = require("ethpm-registry");
-let Web3 = require("web3-mock");
-let async = require("async");
-// let dir = require("node-dir");
-let path = require("path");
-let fs = require("fs");
-let OS = require("os");
+var expect = require("@truffle/expect");
+var TruffleError = require("@truffle/error");
+var Provider = require("../components/Provider");
+var Profiler = require("../components/Compile/profiler");
+var Networks = require("./networks");
+var EthPM = require("ethpm");
+var EthPMRegistry = require("ethpm-registry");
+var Web3 = require("web3-mock");
+var async = require("async");
+var dir = require("node-dir");
+var path = require("path");
+var fs = require("fs");
+var OS = require("os");
 
-let Package = {
+var Package = {
   install: function(options, callback) {
     expect.options(options, ["working_directory", "ethpm"]);
 
@@ -22,11 +22,11 @@ let Package = {
 
     // ipfs_port and ipfs_protocol are optinal.
 
-    let provider =
+    var provider =
       options.ethpm.provider ||
       new Web3.providers.HttpProvider(options.ethpm.install_provider_uri);
-    let web3 = new Web3(provider);
-    let host = options.ethpm.ipfs_host;
+    var web3 = new Web3(provider);
+    var host = options.ethpm.ipfs_host;
 
     if (host instanceof EthPM.hosts.IPFS == false) {
       host = new EthPM.hosts.IPFSWithLocalReader(
@@ -39,9 +39,9 @@ let Package = {
     // When installing, we use infura to make a bunch of eth_call's.
     // We don't make any transactions. To satisfy APIs we'll put a from address,
     // but it doesn't really matter in this case.
-    let fakeAddress = "0x1234567890123456789012345678901234567890";
+    var fakeAddress = "0x1234567890123456789012345678901234567890";
 
-    let registry = options.ethpm.registry;
+    var registry = options.ethpm.registry;
 
     if (typeof registry == "string") {
       registry = EthPMRegistry.use(
@@ -51,14 +51,14 @@ let Package = {
       );
     }
 
-    let pkg = new EthPM(options.working_directory, host, registry);
+    var pkg = new EthPM(options.working_directory, host, registry);
 
     if (options.packages) {
-      let promises = options.packages.map(function(package_name) {
-        let pieces = package_name.split("@");
+      var promises = options.packages.map(function(package_name) {
+        var pieces = package_name.split("@");
         package_name = pieces[0];
 
-        let version = "*";
+        var version = "*";
 
         if (pieces.length > 1) {
           version = pieces[1];
@@ -77,7 +77,7 @@ let Package = {
         path.join(options.working_directory, "ethpm.json"),
         fs.constants.R_OK,
         function(err) {
-          let manifest;
+          var manifest;
 
           // If the ethpm.json file doesn't exist, use the config as the manifest.
           if (err) {
@@ -96,7 +96,7 @@ let Package = {
   },
 
   publish: function(options, callback) {
-    let self = this;
+    var self = this;
 
     expect.options(options, [
       "ethpm",
@@ -110,7 +110,7 @@ let Package = {
     // ipfs_port and ipfs_protocol are optinal.
 
     // When publishing, you need a ropsten network configured.
-    let ropsten = options.networks.ropsten;
+    var ropsten = options.networks.ropsten;
 
     if (!ropsten) {
       return callback(
@@ -126,9 +126,9 @@ let Package = {
 
     options.network = "ropsten";
 
-    let provider = options.provider;
-    let web3 = new Web3(provider);
-    let host = options.ethpm.ipfs_host;
+    var provider = options.provider;
+    var web3 = new Web3(provider);
+    var host = options.ethpm.ipfs_host;
 
     if (host instanceof EthPM.hosts.IPFS == false) {
       host = new EthPM.hosts.IPFS(
@@ -146,18 +146,18 @@ let Package = {
       web3.eth.getAccounts(function(err, accs) {
         if (err) return callback(err);
 
-        let registry = EthPMRegistry.use(
+        var registry = EthPMRegistry.use(
           options.ethpm.registry,
           accs[0],
           provider
         );
-        let pkg = new EthPM(options.working_directory, host, registry);
+        var pkg = new EthPM(options.working_directory, host, registry);
 
         fs.access(
           path.join(options.working_directory, "ethpm.json"),
           fs.constants.R_OK,
           function(err) {
-            let manifest;
+            var manifest;
 
             // If the ethpm.json file doesn't exist, use the config as the manifest.
             if (err) {
@@ -208,7 +208,7 @@ let Package = {
   // Return a list of publishable artifacts
   publishable_artifacts: function(options, callback) {
     // Filter out "test" and "development" networks.
-    let deployed_networks = Object.keys(options.networks).filter(function(
+    var deployed_networks = Object.keys(options.networks).filter(function(
       network_name
     ) {
       return network_name != "test" && network_name != "development";
@@ -218,7 +218,7 @@ let Package = {
     Networks.asURIs(options, deployed_networks, function(err, result) {
       if (err) return callback(err);
 
-      let uris = result.uris;
+      var uris = result.uris;
 
       if (result.failed.length > 0) {
         return callback(
@@ -230,11 +230,11 @@ let Package = {
         );
       }
 
-      let files = fs.readdirSync(options.contracts_build_directory);
+      var files = fs.readdirSync(options.contracts_build_directory);
       files = files.filter(file => file.includes(".json"));
 
       if (!files.length) {
-        let msg =
+        var msg =
           "Could not locate any publishable artifacts in " +
           options.contracts_build_directory +
           ". " +
@@ -243,7 +243,7 @@ let Package = {
         return callback(new Error(msg));
       }
 
-      let promises = files.map(function(file) {
+      var promises = files.map(function(file) {
         return new Promise(function(accept, reject) {
           fs.readFile(
             path.join(options.contracts_build_directory, file),
@@ -263,8 +263,8 @@ let Package = {
         });
       });
 
-      let contract_types = {};
-      let deployments = {};
+      var contract_types = {};
+      var deployments = {};
 
       Promise.all(promises)
         .then(function(contracts) {
@@ -277,8 +277,8 @@ let Package = {
             };
           });
 
-          //let network_cache = {};
-          let matching_promises = [];
+          //var network_cache = {};
+          var matching_promises = [];
 
           contracts.forEach(function(data) {
             Object.keys(data.networks).forEach(function(network_id) {
@@ -295,7 +295,7 @@ let Package = {
                         function(err, matches) {
                           if (err) return finished(err);
                           if (matches) {
-                            let uri = uris[deployed_network];
+                            var uri = uris[deployed_network];
 
                             if (!deployments[uri]) {
                               deployments[uri] = {};
@@ -328,7 +328,7 @@ let Package = {
           return Promise.all(matching_promises);
         })
         .then(function() {
-          let to_return = {
+          var to_return = {
             contract_types: contract_types,
             deployments: deployments
           };

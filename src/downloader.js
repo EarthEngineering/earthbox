@@ -1,15 +1,15 @@
-let path = require("path");
-let fs = require("fs-extra");
-let homedir = require("homedir");
-let req = require("superagent");
+var path = require("path");
+var fs = require("fs-extra");
+var homedir = require("homedir");
+var req = require("superagent");
 
 async function downloader(compilerVersion) {
-  let dir = path.join(homedir(), ".earthcli", "solc");
-  let soljsonPath = path.join(dir, `soljson_v${compilerVersion}.js`);
+  var dir = path.join(homedir(), ".earthcli", "solc");
+  var soljsonPath = path.join(dir, `soljson_v${compilerVersion}.js`);
 
   await fs.ensureDir(path.join(dir));
 
-  let res = await req
+  var res = await req
     .get(
       `https://github.com/EarthEngineering/earth-solc-bin/blob/master/bin/${compilerVersion}.js`
     )

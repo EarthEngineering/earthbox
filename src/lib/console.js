@@ -1,17 +1,17 @@
-let ReplManager = require("./repl");
-let Command = require("./command");
-let provision = require("../components/Provisioner");
-let contract = require("../components/Contract");
-let EarthWrap = require("../components/EarthWrap");
-let vm = require("vm");
-let expect = require("@truffle/expect");
-// let _ = require("lodash");
-let TruffleError = require("@truffle/error");
-let fs = require("fs");
-// let os = require("os");
-let path = require("path");
-let EventEmitter = require("events");
-let inherits = require("util").inherits;
+var ReplManager = require("./repl");
+var Command = require("./command");
+var provision = require("../components/Provisioner");
+var contract = require("../components/Contract");
+var EarthWrap = require("../components/EarthWrap");
+var vm = require("vm");
+var expect = require("@truffle/expect");
+var _ = require("lodash");
+var TruffleError = require("@truffle/error");
+var fs = require("fs");
+var os = require("os");
+var path = require("path");
+var EventEmitter = require("events");
+var inherits = require("util").inherits;
 const logErrorAndExit = require("../components/EarthWrap").logErrorAndExit;
 
 inherits(Console, EventEmitter);
@@ -19,7 +19,7 @@ inherits(Console, EventEmitter);
 function Console(tasks, options) {
   EventEmitter.call(this);
 
-  let self = this;
+  var self = this;
 
   expect.options(options, [
     "working_directory",
@@ -61,7 +61,7 @@ function Console(tasks, options) {
 }
 
 Console.prototype.start = function(callback) {
-  let self = this;
+  var self = this;
 
   if (!this.repl) {
     this.repl = new Repl(this.options);
@@ -94,7 +94,7 @@ Console.prototype.start = function(callback) {
 };
 
 Console.prototype.provision = function(callback) {
-  let self = this;
+  var self = this;
 
   fs.readdir(this.options.contracts_build_directory, function(err, files) {
     if (err) {
@@ -104,7 +104,7 @@ Console.prototype.provision = function(callback) {
       // doesn't exist" 99.9% of the time.
     }
 
-    let promises = [];
+    var promises = [];
     files = files || [];
 
     files.forEach(function(file) {
@@ -132,8 +132,8 @@ Console.prototype.provision = function(callback) {
 
     Promise.all(promises)
       .then(function(json_blobs) {
-        let abstractions = json_blobs.map(function(json) {
-          let abstraction = contract(json);
+        var abstractions = json_blobs.map(function(json) {
+          var abstraction = contract(json);
           provision(abstraction, self.options);
           return abstraction;
         });
@@ -147,11 +147,11 @@ Console.prototype.provision = function(callback) {
 };
 
 Console.prototype.resetContractsInConsoleContext = function(abstractions) {
-  let self = this;
+  var self = this;
 
   abstractions = abstractions || [];
 
-  let contextVars = {};
+  var contextVars = {};
 
   abstractions.forEach(function(abstraction) {
     contextVars[abstraction.contract_name] = abstraction;
@@ -161,7 +161,7 @@ Console.prototype.resetContractsInConsoleContext = function(abstractions) {
 };
 
 Console.prototype.interpret = function(cmd, context, filename, callback) {
-  let self = this;
+  var self = this;
 
   if (this.command.getCommand(cmd.trim(), this.options.noAliases) != null) {
     return self.command.run(cmd.trim(), this.options, function(err) {
@@ -183,7 +183,7 @@ Console.prototype.interpret = function(cmd, context, filename, callback) {
     });
   }
 
-  let result;
+  var result;
   try {
     result = vm.runInContext(cmd, context, {
       displayErrors: false

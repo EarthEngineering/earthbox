@@ -1,14 +1,14 @@
-let async = require("async");
-let mkdirp = require("mkdirp");
-let del = require("del");
-let fs = require("fs");
-let Contracts = require("../components/WorkflowCompile");
-let BuildError = require("./errors/builderror");
-let child_process = require("child_process");
-let spawnargs = require("spawn-args");
-let _ = require("lodash");
-let expect = require("@truffle/expect");
-let contract = require("../components/Contract");
+var async = require("async");
+var mkdirp = require("mkdirp");
+var del = require("del");
+var fs = require("fs");
+var Contracts = require("../components/WorkflowCompile");
+var BuildError = require("./errors/builderror");
+var child_process = require("child_process");
+var spawnargs = require("spawn-args");
+var _ = require("lodash");
+var expect = require("@truffle/expect");
+var contract = require("../components/Contract");
 
 function CommandBuilder(command) {
   this.command = command;
@@ -17,10 +17,10 @@ function CommandBuilder(command) {
 CommandBuilder.prototype.build = function(options, callback) {
   console.log("Running `" + this.command + "`...");
 
-  let args = spawnargs(this.command);
-  let ps = args.shift();
+  var args = spawnargs(this.command);
+  var ps = args.shift();
 
-  let cmd = child_process.spawn(ps, args, {
+  var cmd = child_process.spawn(ps, args, {
     detached: false,
     cwd: options.working_directory,
     env: _.merge(process.env, {
@@ -39,7 +39,7 @@ CommandBuilder.prototype.build = function(options, callback) {
   });
 
   cmd.on("close", function(code) {
-    let error = null;
+    var error = null;
     if (code !== 0) {
       error = "Command exited with code " + code;
     }
@@ -47,10 +47,10 @@ CommandBuilder.prototype.build = function(options, callback) {
   });
 };
 
-let Build = {
+var Build = {
   clean: function(options, callback) {
-    let destination = options.build_directory;
-    let contracts_build_directory = options.contracts_build_directory;
+    var destination = options.build_directory;
+    var contracts_build_directory = options.contracts_build_directory;
 
     // Clean first.
     del([destination + "/*", "!" + contracts_build_directory]).then(function() {
@@ -61,7 +61,7 @@ let Build = {
   // Note: key is a legacy parameter that will eventually be removed.
   // It's specific to the default builder and we should phase it out.
   build: function(options, callback) {
-    let self = this;
+    var self = this;
 
     expect.options(options, [
       "build_directory",
@@ -70,14 +70,14 @@ let Build = {
       "networks"
     ]);
 
-    let key = "build";
+    var key = "build";
 
     if (options.dist) {
       key = "dist";
     }
 
-    let logger = options.logger || console;
-    let builder = options.build;
+    var logger = options.logger || console;
+    var builder = options.build;
 
     // Duplicate build directory for legacy purposes
     options.destination_directory = options.build_directory;
@@ -110,7 +110,7 @@ let Build = {
     }
 
     // Use our own clean method unless the builder supplies one.
-    let clean = this.clean;
+    var clean = this.clean;
     if (builder.hasOwnProperty("clean")) {
       clean = builder.clean;
     }

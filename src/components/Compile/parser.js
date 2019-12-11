@@ -1,21 +1,21 @@
-let CompileError = require("./compileerror");
+var CompileError = require("./compileerror");
 const { getWrapper } = require("../EarthSolc");
-// let solc = require("earth-solc");
-let fs = require("fs");
-let path = require("path");
+// var  solc = require("earth-solc");
+var fs = require("fs");
+var path = require("path");
 
 // Clean up after solc.
-let listeners = process.listeners("uncaughtException");
-let solc_listener = listeners[listeners.length - 1];
+var listeners = process.listeners("uncaughtException");
+var solc_listener = listeners[listeners.length - 1];
 
 if (solc_listener) {
   process.removeListener("uncaughtException", solc_listener);
 }
 
 // Warning issued by a pre-release compiler version, ignored by this component.
-let preReleaseCompilerWarning = require("./messages").preReleaseCompilerWarning;
+var preReleaseCompilerWarning = require("./messages").preReleaseCompilerWarning;
 
-let installedContractsDir = "installed_contracts";
+var installedContractsDir = "installed_contracts";
 
 module.exports = {
   parse: function(body, fileName, options) {

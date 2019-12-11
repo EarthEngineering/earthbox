@@ -1,18 +1,18 @@
 // Using web3 for its sha function...
-let EarthWrap = require("../../components/EarthWrap");
+var EarthWrap = require("../../components/EarthWrap");
 
-let Deployed = {
+var Deployed = {
   makeSolidityDeployedAddressesLibrary: function(mapping) {
-    let self = this;
+    var self = this;
 
-    let source = "";
+    var source = "";
     source +=
       "pragma solidity ^0.4.17; \n\n library DeployedAddresses {" + "\n";
 
     Object.keys(mapping).forEach(function(name) {
-      let address = mapping[name];
+      var address = mapping[name];
 
-      let body = "revert();";
+      var body = "revert();";
 
       if (address) {
         address = self.toChecksumAddress(address.replace(/^(0x|41)/, "0x"));
@@ -36,12 +36,12 @@ let Deployed = {
   // Pulled from ethereumjs-util, but I don't want all its dependencies at the moment.
   toChecksumAddress: function(address) {
     address = address.toLowerCase().replace("0x", "");
-    let hash = EarthWrap()
+    var hash = EarthWrap()
       .sha3(address)
       .replace("0x", "");
-    let ret = "0x";
+    var ret = "0x";
 
-    for (let i = 0; i < address.length; i++) {
+    for (var i = 0; i < address.length; i++) {
       if (parseInt(hash[i], 16) >= 8) {
         ret += address[i].toUpperCase();
       } else {

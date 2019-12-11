@@ -1,14 +1,14 @@
-let { supportedVersions } = require("../../components/EarthSolc");
+var { supportedVersions } = require("../../components/EarthSolc");
 
-let command = {
+var command = {
   command: "version",
   description: "Show version number and exit",
   builder: {},
   run: function(options, done) {
     process.env.CURRENT = "version";
-    let version = require("../version");
+    var version = require("../version");
 
-    let bundle_version;
+    var bundle_version;
 
     if (version.bundle) {
       bundle_version = "v" + version.bundle;

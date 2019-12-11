@@ -1,4 +1,4 @@
-let command = {
+var command = {
   command: "compile",
   description: "Compile contract source files",
   builder: {
@@ -9,10 +9,10 @@ let command = {
   },
   run: function(options, done) {
     process.env.CURRENT = "compile";
-    let Config = require("../../components/Config");
-    let Contracts = require("../../components/WorkflowCompile");
+    var Config = require("../../components/Config");
+    var Contracts = require("../../components/WorkflowCompile");
 
-    let config = Config.detect(options);
+    var config = Config.detect(options);
     Contracts.compile(config, done);
   }
 };

@@ -37,9 +37,9 @@ function normalizeURL(url) {
  * are aligned
  */
 function formatCommands(commands) {
-  let names = Object.keys(commands);
+  var names = Object.keys(commands);
 
-  let maxLength = Math.max.apply(
+  var maxLength = Math.max.apply(
     null,
     names.map(function(name) {
       return name.length;
@@ -47,32 +47,32 @@ function formatCommands(commands) {
   );
 
   return names.map(function(name) {
-    let spacing = Array(maxLength - name.length + 1).join(" ");
+    var spacing = Array(maxLength - name.length + 1).join(" ");
     return "  " + name + ": " + spacing + commands[name];
   });
 }
 
-let command = {
+var command = {
   command: "unbox",
   description: "Download a earthcli Box, a pre-built earthcli project",
   builder: {},
   run: function(options, done) {
-    let Config = require("../../components/Config");
-    let Box = require("../../components/Box");
-    let OS = require("os");
+    var Config = require("../../components/Config");
+    var Box = require("../../components/Box");
+    var OS = require("os");
 
-    let config = Config.default().with({
+    var config = Config.default().with({
       logger: console
     });
 
-    let url = normalizeURL(options._[0]);
+    var url = normalizeURL(options._[0]);
     Box.unbox(url, options.working_directory || config.working_directory, {
       logger: config.logger
     })
       .then(function(boxConfig) {
         config.logger.log("Unbox successful. Sweet!" + OS.EOL);
 
-        let commandMessages = formatCommands(boxConfig.commands);
+        var commandMessages = formatCommands(boxConfig.commands);
         if (commandMessages.length > 0) {
           config.logger.log("Commands:" + OS.EOL);
         }

@@ -1,13 +1,13 @@
-let TruffleError = require("@truffle/error");
-let expect = require("@truffle/expect");
-let Resolver = require("../components/Resolver");
-let Artifactor = require("../components/Artifactor");
-// let TestRPC = require("ganache-cli");
-// let spawn = require("child_process").spawn;
-// let path = require("path");
-let EarthWrap = require("../components/EarthWrap");
+var TruffleError = require("@truffle/error");
+var expect = require("@truffle/expect");
+var Resolver = require("../components/Resolver");
+var Artifactor = require("../components/Artifactor");
+// var TestRPC = require("ganache-cli");
+var spawn = require("child_process").spawn;
+var path = require("path");
+var EarthWrap = require("../components/EarthWrap");
 
-let Environment = {
+var Environment = {
   // It's important config is a Config object and not a vanilla object
   detect: function(config, callback) {
     expect.options(config, ["networks"]);
@@ -29,7 +29,7 @@ let Environment = {
         new Error("No network specified. Cannot determine current network.")
       );
     }
-    let network_config = config.networks[config.network];
+    var network_config = config.networks[config.network];
 
     if (!network_config) {
       return callback(
@@ -41,7 +41,7 @@ let Environment = {
       );
     }
 
-    let network_id = config.networks[config.network].network_id;
+    var network_id = config.networks[config.network].network_id;
 
     if (network_id == null) {
       return callback(
@@ -53,7 +53,7 @@ let Environment = {
       );
     }
 
-    let earthWrap = EarthWrap();
+    var earthWrap = EarthWrap();
 
     function detectNetworkId(done) {
       if (network_id != "*") {
@@ -88,9 +88,9 @@ let Environment = {
   fork: function(config, callback) {
     expect.options(config, ["from"]);
 
-    let upstreamNetwork = config.network;
-    // let upstreamConfig = config.networks[upstreamNetwork];
-    let forkedNetwork = config.network + "-fork";
+    var upstreamNetwork = config.network;
+    var upstreamConfig = config.networks[upstreamNetwork];
+    var forkedNetwork = config.network + "-fork";
 
     config.networks[forkedNetwork] = {
       network_id: config.network_id,
@@ -107,12 +107,12 @@ let Environment = {
   },
 
   develop: function(config, testrpcOptions, callback) {
-    let self = this;
+    var self = this;
 
     expect.options(config, ["networks"]);
 
-    let network = config.network || "develop";
-    let url = `http://${testrpcOptions.host}:${testrpcOptions.port}/`;
+    var network = config.network || "develop";
+    var url = `http://${testrpcOptions.host}:${testrpcOptions.port}/`;
 
     config.networks[network] = {
       network_id: testrpcOptions.network_id,

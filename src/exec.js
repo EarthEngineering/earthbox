@@ -1,14 +1,14 @@
 #!/usr/bin/env node
-let path = require("path");
-let spawn = require("child_process").spawn;
+var path = require("path");
+var spawn = require("child_process").spawn;
 
-let cli_path = path.resolve(path.join(__dirname, "./index.js"));
+var cli_path = path.resolve(path.join(__dirname, "./index.js"));
 
-let args = [cli_path, "exec"];
+var args = [cli_path, "exec"];
 
 Array.prototype.push.apply(args, process.argv.slice(2));
 
-let cmd = spawn("node", args);
+var cmd = spawn("node", args);
 
 cmd.stdout.on("data", data => {
   console.log(data.toString());

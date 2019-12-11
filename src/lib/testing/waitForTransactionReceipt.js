@@ -1,7 +1,7 @@
 // thanks Xavier Leprêtre
 // https://gist.github.com/xavierlepretre/88682e871f4ad07be4534ae560692ee6
 
-let waitForTransactionReceipt = earthWeb => (
+var waitForTransactionReceipt = earthWeb => (
   txHash = false,
   interval = 500
 ) => {

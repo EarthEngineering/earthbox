@@ -1,18 +1,18 @@
-let repl = require("repl");
-// let Command = require("./command");
-// let provision = require("../components/Provisioner");
-// let contract = require("../components/Contract");
-// let vm = require("vm");
-let expect = require("@truffle/expect");
-let _ = require("lodash");
-// let TruffleError = require("@truffle/error");
-// let fs = require("fs");
-// let os = require("os");
-// let path = require("path");
-let async = require("async");
-let EventEmitter = require("events");
-let inherits = require("util").inherits;
-let EarthWrap = require("../components/EarthWrap");
+var repl = require("repl");
+var Command = require("./command");
+var provision = require("../components/Provisioner");
+var contract = require("../components/Contract");
+var vm = require("vm");
+var expect = require("@truffle/expect");
+var _ = require("lodash");
+var TruffleError = require("@truffle/error");
+var fs = require("fs");
+var os = require("os");
+var path = require("path");
+var async = require("async");
+var EventEmitter = require("events");
+var inherits = require("util").inherits;
+var EarthWrap = require("../components/EarthWrap");
 
 inherits(ReplManager, EventEmitter);
 
@@ -38,7 +38,7 @@ function ReplManager(options) {
 }
 
 ReplManager.prototype.start = function(options) {
-  let self = this;
+  var self = this;
 
   global.earthWeb = EarthWrap();
 
@@ -48,7 +48,7 @@ ReplManager.prototype.start = function(options) {
     done: options.done
   });
 
-  let currentContext = this.contexts[this.contexts.length - 1];
+  var currentContext = this.contexts[this.contexts.length - 1];
 
   if (!this.repl) {
     this.repl = repl.start({
@@ -60,7 +60,7 @@ ReplManager.prototype.start = function(options) {
       // If we exit for some reason, call done functions for good measure
       // then ensure the process is completely killed. Once the repl exits,
       // the process is in a bad state and can't be recovered (e.g., stdin is closed).
-      let doneFunctions = self.contexts.map(function(context) {
+      var doneFunctions = self.contexts.map(function(context) {
         return context.done
           ? function() {
               context.done();
@@ -83,7 +83,7 @@ ReplManager.prototype.start = function(options) {
 };
 
 ReplManager.prototype.setContextVars = function(obj) {
-  let self = this;
+  var self = this;
   if (this.repl) {
     Object.keys(obj).forEach(function(key) {
       self.repl.context[key] = obj[key];
@@ -92,13 +92,13 @@ ReplManager.prototype.setContextVars = function(obj) {
 };
 
 ReplManager.prototype.stop = function(callback) {
-  let oldContext = this.contexts.pop();
+  var oldContext = this.contexts.pop();
 
   if (oldContext.done) {
     oldContext.done();
   }
 
-  let currentContext = this.contexts[this.contexts.length - 1];
+  var currentContext = this.contexts[this.contexts.length - 1];
 
   if (currentContext) {
     this.repl.setPrompt(currentContext.prompt);
@@ -119,7 +119,7 @@ ReplManager.prototype.stop = function(callback) {
 };
 
 ReplManager.prototype.interpret = function(cmd, context, filename, callback) {
-  let currentContext = this.contexts[this.contexts.length - 1];
+  var currentContext = this.contexts[this.contexts.length - 1];
   currentContext.interpreter(cmd, context, filename, callback);
 };
 

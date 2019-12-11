@@ -1,5 +1,5 @@
-let TruffleError = require("@truffle/error");
-let inherits = require("util").inherits;
+var TruffleError = require("@truffle/error");
+var inherits = require("util").inherits;
 
 inherits(TaskError, TruffleError);
 

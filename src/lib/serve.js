@@ -1,22 +1,22 @@
-let http = require("http");
-let finalhandler = require("finalhandler");
-let serveStatic = require("serve-static");
-let path = require("path");
+var http = require("http");
+var finalhandler = require("finalhandler");
+var serveStatic = require("serve-static");
+var path = require("path");
 
-let Serve = {
+var Serve = {
   start: function(options, done) {
-    let serve = serveStatic(options.build_directory);
+    var serve = serveStatic(options.build_directory);
 
-    let server = http.createServer(function(req, res) {
-      let done = finalhandler(req, res);
+    var server = http.createServer(function(req, res) {
+      var done = finalhandler(req, res);
       serve(req, res, done);
     });
 
-    let port = options.port || options.p || 8080;
+    var port = options.port || options.p || 8080;
 
     server.listen(port);
 
-    let display_directory =
+    var display_directory =
       "." +
       path.sep +
       path.relative(options.working_directory, options.build_directory);

@@ -1,8 +1,8 @@
-let Deployed = require("./deployed");
-let path = require("path");
-let fs = require("fs");
-let contract = require("../../components/Contract");
-let find_contracts = require("@truffle/contract-sources");
+var Deployed = require("./deployed");
+var path = require("path");
+var fs = require("fs");
+var contract = require("../../components/Contract");
+var find_contracts = require("@truffle/contract-sources");
 
 function TestSource(config) {
   this.config = config;
@@ -13,7 +13,7 @@ TestSource.prototype.require = function(import_path) {
 };
 
 TestSource.prototype.resolve = function(import_path, callback) {
-  let self = this;
+  var self = this;
 
   if (import_path == "truffle/DeployedAddresses.sol") {
     return find_contracts(this.config.contracts_directory, function(
@@ -28,25 +28,25 @@ TestSource.prototype.resolve = function(import_path, callback) {
       ) {
         if (err) return callback(err);
 
-        let mapping = {};
+        var mapping = {};
 
-        let blacklist = ["Assert", "DeployedAddresses"];
+        var blacklist = ["Assert", "DeployedAddresses"];
 
         // Ensure we have a mapping for source files and abstraction files
         // to prevent any compile errors in tests.
         source_files.forEach(function(file) {
-          let name = path.basename(file, ".sol");
+          var name = path.basename(file, ".sol");
           if (blacklist.indexOf(name) >= 0) return;
           mapping[name] = false;
         });
 
         abstraction_files.forEach(function(file) {
-          let name = path.basename(file, ".json");
+          var name = path.basename(file, ".json");
           if (blacklist.indexOf(name) >= 0) return;
           mapping[name] = false;
         });
 
-        let promises = abstraction_files.map(function(file) {
+        var promises = abstraction_files.map(function(file) {
           return new Promise(function(accept, reject) {
             fs.readFile(
               path.join(self.config.contracts_build_directory, file),
@@ -60,7 +60,7 @@ TestSource.prototype.resolve = function(import_path, callback) {
         });
         Promise.all(promises)
           .then(function(files_data) {
-            let addresses = files_data
+            var addresses = files_data
               .map(function(data) {
                 return JSON.parse(data);
               })
@@ -76,7 +76,7 @@ TestSource.prototype.resolve = function(import_path, callback) {
               });
 
             addresses.forEach(function(address, i) {
-              let name = path.basename(abstraction_files[i], ".json");
+              var name = path.basename(abstraction_files[i], ".json");
 
               if (blacklist.indexOf(name) >= 0) return;
 

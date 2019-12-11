@@ -1,4 +1,4 @@
-let command = {
+var command = {
   command: "serve",
   description: "Serve the build directory on localhost and watch for changes",
   builder: {
@@ -9,11 +9,11 @@ let command = {
   },
   run: function(options, done) {
     process.env.CURRENT = "serve";
-    let Serve = require("../serve");
-    let Config = require("../../components/Config");
-    let watch = require("./watch");
+    var Serve = require("../serve");
+    var Config = require("../../components/Config");
+    var watch = require("./watch");
 
-    let config = Config.detect(options);
+    var config = Config.detect(options);
     Serve.start(config, function() {
       watch.run(options, done);
     });

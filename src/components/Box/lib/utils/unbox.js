@@ -1,20 +1,20 @@
-let fs = require("fs-extra");
-let path = require("path");
-let ghdownload = require("github-download");
-let request = require("request");
-let vcsurl = require("vcsurl");
-let parseURL = require("url").parse;
-let tmp = require("tmp");
-let exec = require("child_process").exec;
-let cwd = require("process").cwd();
+var fs = require("fs-extra");
+var path = require("path");
+var ghdownload = require("github-download");
+var request = require("request");
+var vcsurl = require("vcsurl");
+var parseURL = require("url").parse;
+var tmp = require("tmp");
+var exec = require("child_process").exec;
+var cwd = require("process").cwd();
 
-let config = require("../config");
+var config = require("../config");
 
 function checkDestination(destination) {
   return Promise.resolve().then(function() {
-    let contents = fs.readdirSync(destination);
+    var contents = fs.readdirSync(destination);
     if (contents.length) {
-      let err =
+      var err =
         "Something already exists at the destination. " +
         "`earthcli init` and `earthcli unbox` must be executed in an empty folder. " +
         "Stopping to prevent overwriting data.";
@@ -28,13 +28,13 @@ function verifyURL(url) {
   // Next let's see if the expected repository exists. If it doesn't, ghdownload
   // will fail spectacularly in a way we can't catch, so we have to do it ourselves.
   return new Promise(function(accept, reject) {
-    let configURL = parseURL(
+    var configURL = parseURL(
       vcsurl(url)
         .replace("github.com", "raw.githubusercontent.com")
         .replace(/#.*/, "") + "/master/earthcli.js"
     );
 
-    let options = {
+    var options = {
       method: "HEAD",
       uri: "https://" + configURL.host + configURL.path
     };
@@ -106,12 +106,12 @@ function copyTempIntoDestination(tmpDir, destination) {
 }
 
 function readBoxConfig(destination) {
-  let possibleConfigs = [
+  var possibleConfigs = [
     path.join(destination, "earthcli.json"),
     path.join(destination, "earthcli-init.json")
   ];
 
-  let configPath = possibleConfigs.reduce(function(path, alt) {
+  var configPath = possibleConfigs.reduce(function(path, alt) {
     return path || (fs.existsSync(alt) && alt);
   }, undefined);
 
@@ -119,13 +119,13 @@ function readBoxConfig(destination) {
 }
 
 function cleanupUnpack(boxConfig, destination) {
-  let needingRemoval = boxConfig.ignore || [];
+  var needingRemoval = boxConfig.ignore || [];
 
   // remove box config file
   needingRemoval.push("earthcli.json");
   needingRemoval.push("earthcli-init.json");
 
-  let promises = needingRemoval
+  var promises = needingRemoval
     .map(function(file_path) {
       return path.join(destination, file_path);
     })
@@ -142,7 +142,7 @@ function cleanupUnpack(boxConfig, destination) {
 }
 
 function installBoxDependencies(boxConfig, destination) {
-  let postUnpack = boxConfig.hooks["post-unpack"];
+  var postUnpack = boxConfig.hooks["post-unpack"];
 
   return new Promise(function(accept, reject) {
     if (postUnpack.length === 0) {

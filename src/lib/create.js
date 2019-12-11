@@ -1,8 +1,8 @@
-let copy = require("./copy");
-let path = require("path");
-let fs = require("fs");
+var copy = require("./copy");
+var path = require("path");
+var fs = require("fs");
 
-let templates = {
+var templates = {
   test: {
     filename: path.join(__dirname, "templates", "example.js"),
     variable: "example"
@@ -17,8 +17,8 @@ let templates = {
   }
 };
 
-let processFile = function(file_path, processfn, callback) {
-  // let stat = fs.statSync(file_path);
+var processFile = function(file_path, processfn, callback) {
+  var stat = fs.statSync(file_path);
 
   fs.readFile(file_path, { encoding: "utf8" }, function(err, data) {
     if (err != null) {
@@ -26,12 +26,12 @@ let processFile = function(file_path, processfn, callback) {
       return;
     }
 
-    let result = processfn(data);
+    var result = processfn(data);
     fs.writeFile(file_path, result, { encoding: "utf8" }, callback);
   });
 };
 
-let replaceContents = function(file_path, find, replacement, callback) {
+var replaceContents = function(file_path, find, replacement, callback) {
   processFile(
     file_path,
     function(data) {
@@ -44,7 +44,7 @@ let replaceContents = function(file_path, find, replacement, callback) {
   );
 };
 
-let toUnderscoreFromCamel = function(string) {
+var toUnderscoreFromCamel = function(string) {
   string = string.replace(/([A-Z])/g, function($1) {
     return "_" + $1.toLowerCase();
   });
@@ -56,14 +56,14 @@ let toUnderscoreFromCamel = function(string) {
   return string;
 };
 
-let Create = {
+var Create = {
   contract: function(directory, name, options, callback) {
     if (typeof options == "function") {
       callback = options;
     }
 
-    let from = templates.contract.filename;
-    let to = path.join(directory, name + ".sol");
+    var from = templates.contract.filename;
+    var to = path.join(directory, name + ".sol");
 
     if (!options.force && fs.existsSync(to)) {
       return callback(
@@ -83,10 +83,10 @@ let Create = {
       callback = options;
     }
 
-    let underscored = toUnderscoreFromCamel(name);
+    var underscored = toUnderscoreFromCamel(name);
     underscored = underscored.replace(/\./g, "_");
-    let from = templates.test.filename;
-    let to = path.join(directory, underscored + ".js");
+    var from = templates.test.filename;
+    var to = path.join(directory, underscored + ".js");
 
     if (!options.force && fs.existsSync(to)) {
       return callback(
@@ -108,17 +108,17 @@ let Create = {
       callback = options;
     }
 
-    let underscored = toUnderscoreFromCamel(name || "");
+    var underscored = toUnderscoreFromCamel(name || "");
     underscored = underscored.replace(/\./g, "_");
-    let from = templates.migration.filename;
-    let filename = (new Date().getTime() / 1000) | 0; // Only do seconds.
+    var from = templates.migration.filename;
+    var filename = (new Date().getTime() / 1000) | 0; // Only do seconds.
 
     if (name != null && name != "") {
       filename += "_" + underscored;
     }
 
     filename += ".js";
-    let to = path.join(directory, filename);
+    var to = path.join(directory, filename);
 
     if (!options.force && fs.existsSync(to)) {
       return callback(

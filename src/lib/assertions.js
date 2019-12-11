@@ -1,6 +1,6 @@
-let BigNumber = require("bignumber.js");
+var BigNumber = require("bignumber.js");
 module.exports = function(chai, utils) {
-  let assert = chai.assert;
+  var assert = chai.assert;
   chai.Assertion.addProperty("address", function() {
     this.assert(
       this._obj.length === 42,
@@ -12,7 +12,7 @@ module.exports = function(chai, utils) {
     // Controversial: Technically there is that edge case where
     // all zeroes could be a valid address. But: This catches all
     // those cases where Ethereum returns 0x0000... if something fails.
-    let number = BigNumber(this._obj);
+    var number = BigNumber(this._obj);
     this.assert(
       number.equals(0) === false,
       "expected address #{this} to not be zero",
