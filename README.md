@@ -90,6 +90,15 @@ module.exports = {
 
 Notice that the example above uses Earth Quickstart >= 1.1.16, which exposes a mononode on port 9090.
 
+**IMPORTANT**
+
+Make sure to copy `soljson_v0.5.4.js` to `~/.earthcli/solc`
+
+```bash
+cd ~/.earthcli/solc
+wget https://raw.githubusercontent.com/EarthEngineering/earth-solc-bin/master/bin/soljson_v0.5.4.js
+```
+
 ## Contract Migration
 
 `earthcli migrate`
