@@ -85,7 +85,6 @@ var command = {
 
         config.logger.log(networkMessage + "." + OS.EOL);
 
-        console.log("HHHHHEEEEERRRREEEEE");
         runMigrations(done);
       });
     });
